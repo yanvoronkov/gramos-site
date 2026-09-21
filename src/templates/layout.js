@@ -46,112 +46,319 @@ function renderLayout(page, content) {
   <nav class="wrap nav">
     <a href="/" class="logo">
       <span class="mark">${icon('send')}</span>
-      GramOS
+      <span class="logo-text">GramOS</span>
     </a>
     
     <div class="nav-links" id="navLinks">
+      <!-- Продукт Dropdown -->
       <div class="has-menu">
-        <button class="navbtn ${currentPath.startsWith('/product') ? 'active' : ''}">
-          Продукт <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+        <button class="navbtn ${currentPath.startsWith('/product') ? 'active' : ''}" type="button">
+          <span>Продукт</span>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
         </button>
-        <div class="menu">
-          <a href="/product/crm/">CRM и диалоги<span>Карточки контактов, timeline, теги, ответы</span></a>
-          <a href="/product/automations/">Сценарии<span>Визуальные автоворонки и триггеры</span></a>
-          <a href="/product/payments/">Платежи и продукты<span>Checkout, тарифы, выдача доступов</span></a>
-          <a href="/product/broadcasts/">Рассылки<span>Сегменты, планирование, статистика</span></a>
-          <a href="/product/web-widget/">Web-виджет<span>Чат на сайте со склейкой с Telegram</span></a>
-          <a href="/product/customer-cabinet/">Кабинет покупателя<span>Доступы, подписки, платежи</span></a>
-          <a href="/product/mini-app/">Telegram Mini App<span>Управление бизнесом внутри Telegram</span></a>
-          <a href="/product/">Обзор платформы<span>Все модули на одной странице</span></a>
+        <div class="menu menu-grid">
+          <a href="/product/crm/" class="menu-item ${isActive('/product/crm/')}">
+            <div class="menu-ico">${icon('users')}</div>
+            <div class="menu-info">
+              <span class="menu-title">CRM и диалоги</span>
+              <span class="menu-desc">Чаты, карточки клиентов, timeline и теги</span>
+            </div>
+          </a>
+          <a href="/product/automations/" class="menu-item ${isActive('/product/automations/')}">
+            <div class="menu-ico">${icon('flow')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Сценарии</span>
+              <span class="menu-desc">Автоворонки, триггеры и умные боты</span>
+            </div>
+          </a>
+          <a href="/product/payments/" class="menu-item ${isActive('/product/payments/')}">
+            <div class="menu-ico">${icon('card')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Платежи и продукты</span>
+              <span class="menu-desc">Checkout, тарифы и автовыдача прав</span>
+            </div>
+          </a>
+          <a href="/product/broadcasts/" class="menu-item ${isActive('/product/broadcasts/')}">
+            <div class="menu-ico">${icon('send')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Рассылки</span>
+              <span class="menu-desc">Сегменты, расписание и аналитика кликов</span>
+            </div>
+          </a>
+          <a href="/product/web-widget/" class="menu-item ${isActive('/product/web-widget/')}">
+            <div class="menu-ico">${icon('globe')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Web-виджет</span>
+              <span class="menu-desc">Чат на сайте со связкой с профилем в TG</span>
+            </div>
+          </a>
+          <a href="/product/customer-cabinet/" class="menu-item ${isActive('/product/customer-cabinet/')}">
+            <div class="menu-ico">${icon('key')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Кабинет покупателя</span>
+              <span class="menu-desc">Подписки, доступы и история платежей</span>
+            </div>
+          </a>
+          <a href="/product/mini-app/" class="menu-item ${isActive('/product/mini-app/')}">
+            <div class="menu-ico">${icon('phone')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Telegram Mini App</span>
+              <span class="menu-desc">Полноценный web-сервис внутри Telegram</span>
+            </div>
+          </a>
+          <a href="/product/" class="menu-item ${currentPath === '/product/' ? 'active' : ''}">
+            <div class="menu-ico">${icon('layers')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Обзор платформы</span>
+              <span class="menu-desc">Архитектура, все модули и возможности</span>
+            </div>
+          </a>
         </div>
       </div>
       
+      <!-- Решения Dropdown -->
       <div class="has-menu">
-        <button class="navbtn ${currentPath.startsWith('/solutions') ? 'active' : ''}">
-          Решения <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+        <button class="navbtn ${currentPath.startsWith('/solutions') ? 'active' : ''}" type="button">
+          <span>Решения</span>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
         </button>
-        <div class="menu">
-          <a href="/solutions/paid-community/">Платный клуб<span>Подписки, доступ в каналы, продления</span></a>
-          <a href="/solutions/online-school/">Онлайн-школа<span>Курсы, ученики, личный кабинет</span></a>
-          <a href="/solutions/expert/">Эксперт и автор<span>Автоворонка и продажи из контента</span></a>
-          <a href="/solutions/agency/">Агентство и продюсер<span>Мультипроекты, команда, роли</span></a>
-          <a href="/solutions/site-to-telegram/">Сайт → Telegram<span>Виджет как вход в воронку</span></a>
-          <a href="/solutions/">Все сценарии<span>Подбор по типу бизнеса</span></a>
+        <div class="menu menu-grid">
+          <a href="/solutions/paid-community/" class="menu-item ${isActive('/solutions/paid-community/')}">
+            <div class="menu-ico">${icon('key')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Платный клуб</span>
+              <span class="menu-desc">Платные каналы, рекурренты и автокик</span>
+            </div>
+          </a>
+          <a href="/solutions/online-school/" class="menu-item ${isActive('/solutions/online-school/')}">
+            <div class="menu-ico">${icon('book')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Онлайн-школа</span>
+              <span class="menu-desc">Выдача уроков, домашки и кабинет ученика</span>
+            </div>
+          </a>
+          <a href="/solutions/expert/" class="menu-item ${isActive('/solutions/expert/')}">
+            <div class="menu-ico">${icon('spark')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Эксперт и автор</span>
+              <span class="menu-desc">Прогревы, продажа контента и консультаций</span>
+            </div>
+          </a>
+          <a href="/solutions/agency/" class="menu-item ${isActive('/solutions/agency/')}">
+            <div class="menu-ico">${icon('layers')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Агентство и продюсер</span>
+              <span class="menu-desc">Мультипроектность, роли и права доступа</span>
+            </div>
+          </a>
+          <a href="/solutions/site-to-telegram/" class="menu-item ${isActive('/solutions/site-to-telegram/')}">
+            <div class="menu-ico">${icon('globe')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Сайт → Telegram</span>
+              <span class="menu-desc">Конвертация веб-трафика в базу подписчиков</span>
+            </div>
+          </a>
+          <a href="/solutions/" class="menu-item ${currentPath === '/solutions/' ? 'active' : ''}">
+            <div class="menu-ico">${icon('flow')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Все сценарии</span>
+              <span class="menu-desc">Каталог готовых кейсов под вашу нишу</span>
+            </div>
+          </a>
         </div>
       </div>
       
-      <a class="${isActive('/pricing/')}" href="/pricing/">Тарифы</a>
-      <a class="${isActive('/integrations/')}" href="/integrations/">Интеграции</a>
-      <a class="${isActive('/docs/')}" href="/docs/">Документация</a>
+      <!-- Direct Links -->
+      <a class="nav-link ${isActive('/pricing/')}" href="/pricing/">Тарифы</a>
+      <a class="nav-link ${isActive('/integrations/')}" href="/integrations/">Интеграции</a>
+      <a class="nav-link ${isActive('/docs/')}" href="/docs/">Документация</a>
       
+      <!-- Ещё Dropdown -->
       <div class="has-menu">
-        <button class="navbtn ${['/demo/', '/roadmap/', '/security/', '/blog/', '/contact/'].some(p => currentPath.startsWith(p)) ? 'active' : ''}">
-          Ещё <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+        <button class="navbtn ${['/demo/', '/roadmap/', '/security/', '/blog/', '/contact/'].some(p => currentPath.startsWith(p)) ? 'active' : ''}" type="button">
+          <span>Ещё</span>
+          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
         </button>
-        <div class="menu one">
-          <a href="/demo/">Демо и тур<span>Посмотреть интерфейс за 2 минуты</span></a>
-          <a href="/roadmap/">Roadmap<span>Что доступно, что в beta, что дальше</span></a>
-          <a href="/security/">Безопасность<span>Изоляция данных, токены, платежи</span></a>
-          <a href="/blog/">Блог<span>Гайды по Telegram-продажам</span></a>
-          <a href="/contact/">Контакты<span>Связаться с командой</span></a>
+        <div class="menu menu-right">
+          <a href="/demo/" class="menu-item ${isActive('/demo/')}">
+            <div class="menu-ico">${icon('spark')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Демо и тур</span>
+              <span class="menu-desc">Интерактивный обзор за 2 минуты</span>
+            </div>
+          </a>
+          <a href="/roadmap/" class="menu-item ${isActive('/roadmap/')}">
+            <div class="menu-ico">${icon('clock')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Roadmap</span>
+              <span class="menu-desc">Текущие релизы и план развития платформы</span>
+            </div>
+          </a>
+          <a href="/security/" class="menu-item ${isActive('/security/')}">
+            <div class="menu-ico">${icon('shield')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Безопасность</span>
+              <span class="menu-desc">Изоляция данных, 152-ФЗ и шифрование</span>
+            </div>
+          </a>
+          <a href="/blog/" class="menu-item ${isActive('/blog/')}">
+            <div class="menu-ico">${icon('note')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Блог</span>
+              <span class="menu-desc">Статьи и гайды по Telegram-маркетингу</span>
+            </div>
+          </a>
+          <a href="/contact/" class="menu-item ${isActive('/contact/')}">
+            <div class="menu-ico">${icon('mail')}</div>
+            <div class="menu-info">
+              <span class="menu-title">Контакты</span>
+              <span class="menu-desc">Поддержка и связь с командой GramOS</span>
+            </div>
+          </a>
         </div>
       </div>
     </div>
     
     <div class="nav-right">
-      <button class="icon-btn" id="themeBtn" aria-label="Сменить тему" title="Тема"></button>
+      <button class="icon-btn" id="themeBtn" aria-label="Сменить тему оформления" title="Сменить тему"></button>
       <a class="btn btn-ghost btn-sm" href="/login/">Войти</a>
       <a class="btn btn-primary btn-sm" href="/demo/">Начать бесплатно</a>
-      <button class="icon-btn burger" id="burger" aria-label="Открыть меню">
+      <button class="icon-btn burger" id="burger" aria-label="Открыть мобильное меню">
         ${icon('burger')}
       </button>
     </div>
   </nav>
 </header>
 
+<!-- Backdrop overlay for Mobile Drawer -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+
 <!-- Mobile Navigation Drawer -->
-<div class="drawer" id="drawer">
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Навигационное меню">
   <div class="drawer-head">
     <a href="/" class="logo">
       <span class="mark">${icon('send')}</span>
-      GramOS
+      <span class="logo-text">GramOS</span>
     </a>
     <button class="icon-btn" id="drawerClose" aria-label="Закрыть меню">
       ${icon('close')}
     </button>
   </div>
   
-  <h4>Продукт</h4>
-  <a href="/product/">Обзор платформы</a>
-  <a href="/product/crm/">CRM и диалоги</a>
-  <a href="/product/automations/">Сценарии и автоворонки</a>
-  <a href="/product/payments/">Платежи и продукты</a>
-  <a href="/product/broadcasts/">Рассылки</a>
-  <a href="/product/web-widget/">Web-виджет</a>
-  <a href="/product/customer-cabinet/">Кабинет покупателя</a>
-  <a href="/product/mini-app/">Telegram Mini App</a>
+  <div class="drawer-body">
+    <!-- Section 1: Продукты -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Продукт</div>
+      <div class="drawer-nav">
+        <a href="/product/" class="drawer-link ${currentPath === '/product/' ? 'active' : ''}">
+          <span class="d-ico">${icon('layers')}</span>
+          <span class="d-text">Обзор платформы</span>
+        </a>
+        <a href="/product/crm/" class="drawer-link ${isActive('/product/crm/')}">
+          <span class="d-ico">${icon('users')}</span>
+          <span class="d-text">CRM и диалоги</span>
+        </a>
+        <a href="/product/automations/" class="drawer-link ${isActive('/product/automations/')}">
+          <span class="d-ico">${icon('flow')}</span>
+          <span class="d-text">Сценарии и воронки</span>
+        </a>
+        <a href="/product/payments/" class="drawer-link ${isActive('/product/payments/')}">
+          <span class="d-ico">${icon('card')}</span>
+          <span class="d-text">Платежи и продукты</span>
+        </a>
+        <a href="/product/broadcasts/" class="drawer-link ${isActive('/product/broadcasts/')}">
+          <span class="d-ico">${icon('send')}</span>
+          <span class="d-text">Рассылки</span>
+        </a>
+        <a href="/product/web-widget/" class="drawer-link ${isActive('/product/web-widget/')}">
+          <span class="d-ico">${icon('globe')}</span>
+          <span class="d-text">Web-виджет</span>
+        </a>
+        <a href="/product/customer-cabinet/" class="drawer-link ${isActive('/product/customer-cabinet/')}">
+          <span class="d-ico">${icon('key')}</span>
+          <span class="d-text">Кабинет покупателя</span>
+        </a>
+        <a href="/product/mini-app/" class="drawer-link ${isActive('/product/mini-app/')}">
+          <span class="d-ico">${icon('phone')}</span>
+          <span class="d-text">Telegram Mini App</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Section 2: Решения -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Решения</div>
+      <div class="drawer-nav">
+        <a href="/solutions/paid-community/" class="drawer-link ${isActive('/solutions/paid-community/')}">
+          <span class="d-ico">${icon('key')}</span>
+          <span class="d-text">Платный клуб</span>
+        </a>
+        <a href="/solutions/online-school/" class="drawer-link ${isActive('/solutions/online-school/')}">
+          <span class="d-ico">${icon('book')}</span>
+          <span class="d-text">Онлайн-школа</span>
+        </a>
+        <a href="/solutions/expert/" class="drawer-link ${isActive('/solutions/expert/')}">
+          <span class="d-ico">${icon('spark')}</span>
+          <span class="d-text">Эксперт и автор</span>
+        </a>
+        <a href="/solutions/agency/" class="drawer-link ${isActive('/solutions/agency/')}">
+          <span class="d-ico">${icon('layers')}</span>
+          <span class="d-text">Агентство</span>
+        </a>
+        <a href="/solutions/site-to-telegram/" class="drawer-link ${isActive('/solutions/site-to-telegram/')}">
+          <span class="d-ico">${icon('globe')}</span>
+          <span class="d-text">Сайт → Telegram</span>
+        </a>
+        <a href="/solutions/" class="drawer-link ${currentPath === '/solutions/' ? 'active' : ''}">
+          <span class="d-ico">${icon('flow')}</span>
+          <span class="d-text">Все сценарии</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Section 3: Навигация -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Компания и ресурсы</div>
+      <div class="drawer-nav">
+        <a href="/pricing/" class="drawer-link ${isActive('/pricing/')}">
+          <span class="d-ico">${icon('card')}</span>
+          <span class="d-text">Тарифы</span>
+        </a>
+        <a href="/integrations/" class="drawer-link ${isActive('/integrations/')}">
+          <span class="d-ico">${icon('plug')}</span>
+          <span class="d-text">Интеграции</span>
+        </a>
+        <a href="/docs/" class="drawer-link ${isActive('/docs/')}">
+          <span class="d-ico">${icon('book')}</span>
+          <span class="d-text">Документация</span>
+        </a>
+        <a href="/demo/" class="drawer-link ${isActive('/demo/')}">
+          <span class="d-ico">${icon('spark')}</span>
+          <span class="d-text">Демо</span>
+        </a>
+        <a href="/roadmap/" class="drawer-link ${isActive('/roadmap/')}">
+          <span class="d-ico">${icon('clock')}</span>
+          <span class="d-text">Roadmap</span>
+        </a>
+        <a href="/security/" class="drawer-link ${isActive('/security/')}">
+          <span class="d-ico">${icon('shield')}</span>
+          <span class="d-text">Безопасность</span>
+        </a>
+        <a href="/blog/" class="drawer-link ${isActive('/blog/')}">
+          <span class="d-ico">${icon('note')}</span>
+          <span class="d-text">Блог</span>
+        </a>
+        <a href="/contact/" class="drawer-link ${isActive('/contact/')}">
+          <span class="d-ico">${icon('mail')}</span>
+          <span class="d-text">Контакты</span>
+        </a>
+      </div>
+    </div>
+  </div>
   
-  <h4>Решения</h4>
-  <a href="/solutions/paid-community/">Платный клуб</a>
-  <a href="/solutions/online-school/">Онлайн-школа</a>
-  <a href="/solutions/expert/">Эксперт и автор</a>
-  <a href="/solutions/agency/">Агентство</a>
-  <a href="/solutions/site-to-telegram/">Сайт → Telegram</a>
-  <a href="/solutions/">Все сценарии</a>
-  
-  <h4>Компания и ресурсы</h4>
-  <a href="/pricing/">Тарифы</a>
-  <a href="/integrations/">Интеграции</a>
-  <a href="/docs/">Документация</a>
-  <a href="/demo/">Демо</a>
-  <a href="/roadmap/">Roadmap</a>
-  <a href="/security/">Безопасность</a>
-  <a href="/blog/">Блог</a>
-  <a href="/contact/">Контакты</a>
-  <a href="/login/">Войти</a>
-  
-  <div style="margin-top:26px">
-    <a class="btn btn-primary btn-lg" href="/demo/" style="width:100%">Начать бесплатно</a>
+  <div class="drawer-actions">
+    <a class="btn btn-ghost btn-sm" href="/login/" style="flex:1">Войти</a>
+    <a class="btn btn-primary btn-sm" href="/demo/" style="flex:1">Начать бесплатно</a>
   </div>
 </div>
 
@@ -167,7 +374,7 @@ function renderLayout(page, content) {
       <div>
         <a href="/" class="logo" style="margin-bottom:12px">
           <span class="mark">${icon('send')}</span>
-          GramOS
+          <span class="logo-text">GramOS</span>
         </a>
         <p class="small muted" style="max-width:34ch">Операционная система для бизнеса в Telegram: CRM, сценарии, платежи, доступы и рассылки в одном контуре.</p>
         <div class="btns">

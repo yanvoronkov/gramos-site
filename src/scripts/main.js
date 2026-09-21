@@ -37,26 +37,30 @@
     });
   }
 
-  /* ---------- Mobile Drawer ---------- */
+  /* ---------- Mobile Drawer & Backdrop ---------- */
   var drawer = document.getElementById('drawer');
+  var drawerBackdrop = document.getElementById('drawerBackdrop');
   var burger = document.getElementById('burger');
   var drawerClose = document.getElementById('drawerClose');
 
   function closeDrawer() {
     if (drawer) drawer.classList.remove('open');
+    if (drawerBackdrop) drawerBackdrop.classList.remove('open');
     document.body.style.overflow = '';
   }
 
   function openDrawer() {
     if (drawer) drawer.classList.add('open');
+    if (drawerBackdrop) drawerBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
   if (burger) burger.addEventListener('click', openDrawer);
   if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+  if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
   if (drawer) {
     drawer.addEventListener('click', function(e) {
-      if (e.target.tagName === 'A') closeDrawer();
+      if (e.target.closest('a')) closeDrawer();
     });
   }
   document.addEventListener('keydown', function(e) {
