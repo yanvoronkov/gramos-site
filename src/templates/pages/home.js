@@ -30,7 +30,7 @@ function renderHome() {
       <div class="split">
         <div>
           <div class="pill"><b>NEW</b> Telegram Mini App + веб-панель в одном аккаунте</div>
-          <h1>Telegram как <span class="grad">система продаж</span>, а не просто мессенджер</h1>
+          <h1>Telegram как <span class="nowrap"><span class="grad">система продаж</span>,</span><br class="hero-br"> а&nbsp;не просто мессенджер</h1>
           <p class="lede">GramOS объединяет CRM, ботов, автоворонки, рассылки, оплаты и доступы к закрытым продуктам в одной Telegram Mini App и веб-панели.</p>
           <div class="btns" style="margin-top:28px">
             <a class="btn btn-primary btn-lg" href="/demo/">Начать бесплатно</a>
