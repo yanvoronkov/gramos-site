@@ -3,7 +3,7 @@ const siteConfig = require('../data/site');
 const { generateMeta, generateJsonLd } = require('./seo');
 const { icon } = require('../data/icons');
 
-function renderLayout(page, content) {
+function renderLayout(page, content, buildId = '1') {
   const currentPath = page.path || '/';
 
   function isActive(url) {
@@ -49,10 +49,10 @@ function renderLayout(page, content) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
-  <!-- Styles -->
-  <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/components.css">
+  <!-- Styles with Cache-Busting Version -->
+  <link rel="stylesheet" href="/css/tokens.css?v=${buildId}">
+  <link rel="stylesheet" href="/css/base.css?v=${buildId}">
+  <link rel="stylesheet" href="/css/components.css?v=${buildId}">
 </head>
 <body>
 
@@ -69,62 +69,62 @@ function renderLayout(page, content) {
       <div class="has-menu">
         <button class="navbtn ${currentPath.startsWith('/product') ? 'active' : ''}" type="button">
           <span>Продукт</span>
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+          <svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="menu menu-grid">
           <a href="/product/crm/" class="menu-item ${isActive('/product/crm/')}">
             <div class="menu-ico">${icon('users')}</div>
             <div class="menu-info">
-              <span class="menu-title">CRM и диалоги</span>
+              <strong class="menu-title">CRM и диалоги</strong>
               <span class="menu-desc">Чаты, карточки клиентов, timeline и теги</span>
             </div>
           </a>
           <a href="/product/automations/" class="menu-item ${isActive('/product/automations/')}">
             <div class="menu-ico">${icon('flow')}</div>
             <div class="menu-info">
-              <span class="menu-title">Сценарии</span>
+              <strong class="menu-title">Сценарии</strong>
               <span class="menu-desc">Автоворонки, триггеры и умные боты</span>
             </div>
           </a>
           <a href="/product/payments/" class="menu-item ${isActive('/product/payments/')}">
             <div class="menu-ico">${icon('card')}</div>
             <div class="menu-info">
-              <span class="menu-title">Платежи и продукты</span>
+              <strong class="menu-title">Платежи и продукты</strong>
               <span class="menu-desc">Checkout, тарифы и автовыдача прав</span>
             </div>
           </a>
           <a href="/product/broadcasts/" class="menu-item ${isActive('/product/broadcasts/')}">
             <div class="menu-ico">${icon('send')}</div>
             <div class="menu-info">
-              <span class="menu-title">Рассылки</span>
+              <strong class="menu-title">Рассылки</strong>
               <span class="menu-desc">Сегменты, расписание и аналитика кликов</span>
             </div>
           </a>
           <a href="/product/web-widget/" class="menu-item ${isActive('/product/web-widget/')}">
             <div class="menu-ico">${icon('globe')}</div>
             <div class="menu-info">
-              <span class="menu-title">Web-виджет</span>
+              <strong class="menu-title">Web-виджет</strong>
               <span class="menu-desc">Чат на сайте со связкой с профилем в TG</span>
             </div>
           </a>
           <a href="/product/customer-cabinet/" class="menu-item ${isActive('/product/customer-cabinet/')}">
             <div class="menu-ico">${icon('key')}</div>
             <div class="menu-info">
-              <span class="menu-title">Кабинет покупателя</span>
+              <strong class="menu-title">Кабинет покупателя</strong>
               <span class="menu-desc">Подписки, доступы и история платежей</span>
             </div>
           </a>
           <a href="/product/mini-app/" class="menu-item ${isActive('/product/mini-app/')}">
             <div class="menu-ico">${icon('phone')}</div>
             <div class="menu-info">
-              <span class="menu-title">Telegram Mini App</span>
+              <strong class="menu-title">Telegram Mini App</strong>
               <span class="menu-desc">Полноценный web-сервис внутри Telegram</span>
             </div>
           </a>
           <a href="/product/" class="menu-item ${currentPath === '/product/' ? 'active' : ''}">
             <div class="menu-ico">${icon('layers')}</div>
             <div class="menu-info">
-              <span class="menu-title">Обзор платформы</span>
+              <strong class="menu-title">Обзор платформы</strong>
               <span class="menu-desc">Архитектура, все модули и возможности</span>
             </div>
           </a>
@@ -135,48 +135,48 @@ function renderLayout(page, content) {
       <div class="has-menu">
         <button class="navbtn ${currentPath.startsWith('/solutions') ? 'active' : ''}" type="button">
           <span>Решения</span>
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+          <svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="menu menu-grid">
           <a href="/solutions/paid-community/" class="menu-item ${isActive('/solutions/paid-community/')}">
             <div class="menu-ico">${icon('key')}</div>
             <div class="menu-info">
-              <span class="menu-title">Платный клуб</span>
+              <strong class="menu-title">Платный клуб</strong>
               <span class="menu-desc">Платные каналы, рекурренты и автокик</span>
             </div>
           </a>
           <a href="/solutions/online-school/" class="menu-item ${isActive('/solutions/online-school/')}">
             <div class="menu-ico">${icon('book')}</div>
             <div class="menu-info">
-              <span class="menu-title">Онлайн-школа</span>
+              <strong class="menu-title">Онлайн-школа</strong>
               <span class="menu-desc">Выдача уроков, домашки и кабинет ученика</span>
             </div>
           </a>
           <a href="/solutions/expert/" class="menu-item ${isActive('/solutions/expert/')}">
             <div class="menu-ico">${icon('spark')}</div>
             <div class="menu-info">
-              <span class="menu-title">Эксперт и автор</span>
+              <strong class="menu-title">Эксперт и автор</strong>
               <span class="menu-desc">Прогревы, продажа контента и консультаций</span>
             </div>
           </a>
           <a href="/solutions/agency/" class="menu-item ${isActive('/solutions/agency/')}">
             <div class="menu-ico">${icon('layers')}</div>
             <div class="menu-info">
-              <span class="menu-title">Агентство и продюсер</span>
+              <strong class="menu-title">Агентство и продюсер</strong>
               <span class="menu-desc">Мультипроектность, роли и права доступа</span>
             </div>
           </a>
           <a href="/solutions/site-to-telegram/" class="menu-item ${isActive('/solutions/site-to-telegram/')}">
             <div class="menu-ico">${icon('globe')}</div>
             <div class="menu-info">
-              <span class="menu-title">Сайт → Telegram</span>
+              <strong class="menu-title">Сайт → Telegram</strong>
               <span class="menu-desc">Конвертация веб-трафика в базу подписчиков</span>
             </div>
           </a>
           <a href="/solutions/" class="menu-item ${currentPath === '/solutions/' ? 'active' : ''}">
             <div class="menu-ico">${icon('flow')}</div>
             <div class="menu-info">
-              <span class="menu-title">Все сценарии</span>
+              <strong class="menu-title">Все сценарии</strong>
               <span class="menu-desc">Каталог готовых кейсов под вашу нишу</span>
             </div>
           </a>
@@ -192,41 +192,41 @@ function renderLayout(page, content) {
       <div class="has-menu">
         <button class="navbtn ${['/demo/', '/roadmap/', '/security/', '/blog/', '/contact/'].some(p => currentPath.startsWith(p)) ? 'active' : ''}" type="button">
           <span>Ещё</span>
-          <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+          <svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="menu menu-right">
           <a href="/demo/" class="menu-item ${isActive('/demo/')}">
             <div class="menu-ico">${icon('spark')}</div>
             <div class="menu-info">
-              <span class="menu-title">Демо и тур</span>
+              <strong class="menu-title">Демо и тур</strong>
               <span class="menu-desc">Интерактивный обзор за 2 минуты</span>
             </div>
           </a>
           <a href="/roadmap/" class="menu-item ${isActive('/roadmap/')}">
             <div class="menu-ico">${icon('clock')}</div>
             <div class="menu-info">
-              <span class="menu-title">Roadmap</span>
+              <strong class="menu-title">Roadmap</strong>
               <span class="menu-desc">Текущие релизы и план развития платформы</span>
             </div>
           </a>
           <a href="/security/" class="menu-item ${isActive('/security/')}">
             <div class="menu-ico">${icon('shield')}</div>
             <div class="menu-info">
-              <span class="menu-title">Безопасность</span>
+              <strong class="menu-title">Безопасность</strong>
               <span class="menu-desc">Изоляция данных, 152-ФЗ и шифрование</span>
             </div>
           </a>
           <a href="/blog/" class="menu-item ${isActive('/blog/')}">
             <div class="menu-ico">${icon('note')}</div>
             <div class="menu-info">
-              <span class="menu-title">Блог</span>
+              <strong class="menu-title">Блог</strong>
               <span class="menu-desc">Статьи и гайды по Telegram-маркетингу</span>
             </div>
           </a>
           <a href="/contact/" class="menu-item ${isActive('/contact/')}">
             <div class="menu-ico">${icon('mail')}</div>
             <div class="menu-info">
-              <span class="menu-title">Контакты</span>
+              <strong class="menu-title">Контакты</strong>
               <span class="menu-desc">Поддержка и связь с командой GramOS</span>
             </div>
           </a>
@@ -235,28 +235,9 @@ function renderLayout(page, content) {
     </div>
     
     <div class="nav-right">
-      <div class="theme-wrapper" id="themeWrapper">
-        <button class="icon-btn" id="themeBtn" aria-label="Тема оформления" aria-haspopup="true" aria-expanded="false" title="Тема оформления">
-          ${icon('sun')}
-        </button>
-        <div class="theme-popover" id="themeMenu" role="menu" aria-label="Выбор темы">
-          <button type="button" class="theme-opt" data-theme-val="light" role="menuitem">
-            <span class="t-ico">${icon('sun')}</span>
-            <span class="t-name">Светлая</span>
-            <span class="t-check">${icon('check')}</span>
-          </button>
-          <button type="button" class="theme-opt" data-theme-val="dark" role="menuitem">
-            <span class="t-ico">${icon('moon')}</span>
-            <span class="t-name">Тёмная</span>
-            <span class="t-check">${icon('check')}</span>
-          </button>
-          <button type="button" class="theme-opt" data-theme-val="system" role="menuitem">
-            <span class="t-ico">${icon('monitor')}</span>
-            <span class="t-name">Системная</span>
-            <span class="t-check">${icon('check')}</span>
-          </button>
-        </div>
-      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="Сменить тему оформления" title="Тема оформления (кликните для смены)" type="button">
+        ${icon('sun')}
+      </button>
       <a class="btn btn-ghost btn-sm" href="/login/">Войти</a>
       <a class="btn btn-primary btn-sm" href="/demo/">Начать бесплатно</a>
       <button class="icon-btn burger" id="burger" aria-label="Открыть мобильное меню">
@@ -485,8 +466,8 @@ function renderLayout(page, content) {
   </div>
 </footer>
 
-<!-- Scripts -->
-<script src="/js/main.js" defer></script>
+<!-- Scripts with Cache-Busting Version -->
+<script src="/js/main.js?v=${buildId}" defer></script>
 </body>
 </html>`;
 }

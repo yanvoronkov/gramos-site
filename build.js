@@ -309,10 +309,11 @@ function build() {
     content: render404Page()
   });
 
-  // Render HTML pages
-  console.log(`📄 Generating ${pages.length} static HTML pages...`);
+  // Render HTML pages with cache-busting build hash
+  const BUILD_ID = Date.now().toString(36);
+  console.log(`📄 Generating ${pages.length} static HTML pages (build: ${BUILD_ID})...`);
   pages.forEach(p => {
-    const fullHtml = renderLayout(p, p.content);
+    const fullHtml = renderLayout(p, p.content, BUILD_ID);
     writePage(p.path, fullHtml);
   });
 
