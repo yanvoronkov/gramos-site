@@ -1,0 +1,18 @@
+{
+  "name": "gramos-corporate-site",
+  "version": "1.0.0",
+  "description": "High-performance SEO-optimized multi-page corporate website for GramOS",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "start": "node build.js && npx serve dist -l 3000"
+  },
+  "keywords": [
+    "gramos",
+    "telegram-crm",
+    "telegram-bots",
+    "saas"
+  ],
+  "author": "GramOS Team",
+  "license": "MIT"
+}

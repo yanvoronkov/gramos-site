@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GramOS — операционная система для Telegram-бизнеса</title>
+<meta name="description" content="GramOS объединяет CRM, ботов, автоворонки, рассылки, оплаты и доступы к закрытым продуктам в одной Telegram Mini App и веб-панели.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --bg:#ffffff; --bg-soft:#f5f7fb; --surface:#ffffff; --surface-2:#f8fafc;
+  --border:#e4e9f2; --border-strong:#d3dbe8;
+  --text:#0b1220; --muted:#5b6b82; --faint:#8695a8;
+  --accent:#1a8ff0; --accent-2:#6b5bf5; --accent-soft:rgba(26,143,240,.10);
+  --on-accent:#ffffff;
+  --ok:#0ea371; --warn:#c2820a;
+  --shadow:0 1px 2px rgba(11,18,32,.05),0 12px 32px -12px rgba(11,18,32,.14);
+  --shadow-lg:0 30px 70px -30px rgba(11,18,32,.35);
+  --radius:16px; --radius-sm:10px; --radius-lg:24px;
+  --maxw:1180px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#060a12; --bg-soft:#0a1018; --surface:#0f1723; --surface-2:#131d2b;
+    --border:#1d2939; --border-strong:#2a3950;
+    --text:#eaf1fb; --muted:#98a8be; --faint:#6d7f96;
+    --accent:#3ba7ff; --accent-2:#8d7bff; --accent-soft:rgba(59,167,255,.12);
+    --on-accent:#04121f;
+    --ok:#2bd39a; --warn:#f0b429;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -18px rgba(0,0,0,.7);
+    --shadow-lg:0 40px 90px -40px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#060a12; --bg-soft:#0a1018; --surface:#0f1723; --surface-2:#131d2b;
+  --border:#1d2939; --border-strong:#2a3950;
+  --text:#eaf1fb; --muted:#98a8be; --faint:#6d7f96;
+  --accent:#3ba7ff; --accent-2:#8d7bff; --accent-soft:rgba(59,167,255,.12);
+  --on-accent:#04121f;
+  --ok:#2bd39a; --warn:#f0b429;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -18px rgba(0,0,0,.7);
+  --shadow-lg:0 40px 90px -40px rgba(0,0,0,.9);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:calc(78px + env(safe-area-inset-top,0px))}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:Manrope,Inter,system-ui,sans-serif;line-height:1.14;margin:0 0 .5em;letter-spacing:-.022em;font-weight:800}
+h1{font-size:clamp(2.1rem,5.2vw,3.6rem)}
+h2{font-size:clamp(1.6rem,3.6vw,2.5rem)}
+h3{font-size:clamp(1.12rem,2vw,1.4rem);font-weight:700}
+h4{font-size:1rem;font-weight:700}
+p{margin:0 0 1em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+ul{margin:0 0 1em;padding-left:1.1em}
+li{margin:.3em 0}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+hr{border:0;border-top:1px solid var(--border);margin:2.5rem 0}
+::selection{background:var(--accent);color:var(--on-accent)}
+
+/* ---------- layout ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+.section{padding:clamp(56px,8vw,104px) 0}
+.section.tight{padding:clamp(40px,5vw,64px) 0}
+.section.soft{background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.center{text-align:center}
+.lede{font-size:clamp(1.02rem,1.5vw,1.2rem);color:var(--muted);max-width:62ch}
+.center .lede{margin-left:auto;margin-right:auto}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.split{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,4vw,56px);align-items:center}
+@media (max-width:940px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:1fr}}
+@media (max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* ---------- atoms ---------- */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.eyebrow::before{content:"";width:18px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.center .eyebrow::before{display:none}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--border-strong);color:var(--muted);background:var(--surface-2)}
+.badge.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent);background:color-mix(in srgb,var(--ok) 10%,transparent)}
+.badge.beta{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,transparent);background:color-mix(in srgb,var(--warn) 10%,transparent)}
+.badge.soon{color:var(--accent-2);border-color:color-mix(in srgb,var(--accent-2) 40%,transparent);background:color-mix(in srgb,var(--accent-2) 10%,transparent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:Manrope,sans-serif;font-weight:700;font-size:.95rem;padding:13px 22px;border-radius:12px;border:1px solid transparent;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 10px 30px -12px color-mix(in srgb,var(--accent) 70%,transparent)}
+.btn-primary:hover{box-shadow:0 16px 40px -14px color-mix(in srgb,var(--accent) 80%,transparent)}
+.btn-ghost{background:var(--surface);color:var(--text);border-color:var(--border-strong)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-link{padding:0;background:none;color:var(--accent);font-weight:700}
+.btn-link:hover{text-decoration:underline}
+.btn-sm{padding:9px 16px;font-size:.87rem;border-radius:10px}
+.btn-lg{padding:16px 28px;font-size:1.02rem}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.center .btns{justify-content:center}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.card:hover{border-color:var(--border-strong)}
+.card h3{margin-bottom:.35em}
+.card p:last-child{margin-bottom:0}
+.card .ico{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);margin-bottom:14px}
+.card .ico svg{width:20px;height:20px}
+a.card{display:block}
+a.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.tiny{font-size:.82rem}
+.checks{list-style:none;padding:0;margin:0}
+.checks li{display:flex;gap:10px;align-items:flex-start;margin:.55em 0;color:var(--muted)}
+.checks li::before{content:"";flex:0 0 18px;height:18px;margin-top:3px;border-radius:50%;background:var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a8ff0' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/11px no-repeat}
+.dl{display:grid;gap:14px}
+.kv{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--border)}
+.kv:last-child{border-bottom:0}
+
+/* ---------- header ---------- */
+.header{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.nav{display:flex;align-items:center;gap:10px;height:66px;max-width:var(--maxw);margin:0 auto;padding:0 20px}
+.logo{display:flex;align-items:center;gap:10px;font-family:Manrope;font-weight:800;font-size:1.12rem;letter-spacing:-.02em;margin-right:12px}
+.logo .mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 6px 18px -8px var(--accent)}
+.logo .mark svg{width:17px;height:17px;color:#fff}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:6px}
+.nav-links > *{position:relative}
+.nav-links a,.nav-links button.navbtn{display:flex;align-items:center;gap:5px;padding:9px 12px;border-radius:9px;font-size:.92rem;font-weight:500;color:var(--muted);background:none;border:0;font-family:inherit;cursor:pointer}
+.nav-links a:hover,.nav-links button.navbtn:hover{color:var(--text);background:var(--surface-2)}
+.nav-links a.active{color:var(--text);font-weight:600}
+.caret{width:12px;height:12px;opacity:.6;transition:transform .2s}
+.has-menu:hover .caret{transform:rotate(180deg)}
+.menu{position:absolute;top:calc(100% + 8px);left:-8px;min-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-lg);padding:12px;display:none;grid-template-columns:1fr 1fr;gap:4px}
+.menu.one{min-width:280px;grid-template-columns:1fr}
+.has-menu:hover .menu,.has-menu:focus-within .menu{display:grid}
+.menu a{display:flex;flex-direction:column;gap:2px;padding:11px 12px;border-radius:12px;color:var(--text);font-weight:600;font-size:.92rem}
+.menu a span{font-weight:400;font-size:.8rem;color:var(--faint);line-height:1.35}
+.menu a:hover{background:var(--surface-2)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.icon-btn:hover{color:var(--text);border-color:var(--border-strong)}
+.icon-btn svg{width:17px;height:17px}
+.burger{display:none}
+@media (max-width:1040px){
+  .nav-links{display:none}
+  .burger{display:grid}
+  .nav-right .btn-ghost{display:none}
+}
+.drawer{position:fixed;inset:0;z-index:80;background:var(--bg);overflow-y:auto;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(40px + env(safe-area-inset-bottom,0px));display:none}
+.drawer.open{display:block}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.drawer h4{color:var(--faint);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin:22px 0 8px}
+.drawer a{display:block;padding:11px 0;font-size:1.02rem;font-weight:600;border-bottom:1px solid var(--border)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:clamp(48px,7vw,96px) 0 clamp(40px,6vw,72px);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-30% -20% auto -20%;height:620px;background:
+  radial-gradient(48% 55% at 22% 20%,color-mix(in srgb,var(--accent) 26%,transparent),transparent 70%),
+  radial-gradient(42% 52% at 78% 12%,color-mix(in srgb,var(--accent-2) 24%,transparent),transparent 70%);
+  filter:blur(18px);pointer-events:none}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:52px 52px;opacity:.35;
+  mask-image:radial-gradient(70% 60% at 50% 30%,#000,transparent 75%);
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 30%,#000,transparent 75%)}
+.hero .wrap{position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);font-size:.84rem;color:var(--muted);margin-bottom:22px;box-shadow:var(--shadow)}
+.pill b{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:3px 9px;border-radius:999px;font-size:.74rem;font-weight:700}
+.grad{background:linear-gradient(120deg,var(--accent),var(--accent-2) 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:34px}
+.hero-stats div{min-width:110px}
+.hero-stats b{display:block;font-family:Manrope;font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+.hero-stats span{font-size:.84rem;color:var(--faint)}
+
+/* ---------- mock UI ---------- */
+.mock{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-lg);overflow:hidden;font-size:.84rem}
+.mock-bar{display:flex;align-items:center;gap:7px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--border-strong)}
+.mock-bar .title{margin-left:8px;font-size:.78rem;color:var(--faint);font-weight:600}
+.mock-body{padding:16px;display:grid;gap:12px}
+.mock-row{display:flex;align-items:center;gap:11px;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2)}
+.av{width:32px;height:32px;border-radius:50%;flex:0 0 32px;display:grid;place-items:center;font-weight:700;font-size:.78rem;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+.mock-row .t{flex:1;min-width:0}
+.mock-row .t b{display:block;font-size:.86rem;font-weight:600}
+.mock-row .t span{font-size:.76rem;color:var(--faint);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{font-size:.7rem;font-weight:600;padding:3px 8px;border-radius:7px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.tag.g{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.tag.v{background:color-mix(in srgb,var(--accent-2) 14%,transparent);color:var(--accent-2)}
+.flow{position:relative;display:grid;gap:10px;padding:16px}
+.node{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2);position:relative}
+.node .n-ico{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:0 0 26px}
+.node .n-ico svg{width:14px;height:14px}
+.node b{font-size:.84rem;font-weight:600}
+.node small{display:block;color:var(--faint);font-size:.74rem}
+.node.trigger .n-ico{background:color-mix(in srgb,var(--accent-2) 14%,transparent);color:var(--accent-2)}
+.node.pay .n-ico{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.conn{height:14px;margin-left:26px;border-left:2px dashed var(--border-strong)}
+.stat-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat-mini div{padding:11px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2)}
+.stat-mini b{display:block;font-family:Manrope;font-size:1.1rem}
+.stat-mini span{font-size:.72rem;color:var(--faint)}
+.bars{display:flex;align-items:flex-end;gap:6px;height:76px;padding:0 2px}
+.bars i{flex:1;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent-2) 60%,transparent))}
+.chat{display:grid;gap:8px}
+.bub{max-width:78%;padding:9px 12px;border-radius:14px;font-size:.82rem;line-height:1.4}
+.bub.in{background:var(--surface-2);border:1px solid var(--border);border-bottom-left-radius:5px}
+.bub.out{margin-left:auto;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-bottom-right-radius:5px}
+.kbd{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.kbd span{font-size:.75rem;padding:6px 10px;border-radius:9px;border:1px solid var(--border-strong);background:var(--surface);color:var(--accent);font-weight:600}
+
+/* ---------- steps ---------- */
+.steps{counter-reset:s;display:grid;gap:18px}
+.step{position:relative;padding-left:56px}
+.step::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:0;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-family:Manrope;font-weight:800;background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
+.step h3{margin-bottom:.2em}
+.step p{color:var(--muted);margin:0}
+
+/* ---------- pricing ---------- */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+@media (max-width:940px){.price-grid{grid-template-columns:1fr}}
+.plan{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px}
+.plan.hot{border-color:transparent;position:relative;box-shadow:var(--shadow-lg);background:
+  linear-gradient(var(--surface),var(--surface)) padding-box,
+  linear-gradient(140deg,var(--accent),var(--accent-2)) border-box;border:1px solid transparent}
+.plan .amount{font-family:Manrope;font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.plan .amount span{font-size:.95rem;font-weight:600;color:var(--faint)}
+.plan .btn{width:100%;margin:18px 0}
+.plan ul{margin-top:auto}
+.toggle{display:inline-flex;padding:4px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2);gap:4px}
+.toggle button{border:0;background:none;font-family:Manrope;font-weight:700;font-size:.87rem;padding:8px 16px;border-radius:9px;cursor:pointer;color:var(--muted)}
+.toggle button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+table{width:100%;border-collapse:collapse;min-width:620px;font-size:.92rem}
+th,td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--border)}
+th{font-family:Manrope;font-weight:700;font-size:.85rem;background:var(--surface-2)}
+td:not(:first-child),th:not(:first-child){text-align:center}
+tr:last-child td{border-bottom:0}
+
+/* ---------- faq / details ---------- */
+details{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:0;margin-bottom:10px;overflow:hidden}
+summary{cursor:pointer;list-style:none;padding:17px 20px;font-family:Manrope;font-weight:700;font-size:1rem;display:flex;justify-content:space-between;gap:16px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.3rem;color:var(--accent);flex:0 0 auto;line-height:1}
+details[open] summary::after{content:"–"}
+details .body{padding:0 20px 18px;color:var(--muted)}
+details .body p:last-child{margin-bottom:0}
+
+/* ---------- docs ---------- */
+.docs-layout{display:grid;grid-template-columns:250px 1fr;gap:40px;align-items:start}
+@media (max-width:900px){.docs-layout{grid-template-columns:1fr}}
+.doc-nav{position:sticky;top:calc(84px + env(safe-area-inset-top,0px));border:1px solid var(--border);border-radius:var(--radius);padding:14px;background:var(--surface)}
+.doc-nav h4{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:14px 10px 6px}
+.doc-nav h4:first-child{margin-top:4px}
+.doc-nav a{display:block;padding:8px 10px;border-radius:9px;font-size:.9rem;color:var(--muted)}
+.doc-nav a:hover{background:var(--surface-2);color:var(--text)}
+.doc-nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.prose{max-width:72ch}
+.prose h2{margin-top:1.8em;font-size:1.5rem}
+.prose h3{margin-top:1.5em}
+.prose p,.prose li{color:var(--muted)}
+.prose strong{color:var(--text)}
+.callout{border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--surface-2);border-radius:12px;padding:14px 18px;margin:20px 0;font-size:.92rem;color:var(--muted)}
+pre.code{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px;overflow-x:auto;font-size:.82rem;color:var(--text);line-height:1.6}
+
+/* ---------- forms ---------- */
+.form{display:grid;gap:14px}
+label{font-size:.85rem;font-weight:600;display:block;margin-bottom:6px}
+input,textarea,select{width:100%;font:inherit;font-size:.95rem;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{min-height:120px;resize:vertical}
+.form-note{font-size:.82rem;color:var(--faint)}
+.notice{border-radius:12px;padding:14px 16px;font-size:.92rem;border:1px solid color-mix(in srgb,var(--ok) 35%,transparent);background:color-mix(in srgb,var(--ok) 10%,transparent);color:var(--ok)}
+
+/* ---------- logos / misc ---------- */
+.logos{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;justify-content:center;opacity:.85}
+.logos span{font-family:Manrope;font-weight:700;color:var(--faint);font-size:.98rem;letter-spacing:-.01em}
+.cta-band{border-radius:var(--radius-lg);padding:clamp(32px,5vw,60px);text-align:center;position:relative;overflow:hidden;
+  background:linear-gradient(140deg,color-mix(in srgb,var(--accent) 16%,var(--surface)),color-mix(in srgb,var(--accent-2) 16%,var(--surface)));
+  border:1px solid var(--border)}
+.cta-band h2{margin-bottom:.4em}
+.breadcrumb{font-size:.84rem;color:var(--faint);margin-bottom:14px}
+.breadcrumb a:hover{color:var(--accent)}
+.quote{font-family:Manrope;font-size:1.05rem;font-weight:600;line-height:1.5}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tabs button{font-family:Manrope;font-weight:700;font-size:.88rem;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent);color:var(--accent)}
+.tabpanel{display:none}
+.tabpanel.on{display:block}
+
+/* ---------- footer ---------- */
+.footer{border-top:1px solid var(--border);background:var(--bg-soft);padding:56px 0 34px;margin-top:0}
+.f-grid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:32px}
+@media (max-width:900px){.f-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.f-grid{grid-template-columns:1fr}}
+.footer h5{font-family:Manrope;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 12px}
+.footer a{display:block;font-size:.91rem;color:var(--muted);padding:5px 0}
+.footer a:hover{color:var(--accent)}
+.f-bottom{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-top:42px;padding-top:22px;border-top:1px solid var(--border);font-size:.84rem;color:var(--faint)}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <nav class="nav">
+    <a href="#/" class="logo">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg></span>
+      GramOS
+    </a>
+    <div class="nav-links" id="navLinks">
+      <div class="has-menu">
+        <button class="navbtn">Продукт <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu">
+          <a href="#/product/crm">CRM и диалоги<span>Карточки контактов, timeline, теги, ответы</span></a>
+          <a href="#/product/automations">Сценарии<span>Визуальные автоворонки и триггеры</span></a>
+          <a href="#/product/payments">Платежи и продукты<span>Checkout, тарифы, выдача доступов</span></a>
+          <a href="#/product/broadcasts">Рассылки<span>Сегменты, планирование, статистика</span></a>
+          <a href="#/product/web-widget">Web-виджет<span>Чат на сайте со склейкой с Telegram</span></a>
+          <a href="#/product/customer-cabinet">Кабинет покупателя<span>Доступы, подписки, платежи</span></a>
+          <a href="#/product/mini-app">Telegram Mini App<span>Управление бизнесом внутри Telegram</span></a>
+          <a href="#/product">Обзор платформы<span>Все модули на одной странице</span></a>
+        </div>
+      </div>
+      <div class="has-menu">
+        <button class="navbtn">Решения <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu">
+          <a href="#/solutions/paid-community">Платный клуб<span>Подписки, доступ в каналы, продления</span></a>
+          <a href="#/solutions/online-school">Онлайн-школа<span>Курсы, ученики, личный кабинет</span></a>
+          <a href="#/solutions/expert">Эксперт и автор<span>Автоворонка и продажи из контента</span></a>
+          <a href="#/solutions/agency">Агентство и продюсер<span>Мультипроекты, команда, роли</span></a>
+          <a href="#/solutions/site-to-telegram">Сайт → Telegram<span>Виджет как вход в воронку</span></a>
+          <a href="#/solutions">Все сценарии<span>Подбор по типу бизнеса</span></a>
+        </div>
+      </div>
+      <a href="#/pricing">Тарифы</a>
+      <a href="#/integrations">Интеграции</a>
+      <a href="#/docs">Документация</a>
+      <div class="has-menu">
+        <button class="navbtn">Ещё <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="menu one">
+          <a href="#/demo">Демо и тур<span>Посмотреть интерфейс за 2 минуты</span></a>
+          <a href="#/roadmap">Roadmap<span>Что доступно, что в beta, что дальше</span></a>
+          <a href="#/security">Безопасность<span>Изоляция данных, токены, платежи</span></a>
+          <a href="#/blog">Блог<span>Гайды по Telegram-продажам</span></a>
+          <a href="#/contact">Контакты<span>Связаться с командой</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="icon-btn" id="themeBtn" aria-label="Сменить тему" title="Тема"></button>
+      <a class="btn btn-ghost btn-sm" href="#/login">Войти</a>
+      <a class="btn btn-primary btn-sm" href="#/demo">Начать бесплатно</a>
+      <button class="icon-btn burger" id="burger" aria-label="Меню">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <a href="#/" class="logo"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg></span>GramOS</a>
+    <button class="icon-btn" id="drawerClose" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+  <h4>Продукт</h4>
+  <a href="#/product">Обзор платформы</a>
+  <a href="#/product/crm">CRM и диалоги</a>
+  <a href="#/product/automations">Сценарии и автоворонки</a>
+  <a href="#/product/payments">Платежи и продукты</a>
+  <a href="#/product/broadcasts">Рассылки</a>
+  <a href="#/product/web-widget">Web-виджет</a>
+  <a href="#/product/customer-cabinet">Кабинет покупателя</a>
+  <a href="#/product/mini-app">Telegram Mini App</a>
+  <h4>Решения</h4>
+  <a href="#/solutions/paid-community">Платный клуб</a>
+  <a href="#/solutions/online-school">Онлайн-школа</a>
+  <a href="#/solutions/expert">Эксперт и автор</a>
+  <a href="#/solutions/agency">Агентство</a>
+  <a href="#/solutions/site-to-telegram">Сайт → Telegram</a>
+  <h4>Компания</h4>
+  <a href="#/pricing">Тарифы</a>
+  <a href="#/integrations">Интеграции</a>
+  <a href="#/docs">Документация</a>
+  <a href="#/demo">Демо</a>
+  <a href="#/roadmap">Roadmap</a>
+  <a href="#/security">Безопасность</a>
+  <a href="#/blog">Блог</a>
+  <a href="#/contact">Контакты</a>
+  <a href="#/login">Войти</a>
+  <div style="margin-top:26px"><a class="btn btn-primary btn-lg" href="#/demo" style="width:100%">Начать бесплатно</a></div>
+</div>
+
+<main id="app"></main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="f-grid">
+      <div>
+        <a href="#/" class="logo" style="margin-bottom:12px"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg></span>GramOS</a>
+        <p class="small muted" style="max-width:34ch">Операционная система для бизнеса в Telegram: CRM, сценарии, платежи, доступы и рассылки в одном контуре.</p>
+        <div class="btns"><a class="btn btn-primary btn-sm" href="#/demo">Начать бесплатно</a></div>
+      </div>
+      <div>
+        <h5>Продукт</h5>
+        <a href="#/product/crm">CRM</a><a href="#/product/automations">Сценарии</a><a href="#/product/payments">Платежи</a><a href="#/product/broadcasts">Рассылки</a><a href="#/product/web-widget">Web-виджет</a><a href="#/product/customer-cabinet">Кабинет покупателя</a><a href="#/product/mini-app">Mini App</a>
+      </div>
+      <div>
+        <h5>Решения</h5>
+        <a href="#/solutions/paid-community">Платный клуб</a><a href="#/solutions/online-school">Онлайн-школа</a><a href="#/solutions/expert">Эксперты</a><a href="#/solutions/agency">Агентства</a><a href="#/solutions/site-to-telegram">Сайт → Telegram</a>
+      </div>
+      <div>
+        <h5>Ресурсы</h5>
+        <a href="#/docs">Документация</a><a href="#/blog">Блог</a><a href="#/integrations">Интеграции</a><a href="#/roadmap">Roadmap</a><a href="#/demo">Демо</a><a href="#/security">Безопасность</a>
+      </div>
+      <div>
+        <h5>Компания</h5>
+        <a href="#/pricing">Тарифы</a><a href="#/contact">Контакты</a><a href="#/login">Войти</a><a href="#/legal/privacy">Политика конфиденциальности</a><a href="#/legal/terms">Условия использования</a>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© <span id="year"></span> GramOS. Все права защищены.</span>
+      <span>Сделано для тех, кто продаёт в Telegram</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   GramOS — single-file site with hash routing
+   ========================================================= */
+(function(){
+"use strict";
+
+/* ---------- icons ---------- */
+var I = {
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  flow:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/><path d="M6.5 10v5a2 2 0 0 0 2 2H14"/>',
+  card:'<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/>',
+  send:'<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/>',
+  chart:'<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>',
+  key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 8.8-8.8"/><path d="m17 5 2.5 2.5"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>',
+  layers:'<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>',
+  bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  tag:'<path d="M3 11V5a2 2 0 0 1 2-2h6l10 10-8 8L3 11Z"/><circle cx="7.5" cy="7.5" r="1.3"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"/>',
+  phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',
+  book:'<path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5Z"/><path d="M4 17h16"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>',
+  filter:'<path d="M3 4h18l-7 8v6l-4 2v-8Z"/>',
+  team:'<circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/>',
+  plug:'<path d="M9 2v6M15 2v6"/><path d="M6 8h12v3a6 6 0 0 1-12 0Z"/><path d="M12 17v5"/>',
+  note:'<path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 7 9 6 9-6"/>'
+};
+function ic(n){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+(I[n]||I.spark)+'</svg>';}
+
+/* ---------- small builders ---------- */
+function card(o){
+  return '<div class="card rv"><div class="ico">'+ic(o.i)+'</div><h3>'+o.t+'</h3><p class="muted small">'+o.d+'</p>'+
+    (o.link?'<p style="margin-top:12px"><a class="btn-link small" href="'+o.link+'">Подробнее →</a></p>':'')+'</div>';
+}
+function linkCard(o){
+  return '<a class="card rv" href="'+o.link+'"><div class="ico">'+ic(o.i)+'</div><h3>'+o.t+'</h3><p class="muted small">'+o.d+'</p></a>';
+}
+function checks(arr){return '<ul class="checks">'+arr.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';}
+function faq(items){
+  return items.map(function(f){
+    return '<details class="rv"><summary>'+f.q+'</summary><div class="body"><p>'+f.a+'</p></div></details>';
+  }).join('');
+}
+function ctaBand(title,text){
+  return '<section class="section"><div class="wrap"><div class="cta-band rv">'+
+    '<h2>'+(title||'Запустите Telegram-продажи без связки из десятка сервисов')+'</h2>'+
+    '<p class="lede center" style="margin:0 auto 24px">'+(text||'14 дней бесплатно, без карты. Подключите бота и соберите первую воронку за вечер.')+'</p>'+
+    '<div class="btns"><a class="btn btn-primary btn-lg" href="#/demo">Начать бесплатно</a>'+
+    '<a class="btn btn-ghost btn-lg" href="#/contact">Получить консультацию</a></div></div></div></section>';
+}
+function crumbs(items){
+  return '<div class="breadcrumb">'+items.map(function(c,idx){
+    return idx<items.length-1?'<a href="'+c[1]+'">'+c[0]+'</a> / ':'<span>'+c[0]+'</span>';
+  }).join('')+'</div>';
+}
+function pageHero(o){
+  return '<section class="hero"><div class="wrap">'+
+    (o.crumbs?crumbs(o.crumbs):'')+
+    '<div class="split"><div>'+
+    (o.eyebrow?'<div class="eyebrow">'+o.eyebrow+'</div>':'')+
+    '<h1>'+o.title+'</h1><p class="lede">'+o.lede+'</p>'+
+    '<div class="btns" style="margin-top:26px"><a class="btn btn-primary btn-lg" href="#/demo">Начать бесплатно</a>'+
+    '<a class="btn btn-ghost btn-lg" href="'+(o.secondHref||'#/contact')+'">'+(o.second||'Получить демо')+'</a></div>'+
+    '</div><div class="rv">'+(o.mock||'')+'</div></div></div></section>';
+}
+
+/* ---------- UI mockups ---------- */
+var MOCKS = {
+  crm: '<div class="mock">'+
+    '<div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">GramOS — CRM · Контакты</span></div>'+
+    '<div class="mock-body">'+
+      '<div class="mock-row"><span class="av">АМ</span><span class="t"><b>Анна Морозова</b><span>@anna_m · «А доступ сразу после оплаты?»</span></span><span class="tag g">Оплатила</span></div>'+
+      '<div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#f0883b,#f0576f)">ИК</span><span class="t"><b>Игорь Козлов</b><span>@ikozlov · Смотрел тарифы 2 раза</span></span><span class="tag">Горячий</span></div>'+
+      '<div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#31c48d,#0ea371)">ДС</span><span class="t"><b>Дарья Соколова</b><span>Пришла с сайта · виджет</span></span><span class="tag v">Новый лид</span></div>'+
+      '<div class="stat-mini"><div><b>1 248</b><span>контактов</span></div><div><b>37</b><span>активных чатов</span></div><div><b>₽412k</b><span>выручка за месяц</span></div></div>'+
+    '</div></div>',
+  flow: '<div class="mock">'+
+    '<div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">Сценарий · «Воронка на курс»</span></div>'+
+    '<div class="flow">'+
+      '<div class="node trigger"><span class="n-ico">'+ic('bolt')+'</span><span><b>Триггер: ключевое слово «цена»</b><small>Бот · канал · виджет</small></span></div>'+
+      '<div class="conn"></div>'+
+      '<div class="node"><span class="n-ico">'+ic('chat')+'</span><span><b>Сообщение с тарифами</b><small>+ кнопки «Купить» и «Вопрос»</small></span></div>'+
+      '<div class="conn"></div>'+
+      '<div class="node"><span class="n-ico">'+ic('clock')+'</span><span><b>Задержка 2 часа, если нет оплаты</b><small>Условие: тег ≠ «покупатель»</small></span></div>'+
+      '<div class="conn"></div>'+
+      '<div class="node pay"><span class="n-ico">'+ic('key')+'</span><span><b>После оплаты: выдать доступ + тег</b><small>Контакт → сегмент «Покупатели»</small></span></div>'+
+    '</div></div>',
+  pay: '<div class="mock">'+
+    '<div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">Checkout · Клуб «Внутри»</span></div>'+
+    '<div class="mock-body">'+
+      '<div class="mock-row" style="justify-content:space-between"><span class="t"><b>Подписка на месяц</b><span>Доступ в закрытый канал и чат</span></span><b>₽1 990</b></div>'+
+      '<div class="mock-row" style="justify-content:space-between"><span class="t"><b>Промокод START20</b><span>Скидка 20% на первый платёж</span></span><span class="tag g">−₽398</span></div>'+
+      '<div class="kbd"><span>Telegram Stars</span><span>ЮKassa</span><span>bePaid</span><span>Stripe</span><span>Tribute</span></div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px"><span class="muted small">К оплате</span><b style="font-family:Manrope;font-size:1.3rem">₽1 592</b></div>'+
+      '<div class="btn btn-primary" style="width:100%">Оплатить и получить доступ</div>'+
+    '</div></div>',
+  broadcast: '<div class="mock">'+
+    '<div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">Рассылка · «Закрываем набор»</span></div>'+
+    '<div class="mock-body">'+
+      '<div class="mock-row"><span class="t"><b>Аудитория: тег «горячий» + без оплаты</b><span>Отправитель: @club_sales_bot</span></span><span class="tag">842</span></div>'+
+      '<div class="bars"><i style="height:46%"></i><i style="height:62%"></i><i style="height:38%"></i><i style="height:78%"></i><i style="height:92%"></i><i style="height:66%"></i><i style="height:84%"></i></div>'+
+      '<div class="stat-mini"><div><b>96,4%</b><span>доставлено</span></div><div><b>31,2%</b><span>перешли</span></div><div><b>48</b><span>оплат</span></div></div>'+
+    '</div></div>',
+  widget: '<div class="mock">'+
+    '<div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">Виджет на сайте · гость #4821</span></div>'+
+    '<div class="mock-body"><div class="chat">'+
+      '<div class="bub in">Здравствуйте! Подскажу по тарифам и доступам 🙂</div>'+
+      '<div class="bub out">Сколько стоит доступ на год?</div>'+
+      '<div class="bub in">₽17 900 вместо ₽23 880. Продолжим в Telegram, чтобы не потерять переписку?</div>'+
+      '<div class="kbd"><span>Открыть в Telegram</span><span>Оставить e-mail</span></div>'+
+    '</div>'+
+    '<div class="mock-row"><span class="t"><b>Гость склеен с контактом @ikozlov</b><span>История переписки перенесена в CRM</span></span><span class="tag g">Готово</span></div>'+
+    '</div></div>',
+  cabinet: '<div class="mock">'+
+    '<div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">Личный кабинет покупателя</span></div>'+
+    '<div class="mock-body">'+
+      '<div class="mock-row"><span class="av">К</span><span class="t"><b>Курс «Telegram-продажи»</b><span>Доступ активен · 12 из 18 уроков</span></span><span class="tag g">Активен</span></div>'+
+      '<div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#8d7bff,#5b6bf5)">П</span><span class="t"><b>Подписка «Клуб»</b><span>Продление 14 марта · ₽1 990/мес</span></span><span class="tag v">Подписка</span></div>'+
+      '<div class="mock-row"><span class="t"><b>История платежей</b><span>6 операций · чеки и статусы</span></span><span class="tag">Открыть</span></div>'+
+    '</div></div>',
+  miniapp: '<div class="mock">'+
+    '<div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">Telegram Mini App · GramOS</span></div>'+
+    '<div class="mock-body">'+
+      '<div class="stat-mini"><div><b>+38</b><span>лидов сегодня</span></div><div><b>12</b><span>новых оплат</span></div><div><b>4</b><span>ждут ответа</span></div></div>'+
+      '<div class="mock-row"><span class="av">ИК</span><span class="t"><b>Игорь Козлов</b><span>«Готов оплатить, дайте ссылку»</span></span><span class="tag">Ответить</span></div>'+
+      '<div class="chat"><div class="bub out">Держите ссылку на оплату 👇</div><div class="bub in">Спасибо, оплатил!</div></div>'+
+    '</div></div>',
+  analytics: '<div class="mock">'+
+    '<div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">Аналитика · Март</span></div>'+
+    '<div class="mock-body">'+
+      '<div class="stat-mini"><div><b>₽412k</b><span>выручка</span></div><div><b>9,8%</b><span>конверсия</span></div><div><b>₽3 140</b><span>средний чек</span></div></div>'+
+      '<div class="bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:44%"></i><i style="height:70%"></i><i style="height:58%"></i><i style="height:88%"></i><i style="height:96%"></i><i style="height:74%"></i></div>'+
+      '<div class="mock-row"><span class="t"><b>Топ-источник: канал «Внутри продаж»</b><span>214 контактов · 41 оплата</span></span><span class="tag g">19,2%</span></div>'+
+    '</div></div>'
+};
+
+/* =========================================================
+   HOME
+   ========================================================= */
+function home(){
+  return '' +
+  '<section class="hero"><div class="wrap"><div class="split">'+
+    '<div>'+
+      '<div class="pill"><b>NEW</b> Telegram Mini App + веб-панель в одном аккаунте</div>'+
+      '<h1>Telegram как <span class="grad">система продаж</span>, а не просто мессенджер</h1>'+
+      '<p class="lede">GramOS объединяет CRM, ботов, автоворонки, рассылки, оплаты и доступы к закрытым продуктам в одной Telegram Mini App и веб-панели.</p>'+
+      '<div class="btns" style="margin-top:28px">'+
+        '<a class="btn btn-primary btn-lg" href="#/demo">Начать бесплатно</a>'+
+        '<a class="btn btn-ghost btn-lg" href="#/demo">Посмотреть демо</a>'+
+      '</div>'+
+      '<div class="hero-stats">'+
+        '<div><b>5 в 1</b><span>CRM, сценарии, оплаты, рассылки, кабинет</span></div>'+
+        '<div><b>&lt; 1 дня</b><span>от подключения бота до первой продажи</span></div>'+
+        '<div><b>0 ₽</b><span>первые 14 дней, без карты</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="rv">'+MOCKS.crm+'</div>'+
+  '</div></div></section>'+
+
+  '<section class="section tight soft"><div class="wrap center">'+
+    '<p class="tiny muted" style="letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px">Работает с тем, чем вы уже пользуетесь</p>'+
+    '<div class="logos"><span>Telegram Bot API</span><span>Telegram Stars</span><span>ЮKassa</span><span>bePaid</span><span>Stripe</span><span>Tribute</span><span>Webhooks</span></div>'+
+  '</div></section>'+
+
+  /* PAIN */
+  '<section class="section"><div class="wrap">'+
+    '<div class="center" style="max-width:760px;margin:0 auto 44px">'+
+      '<div class="eyebrow">Проблема</div>'+
+      '<h2>Когда бизнес растёт в Telegram, всё быстро расползается</h2>'+
+      '<p class="lede center">Лиды в личке, оплаты в одном сервисе, доступы вручную, рассылки отдельно. Менеджеры теряют историю, а владелец не видит цифры.</p>'+
+    '</div>'+
+    '<div class="grid g3">'+
+      card({i:'chat',t:'История теряется',d:'Клиенты пишут в разные боты, каналы и личку. Никто не помнит, о чём договаривались в прошлый раз.'})+
+      card({i:'key',t:'Доступы вручную',d:'После оплаты кто-то из команды руками добавляет человека в канал и сверяет платежи в выписке.'})+
+      card({i:'filter',t:'Непонятно, кто горячий',d:'Не видно, кто уже купил, кто смотрел тарифы, а кому нужно просто напомнить.'})+
+      card({i:'layers',t:'5–10 сервисов на один бизнес',d:'Конструктор ботов, таблица, платёжка, сервис рассылок, отдельный чат на сайте — и всё это надо склеивать.'})+
+      card({i:'chart',t:'Нет цифр',d:'Выручка, конверсия и источники лидов собираются вручную раз в месяц — и то приблизительно.'})+
+      card({i:'team',t:'Команда мешает друг другу',d:'Все сидят под одним аккаунтом бота, права не разграничены, проекты клиентов перемешаны.'})+
+    '</div>'+
+  '</div></section>'+
+
+  /* PROMISE */
+  '<section class="section soft"><div class="wrap">'+
+    '<div class="center" style="max-width:760px;margin:0 auto 44px">'+
+      '<div class="eyebrow">Решение</div>'+
+      '<h2>GramOS собирает все процессы Telegram-бизнеса в один рабочий контур</h2>'+
+      '<p class="lede center">Пять модулей, которые работают на одних и тех же контактах, событиях и правах доступа.</p>'+
+    '</div>'+
+    '<div class="grid g3">'+
+      linkCard({i:'users',t:'CRM и контакты',d:'Единая карточка клиента, timeline событий, теги, статусы, LTV и ответы прямо из интерфейса.',link:'#/product/crm'})+
+      linkCard({i:'flow',t:'Сценарии и автоматизации',d:'Визуальный canvas, триггеры Telegram, условия, задержки, версии и audit log.',link:'#/product/automations'})+
+      linkCard({i:'card',t:'Платежи, продукты и тарифы',d:'Публичный checkout, Stars, ЮKassa, bePaid, Stripe, Tribute и выдача доступов.',link:'#/product/payments'})+
+      linkCard({i:'send',t:'Рассылки и сегменты',d:'Аудитории по тегам и условиям, выбор бота-отправителя, планирование и статистика.',link:'#/product/broadcasts'})+
+      linkCard({i:'globe',t:'Кабинет, checkout и виджет',d:'Личный кабинет покупателя, страница оплаты и чат на сайте со склейкой с Telegram.',link:'#/product/web-widget'})+
+      linkCard({i:'layers',t:'Мультипроекты и команда',d:'Несколько бизнесов и ботов, изоляция данных, участники, роли и приглашения.',link:'#/solutions/agency'})+
+    '</div>'+
+  '</div></section>'+
+
+  /* HOW */
+  '<section class="section"><div class="wrap"><div class="split">'+
+    '<div>'+
+      '<div class="eyebrow">Как это работает</div>'+
+      '<h2>Четыре шага до первой автоматической продажи</h2>'+
+      '<div class="steps" style="margin-top:28px">'+
+        '<div class="step rv"><h3>Подключаете бота и каналы</h3><p>Вставляете токен Telegram-бота, добавляете каналы и группы. GramOS сам подписывается на нужные события.</p></div>'+
+        '<div class="step rv"><h3>Создаёте продукт и страницу оплаты</h3><p>Продукт, тариф, цена, промокод — и публичный checkout готов к отправке в чат или на сайт.</p></div>'+
+        '<div class="step rv"><h3>Собираете сценарий</h3><p>Сообщение, кнопки, условия, задержки, теги и выдача доступа — на визуальном canvas, без кода.</p></div>'+
+        '<div class="step rv"><h3>Получаете продажи и цифры</h3><p>Лиды падают в CRM, рассылки уходят по сегментам, оплаты проходят автоматически, аналитика собирается сама.</p></div>'+
+      '</div>'+
+      '<div class="btns" style="margin-top:28px"><a class="btn btn-ghost" href="#/docs/first-scenario">Как собрать первый сценарий →</a></div>'+
+    '</div>'+
+    '<div class="rv">'+MOCKS.flow+'</div>'+
+  '</div></div></section>'+
+
+  /* CRM */
+  '<section class="section soft"><div class="wrap"><div class="split">'+
+    '<div class="rv">'+MOCKS.cabinet+'</div>'+
+    '<div>'+
+      '<div class="eyebrow">CRM</div>'+
+      '<h2>Все клиенты Telegram в одной CRM</h2>'+
+      '<p class="lede">Менеджер видит не просто чат, а всю историю отношений с человеком: от первого сообщения до последней оплаты и выданного доступа.</p>'+
+      checks(['Единая карточка контакта: Telegram ID, username, источник','Timeline событий: сообщения, оплаты, заметки, доступы','Теги, статусы и LTV для сегментации','Поиск и фильтры по всей базе','Ответ клиенту прямо из интерфейса GramOS'])+
+      '<div class="btns" style="margin-top:22px"><a class="btn btn-ghost" href="#/product/crm">Подробнее о CRM →</a></div>'+
+    '</div>'+
+  '</div></div></section>'+
+
+  /* AUTOMATIONS */
+  '<section class="section"><div class="wrap"><div class="split">'+
+    '<div>'+
+      '<div class="eyebrow">Сценарии</div>'+
+      '<h2>Автоворонки, которые понимают Telegram-контекст</h2>'+
+      '<p class="lede">Триггеры на команды, ключевые слова, кнопки, события каналов, webhook и расписание. Действия — от сообщения и тега до выдачи доступа.</p>'+
+      '<div class="card rv" style="margin:22px 0"><p class="quote" style="margin:0">Пользователь пишет «цена» → бот отправляет тарифы → нажатие кнопки открывает checkout → после оплаты контакт получает доступ и попадает в сегмент «покупатель».</p></div>'+
+      checks(['Визуальный canvas без кода','Условия, задержки, ветвления и переходы','Версии сценариев и audit log','Сценарии для ботов, групп, каналов и виджета'])+
+      '<div class="btns" style="margin-top:22px"><a class="btn btn-ghost" href="#/product/automations">Как работают сценарии →</a></div>'+
+    '</div>'+
+    '<div class="rv">'+MOCKS.broadcast+'</div>'+
+  '</div></div></section>'+
+
+  /* MONETIZATION */
+  '<section class="section soft"><div class="wrap"><div class="split">'+
+    '<div class="rv">'+MOCKS.pay+'</div>'+
+    '<div>'+
+      '<div class="eyebrow">Монетизация</div>'+
+      '<h2>Продавайте доступы, курсы и подписки прямо из Telegram</h2>'+
+      '<p class="lede">Продукты и тарифы, публичный checkout, несколько платёжных провайдеров и личный кабинет покупателя.</p>'+
+      checks(['Продукты, тарифы и подписки','Публичный checkout и оплата из чата','Telegram Stars, ЮKassa, bePaid, Stripe, Tribute','Промокоды, скидки и допродажи (OTO)','История платежей и чеки в кабинете клиента'])+
+      '<p class="tiny muted" style="margin-top:14px">Автоматическая выдача и отзыв доступов по подписке доступна в beta — актуальный статус всегда указан в <a class="btn-link" href="#/roadmap">Roadmap</a>.</p>'+
+      '<div class="btns" style="margin-top:22px"><a class="btn btn-ghost" href="#/product/payments">Платежи и продукты →</a></div>'+
+    '</div>'+
+  '</div></div></section>'+
+
+  /* WIDGET */
+  '<section class="section"><div class="wrap"><div class="split">'+
+    '<div>'+
+      '<div class="eyebrow">Web-виджет</div>'+
+      '<h2>Подключите сайт к Telegram-воронке</h2>'+
+      '<p class="lede">Лёгкий widget.js на Shadow DOM не ломает вёрстку сайта, общается по WebSocket и переводит гостя в Telegram с сохранением истории.</p>'+
+      checks(['Одна строка кода на сайт','Shadow DOM: стили сайта не конфликтуют с виджетом','Живой чат с ботом или оператором','Кнопка перехода в Telegram через deep link','Склейка гостя сайта с Telegram-контактом в CRM'])+
+      '<div class="btns" style="margin-top:22px"><a class="btn btn-ghost" href="#/product/web-widget">Как работает виджет →</a></div>'+
+    '</div>'+
+    '<div class="rv">'+MOCKS.widget+'</div>'+
+  '</div></div></section>'+
+
+  /* ANALYTICS */
+  '<section class="section soft"><div class="wrap"><div class="split">'+
+    '<div class="rv">'+MOCKS.analytics+'</div>'+
+    '<div>'+
+      '<div class="eyebrow">Аналитика</div>'+
+      '<h2>Видите, что происходит с продажами</h2>'+
+      '<p class="lede">Метрики собираются автоматически из событий CRM, сценариев и платежей — без выгрузок и ручных таблиц.</p>'+
+      '<div class="grid g2" style="margin-top:18px">'+
+        '<div class="kv"><span class="muted">Новые контакты</span><b>+312</b></div>'+
+        '<div class="kv"><span class="muted">Активные чаты</span><b>37</b></div>'+
+        '<div class="kv"><span class="muted">Выручка</span><b>₽412k</b></div>'+
+        '<div class="kv"><span class="muted">Конверсия в оплату</span><b>9,8%</b></div>'+
+        '<div class="kv"><span class="muted">Топ-канал</span><b>«Внутри продаж»</b></div>'+
+        '<div class="kv"><span class="muted">Выданных доступов</span><b>128</b></div>'+
+      '</div>'+
+    '</div>'+
+  '</div></div></section>'+
+
+  /* CASES */
+  '<section class="section"><div class="wrap">'+
+    '<div class="center" style="max-width:720px;margin:0 auto 40px">'+
+      '<div class="eyebrow">Сценарии использования</div>'+
+      '<h2>Пять типовых конфигураций GramOS</h2>'+
+      '<p class="lede center">Выберите свой сценарий — внутри уже собраны нужные модули, шаблоны воронок и настройки оплат.</p>'+
+    '</div>'+
+    '<div class="grid g3">'+
+      linkCard({i:'key',t:'Закрытый клуб по подписке',d:'Оплата, автоматический доступ в канал, продления и возвраты ушедших.',link:'#/solutions/paid-community'})+
+      linkCard({i:'book',t:'Онлайн-школа с курсами',d:'Продажа курса, личный кабинет ученика, выдача уроков и напоминания.',link:'#/solutions/online-school'})+
+      linkCard({i:'spark',t:'Эксперт с автоворонкой',d:'Лид-магнит, прогрев, консультация и продажа без ручной переписки.',link:'#/solutions/expert'})+
+      linkCard({i:'layers',t:'Агентство и продюсер',d:'Несколько клиентов, ботов и брендов в одном аккаунте с ролями.',link:'#/solutions/agency'})+
+      linkCard({i:'globe',t:'Сайт + Telegram',d:'Виджет собирает лидов с сайта и переводит их в Telegram-воронку.',link:'#/solutions/site-to-telegram'})+
+      linkCard({i:'chat',t:'Поддержка из лички в CRM',d:'Все обращения в одном окне, быстрые ответы, теги и история.',link:'#/product/crm'})+
+    '</div>'+
+  '</div></section>'+
+
+  /* PRICING TEASER */
+  '<section class="section soft"><div class="wrap">'+
+    '<div class="center" style="max-width:700px;margin:0 auto 40px">'+
+      '<div class="eyebrow">Тарифы</div>'+
+      '<h2>Начните бесплатно, платите по мере роста</h2>'+
+      '<p class="lede center">Без комиссии GramOS с ваших продаж — вы платите только за подписку и комиссию платёжного провайдера.</p>'+
+    '</div>'+
+    pricingCards(false,true)+
+    '<div class="center" style="margin-top:26px"><a class="btn-link" href="#/pricing">Сравнить тарифы и лимиты →</a></div>'+
+  '</div></section>'+
+
+  /* FAQ */
+  '<section class="section"><div class="wrap" style="max-width:820px">'+
+    '<div class="center" style="margin-bottom:36px"><div class="eyebrow">Вопросы</div><h2>Частые вопросы</h2></div>'+
+    faq([
+      {q:'Нужно ли уметь программировать?',a:'Нет. Бот подключается токеном, сценарии собираются на визуальном canvas, страница оплаты создаётся из карточки продукта. Код нужен только если вы хотите использовать webhooks и API.'},
+      {q:'Мой бот уже работает в другом сервисе. Можно перенести?',a:'Да. GramOS подключается к существующему боту по токену — переносить аудиторию не нужно. Контакты можно импортировать, а старые сценарии пересобрать по шаблонам.'},
+      {q:'Как происходит выдача доступа после оплаты?',a:'Платёжный провайдер отправляет webhook, GramOS фиксирует оплату в карточке контакта, запускает сценарий и выдаёт доступ к продукту: ссылку-приглашение в канал, материалы в кабинете или и то, и другое.'},
+      {q:'Данные разных проектов не перемешаются?',a:'Нет. Проект — это граница изоляции: контакты, боты, каналы, платежи и сценарии принадлежат конкретному проекту, а доступ участников команды регулируется ролями.'},
+      {q:'Что с безопасностью платежей?',a:'Платёжные webhooks проверяются по подписи, операции идемпотентны, токены ботов хранятся в зашифрованном виде, а данные Telegram Mini App валидируются через initData. Подробнее — на странице «Безопасность».'},
+      {q:'Есть ли бесплатный период?',a:'Да, 14 дней на любом тарифе без привязки карты. После окончания можно остаться на Starter или выключить аккаунт — данные сохранятся.'}
+    ])+
+  '</div></section>'+
+
+  ctaBand();
+}
+
+/* =========================================================
+   PRODUCT PAGES
+   ========================================================= */
+function productPage(p){
+  return pageHero({
+    crumbs:[['Главная','#/'],['Продукт','#/product'],[p.crumb,'']],
+    eyebrow:p.eyebrow,title:p.title,lede:p.lede,mock:p.mock,
+    second:'Посмотреть демо',secondHref:'#/demo'
+  })+
+  '<section class="section soft"><div class="wrap">'+
+    '<div class="center" style="max-width:700px;margin:0 auto 42px"><h2>'+p.featuresTitle+'</h2>'+
+    (p.featuresLede?'<p class="lede center">'+p.featuresLede+'</p>':'')+'</div>'+
+    '<div class="grid g3">'+p.features.map(card).join('')+'</div>'+
+  '</div></section>'+
+  '<section class="section"><div class="wrap"><div class="split">'+
+    '<div><div class="eyebrow">Сценарий</div><h2>'+p.useTitle+'</h2><p class="lede">'+p.useLede+'</p>'+
+    '<div class="steps" style="margin-top:26px">'+p.steps.map(function(s){
+      return '<div class="step rv"><h3>'+s.t+'</h3><p>'+s.d+'</p></div>';}).join('')+'</div></div>'+
+    '<div class="rv">'+(p.mock2||p.mock)+'</div>'+
+  '</div></div></section>'+
+  (p.related?'<section class="section soft"><div class="wrap"><div class="center" style="margin-bottom:34px"><h2>Работает вместе с</h2></div><div class="grid g3">'+p.related.map(linkCard).join('')+'</div></div></section>':'')+
+  '<section class="section"><div class="wrap" style="max-width:820px"><div class="center" style="margin-bottom:32px"><h2>Вопросы по модулю</h2></div>'+faq(p.faq)+'</div></section>'+
+  ctaBand();
+}
+
+var PRODUCTS = {
+  crm:{
+    crumb:'CRM',eyebrow:'CRM и диалоги',
+    title:'Все клиенты Telegram в одной CRM',
+    lede:'Единая карточка контакта с историей сообщений, оплат, заметок и доступов. Менеджер видит не просто чат, а всю историю отношений с человеком.',
+    mock:MOCKS.crm,mock2:MOCKS.cabinet,
+    featuresTitle:'Что внутри CRM',
+    featuresLede:'Контакты собираются автоматически из ботов, каналов, виджета и checkout — вручную ничего заводить не нужно.',
+    features:[
+      {i:'users',t:'Карточка контакта',d:'Telegram ID, username, имя, источник, язык, дата первого касания и все каналы, где человек с вами пересекался.'},
+      {i:'clock',t:'Timeline событий',d:'Сообщения, оплаты, заметки, изменения тегов, выданные доступы и запуски сценариев — в одной хронологии.'},
+      {i:'tag',t:'Теги и статусы',d:'Сегментируйте базу вручную или автоматически из сценариев. Теги используются в рассылках и условиях воронок.'},
+      {i:'chat',t:'Ответ из интерфейса',d:'Пишите клиенту прямо из GramOS от имени нужного бота — не переключаясь в Telegram.'},
+      {i:'filter',t:'Поиск и фильтры',d:'Фильтруйте по тегам, статусу, источнику, сумме покупок и дате последней активности.'},
+      {i:'chart',t:'LTV и история покупок',d:'Видно, сколько человек принёс, что покупал и какие доступы у него активны прямо сейчас.'}
+    ],
+    useTitle:'Поддержка и продажи в одном окне',
+    useLede:'Переведите переписку из личных сообщений в управляемый процесс: с историей, ответственными и понятными статусами.',
+    steps:[
+      {t:'Лид приходит из любого канала',d:'Бот, группа, канал, виджет на сайте или страница оплаты — контакт создаётся автоматически.'},
+      {t:'Сценарий ставит теги и статус',d:'«Горячий», «смотрел тарифы», «покупатель» — сегменты обновляются без участия менеджера.'},
+      {t:'Менеджер отвечает из GramOS',d:'Видит timeline, заметки коллег и оплаты — и не задаёт клиенту вопросы, на которые тот уже отвечал.'},
+      {t:'Результат виден в аналитике',d:'Конверсия по источникам, статусы лидов и выручка на контакт обновляются в реальном времени.'}
+    ],
+    related:[
+      {i:'flow',t:'Сценарии',d:'Автоматически ставят теги и двигают контакт по воронке.',link:'#/product/automations'},
+      {i:'send',t:'Рассылки',d:'Отправляют сообщения по сегментам, собранным в CRM.',link:'#/product/broadcasts'},
+      {i:'card',t:'Платежи',d:'Каждая оплата попадает в карточку контакта и в LTV.',link:'#/product/payments'}
+    ],
+    faq:[
+      {q:'Можно ли импортировать существующую базу?',a:'Да, контакты загружаются из CSV с сопоставлением полей: Telegram ID или username, имя, теги и комментарии. Дубликаты объединяются по Telegram ID.'},
+      {q:'Видит ли менеджер личные переписки клиента?',a:'Менеджер видит только переписку с вашими ботами и каналами в рамках проекта, к которому у него есть доступ. Роли ограничивают, кто может читать и отвечать.'},
+      {q:'Что происходит, если человек заблокировал бота?',a:'Контакт помечается как недоступный, рассылки на него не тратятся, а в карточке видно дату блокировки.'}
+    ]
+  },
+  automations:{
+    crumb:'Сценарии',eyebrow:'Сценарии и автоматизации',
+    title:'Автоворонки, которые понимают Telegram-контекст',
+    lede:'Визуальный canvas с триггерами, условиями, задержками и действиями. Собирайте воронки для ботов, групп, каналов и виджета без разработчика.',
+    mock:MOCKS.flow,mock2:MOCKS.widget,
+    featuresTitle:'Триггеры и действия',
+    featuresLede:'Сценарий запускается от события Telegram и работает с теми же контактами, что и CRM.',
+    features:[
+      {i:'bolt',t:'Триггеры',d:'Команда, ключевое слово, входящее сообщение, нажатие кнопки, webhook, расписание и события Telegram: вступление, выход, реакция.'},
+      {i:'chat',t:'Сообщения и кнопки',d:'Текст, медиа, inline-кнопки, ссылки на checkout и переходы между шагами воронки.'},
+      {i:'clock',t:'Задержки и расписание',d:'Догоняющие сообщения через час, день или неделю — с проверкой, не купил ли человек за это время.'},
+      {i:'filter',t:'Условия и ветвления',d:'Проверяйте теги, статусы, наличие оплаты, подписку на канал и данные контакта.'},
+      {i:'tag',t:'Действия над контактом',d:'Поставить тег, изменить статус, добавить заметку, выдать доступ, отправить событие в webhook.'},
+      {i:'note',t:'Версии и audit log',d:'Каждое изменение сценария сохраняется: видно, кто и что менял, и можно вернуться к прошлой версии.'}
+    ],
+    useTitle:'Пример: воронка на курс',
+    useLede:'Один сценарий закрывает путь от первого сообщения до оплаты, доступа и сегментации — дальше он работает без вас.',
+    steps:[
+      {t:'Пользователь пишет «цена»',d:'Срабатывает триггер по ключевому слову в боте, группе или виджете на сайте.'},
+      {t:'Бот отправляет тарифы',d:'Сообщение с описанием, ценами и кнопками «Купить» и «Задать вопрос».'},
+      {t:'Кнопка открывает checkout',d:'Ссылка на оплату формируется под конкретный тариф и конкретный контакт.'},
+      {t:'После оплаты — доступ и сегмент',d:'Контакт получает доступ к продукту, тег «покупатель» и попадает в сценарий онбординга.'}
+    ],
+    related:[
+      {i:'users',t:'CRM',d:'Хранит контакты и теги, которыми управляет сценарий.',link:'#/product/crm'},
+      {i:'card',t:'Платежи',d:'Оплата — это событие, которое продолжает сценарий.',link:'#/product/payments'},
+      {i:'plug',t:'Интеграции',d:'Webhooks для связи с вашими сервисами и учётными системами.',link:'#/integrations'}
+    ],
+    faq:[
+      {q:'Сколько сценариев можно запустить одновременно?',a:'Количество активных сценариев зависит от тарифа: от 3 на Starter до безлимита на Agency. Один контакт может находиться в нескольких сценариях, если они не конфликтуют по триггерам.'},
+      {q:'Можно ли протестировать сценарий до запуска?',a:'Да, есть режим черновика и тестовый запуск на себя или на выбранный контакт — реальные рассылки при этом не уходят.'},
+      {q:'Что будет, если клиент ответит в середине воронки?',a:'Вы можете настроить условие «остановить сценарий при ответе», чтобы менеджер подключился к диалогу вручную.'}
+    ]
+  },
+  payments:{
+    crumb:'Платежи',eyebrow:'Платежи и продукты',
+    title:'Продавайте доступы, курсы и подписки прямо из Telegram',
+    lede:'Продукты, тарифы, публичный checkout, несколько платёжных провайдеров и автоматическая выдача доступа после оплаты.',
+    mock:MOCKS.pay,mock2:MOCKS.cabinet,
+    featuresTitle:'Всё для продажи цифровых продуктов',
+    featuresLede:'GramOS не берёт комиссию с ваших продаж — деньги идут напрямую через вашего платёжного провайдера.',
+    features:[
+      {i:'card',t:'Продукты и тарифы',d:'Разовая покупка, подписка с продлением, несколько тарифов у одного продукта и пробные периоды.'},
+      {i:'globe',t:'Публичный checkout',d:'Страница оплаты с описанием, ценой и промокодом — работает по прямой ссылке, из бота и с сайта.'},
+      {i:'spark',t:'Telegram Stars',d:'Оплата внутри Telegram без перехода на внешние страницы — для цифровых товаров и доступов.'},
+      {i:'plug',t:'Провайдеры',d:'ЮKassa, bePaid, Stripe, Tribute и ручное подтверждение платежа для нестандартных случаев.'},
+      {i:'key',t:'Выдача доступов',d:'Ссылка-приглашение в закрытый канал, материалы в кабинете и автоматический отзыв при окончании подписки.'},
+      {i:'tag',t:'Промо и допродажи',d:'Промокоды, скидки, ограниченные по времени предложения и OTO-экран после оплаты.'}
+    ],
+    useTitle:'Путь платежа в GramOS',
+    useLede:'От нажатия кнопки до доступа в канал проходит несколько секунд — и каждое событие фиксируется в карточке контакта.',
+    steps:[
+      {t:'Клиент открывает checkout',d:'Ссылка привязана к контакту, поэтому оплату не нужно искать и сопоставлять вручную.'},
+      {t:'Провайдер подтверждает оплату',d:'Webhook проверяется по подписи, операция идемпотентна — двойных списаний и двойных доступов не будет.'},
+      {t:'GramOS выдаёт доступ',d:'Контакт получает приглашение в канал или материалы в личном кабинете и тег «покупатель».'},
+      {t:'Подписка живёт дальше',d:'Напоминание о продлении, повторное списание, а при неоплате — мягкий отзыв доступа по вашему сценарию.'}
+    ],
+    related:[
+      {i:'flow',t:'Сценарии',d:'Запускают онбординг и допродажи сразу после оплаты.',link:'#/product/automations'},
+      {i:'phone',t:'Кабинет покупателя',d:'Клиент сам видит свои доступы, подписки и чеки.',link:'#/product/customer-cabinet'},
+      {i:'shield',t:'Безопасность',d:'Подписи webhook, идемпотентность и хранение токенов.',link:'#/security'}
+    ],
+    faq:[
+      {q:'Берёт ли GramOS комиссию с продаж?',a:'Нет. Вы платите только за подписку на GramOS и комиссию своего платёжного провайдера. Деньги приходят напрямую на ваш счёт в ЮKassa, Stripe или другом подключённом сервисе.'},
+      {q:'Какие провайдеры уже поддерживаются?',a:'Telegram Stars, ЮKassa, bePaid, Stripe, Tribute и ручное подтверждение. Список актуальных статусов — на странице «Интеграции».'},
+      {q:'Что с возвратами и отменами подписки?',a:'Возврат оформляется на стороне провайдера, а GramOS фиксирует событие и по вашему сценарию отзывает доступ и снимает тег покупателя.'},
+      {q:'Работает ли автоматическая выдача доступов прямо сейчас?',a:'Выдача доступа после оплаты работает; автоматический отзыв доступа по истечении подписки находится в beta. Актуальный статус всегда указан в Roadmap.'}
+    ]
+  },
+  broadcasts:{
+    crumb:'Рассылки',eyebrow:'Рассылки и сегменты',
+    title:'Рассылки по тем, кто действительно должен их получить',
+    lede:'Аудитории по тегам, каналам и условиям, выбор бота-отправителя, планирование, статистика доставки и действия после отправки.',
+    mock:MOCKS.broadcast,mock2:MOCKS.analytics,
+    featuresTitle:'Как устроены рассылки',
+    features:[
+      {i:'filter',t:'Сегменты аудитории',d:'Соберите получателей по тегам, статусу, источнику, факту оплаты или отсутствию активности.'},
+      {i:'send',t:'Выбор отправителя',d:'Если в проекте несколько ботов, укажите, от чьего имени уходит сообщение.'},
+      {i:'clock',t:'Планирование',d:'Черновик, запуск сейчас или отправка по расписанию в удобное для аудитории время.'},
+      {i:'chart',t:'Статистика',d:'Доставлено, прочитано, переходы, ошибки и блокировки — по каждой рассылке.'},
+      {i:'bolt',t:'Действия после доставки',d:'Поставить тег получателям, запустить сценарий или передать событие в webhook.'},
+      {i:'note',t:'История и ошибки',d:'Полный лог отправок: кому ушло, кому нет и по какой причине.'}
+    ],
+    useTitle:'Пример: дожим перед закрытием набора',
+    useLede:'Рассылка работает на тех же сегментах, что и CRM, поэтому не нужно выгружать списки и чистить их вручную.',
+    steps:[
+      {t:'Выбираете сегмент',d:'Тег «горячий», без оплаты, активность за последние 14 дней — 842 контакта.'},
+      {t:'Готовите сообщение',d:'Текст, медиа и кнопка на checkout с нужным тарифом.'},
+      {t:'Запускаете или планируете',d:'Отправка идёт с учётом лимитов Telegram, чтобы бот не попал под ограничения.'},
+      {t:'Смотрите результат',d:'Доставка, переходы и оплаты видны в отчёте, а купившие автоматически выпадают из сегмента.'}
+    ],
+    related:[
+      {i:'users',t:'CRM',d:'Источник сегментов и тегов для рассылок.',link:'#/product/crm'},
+      {i:'flow',t:'Сценарии',d:'Продолжают работу с теми, кто ответил или перешёл.',link:'#/product/automations'},
+      {i:'chart',t:'Аналитика',d:'Показывает вклад рассылок в выручку.',link:'#/product'}
+    ],
+    faq:[
+      {q:'Не заблокирует ли Telegram бота за рассылку?',a:'GramOS отправляет сообщения с учётом лимитов Telegram и распределяет их во времени. Главное — писать только тем, кто сам начал диалог с ботом: это требование платформы.'},
+      {q:'Можно ли отправлять от нескольких ботов сразу?',a:'Каждая рассылка уходит от одного бота, но вы можете запустить параллельные рассылки для аудиторий разных ботов в рамках одного проекта.'},
+      {q:'Учитываются ли отписки?',a:'Да. Контакты, заблокировавшие бота или отписавшиеся от рассылок, исключаются из аудитории автоматически.'}
+    ]
+  },
+  'web-widget':{
+    crumb:'Web-виджет',eyebrow:'Виджет для сайта',
+    title:'Подключите сайт к Telegram-воронке',
+    lede:'Лёгкий widget.js с Shadow DOM и WebSocket-чатом: посетитель начинает разговор на сайте и продолжает в Telegram, а история остаётся в одной карточке.',
+    mock:MOCKS.widget,mock2:MOCKS.crm,
+    featuresTitle:'Чем виджет GramOS отличается от обычного чата',
+    features:[
+      {i:'globe',t:'Одна строка кода',d:'Подключается скриптом на любой сайт: Tilda, WordPress, Next.js, самописный движок.'},
+      {i:'shield',t:'Shadow DOM',d:'Стили сайта не ломают виджет, а виджет не ломает вёрстку сайта.'},
+      {i:'chat',t:'Живой чат по WebSocket',d:'Сообщения от бота или оператора приходят мгновенно, без перезагрузки страницы.'},
+      {i:'flow',t:'Сценарии на сайте',d:'Те же автоворонки, что и в боте: приветствие, квалификация, ответы на частые вопросы.'},
+      {i:'send',t:'Переход в Telegram',d:'Кнопка с deep link переводит гостя в бота и не теряет контекст разговора.'},
+      {i:'users',t:'Склейка с контактом',d:'Гость сайта и Telegram-контакт объединяются в одну карточку CRM со всей историей.'}
+    ],
+    useTitle:'Как гость сайта становится контактом',
+    useLede:'Самый частый разрыв в воронке — переход с сайта в мессенджер. GramOS закрывает его технически.',
+    steps:[
+      {t:'Гость открывает чат на сайте',d:'Виджет создаёт анонимную сессию и запускает сценарий приветствия.'},
+      {t:'Бот или оператор отвечает',d:'Можно отвечать из той же CRM, где вы ведёте Telegram-диалоги.'},
+      {t:'Гость переходит в Telegram',d:'По deep link с уникальным токеном сессии — одним нажатием.'},
+      {t:'История склеивается',d:'Переписка с сайта переносится в карточку Telegram-контакта, лид не теряется.'}
+    ],
+    related:[
+      {i:'users',t:'CRM',d:'Принимает гостей сайта как полноценные контакты.',link:'#/product/crm'},
+      {i:'flow',t:'Сценарии',d:'Работают и в виджете, и в боте.',link:'#/product/automations'},
+      {i:'book',t:'Документация',d:'Инструкция по установке виджета на сайт.',link:'#/docs/widget'}
+    ],
+    faq:[
+      {q:'Виджет замедлит сайт?',a:'Скрипт загружается асинхронно и весит мало, а изолированный Shadow DOM не влияет на стили и layout страницы.'},
+      {q:'Можно ли показывать виджет только на части страниц?',a:'Да, настраивается через параметры установки: страницы, задержку показа и сценарий, который запускается при открытии.'},
+      {q:'Что если оператор офлайн?',a:'Сценарий предложит оставить контакт или перейти в Telegram, а обращение попадёт в CRM как новый лид.'}
+    ]
+  },
+  'customer-cabinet':{
+    crumb:'Кабинет покупателя',eyebrow:'Личный кабинет',
+    title:'Клиент сам видит свои покупки, доступы и подписки',
+    lede:'После оплаты покупатель попадает в личный кабинет: материалы, активные доступы, даты продления и история платежей. Меньше вопросов в поддержку.',
+    mock:MOCKS.cabinet,mock2:MOCKS.pay,
+    featuresTitle:'Что есть в кабинете',
+    features:[
+      {i:'key',t:'Мои доступы',d:'Активные продукты, ссылки в закрытые каналы и статус каждого доступа.'},
+      {i:'book',t:'Материалы продукта',d:'Уроки, файлы и ссылки, которые открываются по мере прохождения или по расписанию.'},
+      {i:'card',t:'Подписки и продления',d:'Дата следующего списания, смена тарифа и отмена подписки без переписки с менеджером.'},
+      {i:'note',t:'История платежей',d:'Список операций со статусами и чеками — клиент не пишет «а прошла ли оплата».'},
+      {i:'phone',t:'Вход через Telegram',d:'Авторизация по Telegram-аккаунту, без паролей и лишних регистраций.'},
+      {i:'chat',t:'Связь с поддержкой',d:'Кнопка написать в бота — обращение сразу попадает в CRM с контекстом покупки.'}
+    ],
+    useTitle:'Меньше ручной работы у команды',
+    useLede:'Типовые вопросы «где материалы», «когда продление», «пришла ли оплата» закрываются кабинетом, а не менеджером.',
+    steps:[
+      {t:'Оплата проходит',d:'Контакт автоматически получает доступ в кабинет через Telegram-аккаунт.'},
+      {t:'Доступы появляются сразу',d:'Ссылки, материалы и условия подписки видны без участия команды.'},
+      {t:'Клиент управляет подпиской',d:'Продление, смена тарифа или отмена — в пару нажатий.'},
+      {t:'Всё отражается в CRM',d:'Действия клиента становятся событиями в его карточке и могут запускать сценарии.'}
+    ],
+    related:[
+      {i:'card',t:'Платежи',d:'Источник покупок и подписок для кабинета.',link:'#/product/payments'},
+      {i:'phone',t:'Telegram Mini App',d:'Тот же опыт, но внутри Telegram.',link:'#/product/mini-app'},
+      {i:'users',t:'CRM',d:'Видит все действия покупателя в кабинете.',link:'#/product/crm'}
+    ],
+    faq:[
+      {q:'Кабинет можно оформить под свой бренд?',a:'Да: логотип, цвета и название продукта настраиваются в проекте, чтобы клиент видел ваш бренд, а не GramOS.'},
+      {q:'Нужен ли клиенту пароль?',a:'Нет. Вход выполняется через Telegram, а личность подтверждается данными initData.'},
+      {q:'Можно ли продавать доступ к материалам без канала?',a:'Да, продукт может состоять только из материалов в кабинете — закрытый канал необязателен.'}
+    ]
+  },
+  'mini-app':{
+    crumb:'Telegram Mini App',eyebrow:'Управление внутри Telegram',
+    title:'Весь бизнес в Telegram Mini App',
+    lede:'Отвечайте клиентам, смотрите оплаты и запускайте рассылки прямо из Telegram — без переключения на компьютер и с теми же данными, что и в веб-панели.',
+    mock:MOCKS.miniapp,mock2:MOCKS.analytics,
+    featuresTitle:'Что доступно в Mini App',
+    features:[
+      {i:'chat',t:'Диалоги и ответы',d:'Входящие из ботов, групп и виджета в одном списке с быстрыми ответами.'},
+      {i:'users',t:'Карточки контактов',d:'Теги, заметки, история оплат и доступов — всё под рукой во время разговора.'},
+      {i:'chart',t:'Ключевые метрики',d:'Лиды, оплаты и выручка за день — без выгрузок и таблиц.'},
+      {i:'send',t:'Запуск рассылок',d:'Отправьте подготовленный черновик по сегменту прямо с телефона.'},
+      {i:'shield',t:'Безопасный вход',d:'Авторизация по Telegram initData с проверкой подписи на сервере.'},
+      {i:'layers',t:'Переключение проектов',d:'Несколько бизнесов в одном аккаунте — переключайтесь одним нажатием.'}
+    ],
+    useTitle:'Веб-панель и Mini App — один аккаунт',
+    useLede:'Команда за компьютером работает в веб-панели, владелец отвечает с телефона в Telegram. Данные одни и те же.',
+    steps:[
+      {t:'Открываете Mini App в Telegram',d:'Без установки приложений и отдельного логина.'},
+      {t:'Видите очередь диалогов',d:'Кто ждёт ответа, кто горячий, кто только что оплатил.'},
+      {t:'Отвечаете и ставите теги',d:'Изменения мгновенно появляются в веб-панели у всей команды.'},
+      {t:'Контролируете цифры',d:'Выручка и конверсия за день — на первом экране.'}
+    ],
+    related:[
+      {i:'users',t:'CRM',d:'Те же контакты и события, что и в веб-панели.',link:'#/product/crm'},
+      {i:'send',t:'Рассылки',d:'Запуск и контроль с телефона.',link:'#/product/broadcasts'},
+      {i:'shield',t:'Безопасность',d:'Проверка initData и ограничения по ролям.',link:'#/security'}
+    ],
+    faq:[
+      {q:'Mini App заменяет веб-панель?',a:'Нет, дополняет. Тяжёлые задачи — сборка сценариев, настройка платежей, управление командой — удобнее делать в веб-панели.'},
+      {q:'Нужны ли отдельные права для Mini App?',a:'Права те же, что и в проекте: участник видит ровно то, что позволяет его роль.'},
+      {q:'Работает ли на iOS и Android?',a:'Да, Mini App открывается в официальном клиенте Telegram на обеих платформах и в десктопной версии.'}
+    ]
+  }
+};
+
+function productOverview(){
+  return pageHero({
+    crumbs:[['Главная','#/'],['Продукт','']],
+    eyebrow:'Обзор платформы',
+    title:'Одна платформа вместо десяти сервисов',
+    lede:'GramOS закрывает путь клиента от первого сообщения до оплаты, доступа, повторной продажи и поддержки. Все модули работают на общих контактах, событиях и правах.',
+    mock:MOCKS.crm
+  })+
+  '<section class="section soft"><div class="wrap">'+
+    '<div class="center" style="max-width:700px;margin:0 auto 42px"><h2>Модули GramOS</h2><p class="lede center">Начните с одного модуля и подключайте остальные по мере роста.</p></div>'+
+    '<div class="grid g3">'+
+      linkCard({i:'users',t:'CRM и диалоги',d:'Карточки контактов, timeline, теги, статусы, LTV и ответы из интерфейса.',link:'#/product/crm'})+
+      linkCard({i:'flow',t:'Сценарии',d:'Визуальные автоворонки с триггерами Telegram, условиями и задержками.',link:'#/product/automations'})+
+      linkCard({i:'card',t:'Платежи и продукты',d:'Тарифы, checkout, Stars, ЮKassa, bePaid, Stripe, Tribute и выдача доступов.',link:'#/product/payments'})+
+      linkCard({i:'send',t:'Рассылки',d:'Сегменты, выбор бота, планирование, статистика и действия после доставки.',link:'#/product/broadcasts'})+
+      linkCard({i:'globe',t:'Web-виджет',d:'Чат на сайте с Shadow DOM и склейкой гостя с Telegram-контактом.',link:'#/product/web-widget'})+
+      linkCard({i:'phone',t:'Кабинет покупателя',d:'Доступы, материалы, подписки и история платежей для клиента.',link:'#/product/customer-cabinet'})+
+      linkCard({i:'phone',t:'Telegram Mini App',d:'Управление бизнесом прямо внутри Telegram.',link:'#/product/mini-app'})+
+      linkCard({i:'layers',t:'Мультипроекты и команда',d:'Несколько бизнесов, изоляция данных, участники, роли и приглашения.',link:'#/solutions/agency'})+
+      linkCard({i:'shield',t:'Безопасность',d:'Изоляция проектов, роли, подписи webhook, хранение токенов.',link:'#/security'})+
+    '</div>'+
+  '</div></section>'+
+  '<section class="section"><div class="wrap"><div class="split">'+
+    '<div><div class="eyebrow">Почему вместе лучше</div><h2>Модули не просто соседствуют — они знают друг о друге</h2>'+
+    '<p class="lede">Оплата меняет тег контакта, тег меняет аудиторию рассылки, рассылка запускает сценарий, сценарий выдаёт доступ. Ничего не нужно связывать вручную через Zapier и таблицы.</p>'+
+    checks(['Одни контакты для бота, канала, сайта и checkout','Одни события для сценариев, рассылок и аналитики','Одни права доступа для команды во всех модулях','Один интерфейс в браузере и в Telegram'])+
+    '</div><div class="rv">'+MOCKS.flow+'</div>'+
+  '</div></div></section>'+
+  ctaBand();
+}
+
+/* =========================================================
+   SOLUTIONS
+   ========================================================= */
+var SOLUTIONS = {
+  'paid-community':{
+    crumb:'Платный клуб',eyebrow:'Платные сообщества',
+    title:'Закрытый клуб по подписке без ручной выдачи доступов',
+    lede:'Оплата, автоматический вход в закрытый канал, напоминания о продлении и возврат тех, кто ушёл. Всё внутри Telegram.',
+    mock:MOCKS.pay,
+    pains:['Доступ в канал выдаётся вручную по скриншоту оплаты','Непонятно, у кого закончилась подписка','Отписавшиеся уходят навсегда, потому что их никто не возвращает','Данные о платежах живут отдельно от аудитории'],
+    steps:[
+      {t:'Создаёте продукт «Подписка на клуб»',d:'Тариф на месяц, квартал и год, промокод для первого платежа.'},
+      {t:'Подключаете закрытый канал',d:'GramOS выдаёт персональные ссылки-приглашения и следит за составом.'},
+      {t:'Настраиваете сценарий продления',d:'Напоминание за 3 дня, повторная попытка списания, мягкий отзыв доступа при неоплате.'},
+      {t:'Возвращаете ушедших',d:'Сегмент «был подписан, но ушёл» получает отдельную рассылку с предложением.'}
+    ],
+    metrics:[['Ручной работы','≈ 0 действий на оплату'],['Продления','Автоматические напоминания'],['Контроль','Список активных доступов в CRM']],
+    faq:[
+      {q:'Что будет, если клиент не продлит подписку?',a:'По вашему сценарию: напоминание, пауза, затем отзыв доступа и перевод контакта в сегмент для возврата. Жёсткость шагов вы настраиваете сами.'},
+      {q:'Можно ли продавать доступ сразу в несколько каналов?',a:'Да, один продукт может открывать доступ к нескольким каналам, чатам и материалам в кабинете.'}
+    ]
+  },
+  'online-school':{
+    crumb:'Онлайн-школа',eyebrow:'Курсы и обучение',
+    title:'Онлайн-школа с личным кабинетом ученика',
+    lede:'Продажа курса, выдача уроков, напоминания и поддержка — без отдельной LMS и ручных списков учеников.',
+    mock:MOCKS.cabinet,
+    pains:['Ученики теряются между чатом, таблицей и платформой','Уроки выдаются вручную или по расписанию «на глаз»','Непонятно, кто дошёл до конца, а кто отвалился','Поддержка ведётся в личке эксперта'],
+    steps:[
+      {t:'Заводите курс как продукт',d:'Тарифы: базовый, с обратной связью, с сопровождением.'},
+      {t:'Собираете материалы в кабинете',d:'Уроки открываются по расписанию или по мере прохождения.'},
+      {t:'Настраиваете онбординг',d:'После оплаты — приветствие, вступление в чат потока и первый урок.'},
+      {t:'Следите за доходимостью',d:'Теги по прогрессу, догоняющие сообщения тем, кто остановился.'}
+    ],
+    metrics:[['Доходимость','Догоняющие сценарии по прогрессу'],['Поддержка','Все вопросы в CRM, а не в личке'],['Продажи','Допродажа следующего потока сегментом']],
+    faq:[
+      {q:'Подойдёт ли GramOS вместо полноценной LMS?',a:'Для курсов, которые живут в Telegram и в кабинете, — да. Если вам нужны сложные тесты, сертификаты и видеоплатформа с DRM, GramOS удобнее использовать как продающий и коммуникационный слой поверх вашей LMS через webhooks.'},
+      {q:'Можно ли вести несколько потоков одновременно?',a:'Да, поток — это отдельный тариф или сегмент со своим чатом, расписанием и сценариями.'}
+    ]
+  },
+  expert:{
+    crumb:'Эксперт',eyebrow:'Эксперты и авторы',
+    title:'Автоворонка вместо бесконечной переписки в личке',
+    lede:'Лид-магнит, прогрев, запись на консультацию и продажа продукта работают, пока вы снимаете контент или ведёте клиентов.',
+    mock:MOCKS.flow,
+    pains:['Все вопросы приходят в личку и отнимают часы','Прогрев зависит от того, найдёте ли вы время написать','Непонятно, из какого поста пришёл клиент','После консультации никто не дожимает'],
+    steps:[
+      {t:'Собираете лид-магнит',d:'Кнопка в канале или посте ведёт в бота, бот отдаёт материал и создаёт контакт.'},
+      {t:'Запускаете прогрев',d:'Серия сообщений с кейсами и ответами на возражения, с проверкой «не купил ли уже».'},
+      {t:'Продаёте продукт',d:'Кнопка открывает checkout, после оплаты человек получает доступ и попадает в онбординг.'},
+      {t:'Дожимаете тех, кто думает',d:'Сегмент «смотрел тарифы, но не купил» получает отдельную рассылку.'}
+    ],
+    metrics:[['Время','Личка разгружается на 60–80%'],['Источники','Видно, какой пост принёс лидов'],['Продажи','Дожим идёт автоматически']],
+    faq:[
+      {q:'Нужно ли много контента, чтобы это заработало?',a:'Достаточно одного лид-магнита и трёх-четырёх сообщений прогрева. Дальше воронку можно усложнять, опираясь на статистику.'},
+      {q:'Можно ли оставить часть диалогов себе?',a:'Да, сценарий можно останавливать при ответе клиента, чтобы вы подключались лично к самым тёплым.'}
+    ]
+  },
+  agency:{
+    crumb:'Агентство',eyebrow:'Агентства и продюсеры',
+    title:'Несколько клиентов, ботов и брендов в одном аккаунте',
+    lede:'Проекты с изоляцией данных, участники команды, роли и приглашения. Один интерфейс — вместо десятка чужих кабинетов и паролей.',
+    mock:MOCKS.analytics,
+    pains:['Доступы к ботам клиентов лежат в переписке','Данные проектов перемешиваются','Нет понятного разделения прав для команды','Сложно показать клиенту результат'],
+    steps:[
+      {t:'Создаёте проект под каждого клиента',d:'Свои боты, каналы, контакты, платежи и сценарии — с полной изоляцией.'},
+      {t:'Приглашаете команду',d:'Менеджер, маркетолог, разработчик — у каждого своя роль и свой набор прав.'},
+      {t:'Переиспользуете сценарии',d:'Отработанные воронки переносятся в новый проект как шаблон.'},
+      {t:'Показываете цифры клиенту',d:'Отдельный доступ к аналитике проекта без права менять настройки.'}
+    ],
+    metrics:[['Проекты','Полная изоляция данных'],['Роли','Права под каждого участника'],['Масштаб','Новый клиент запускается за день']],
+    faq:[
+      {q:'Как считаются лимиты на агентском тарифе?',a:'Лимиты по контактам и рассылкам считаются суммарно по аккаунту, а количество проектов и участников зависит от тарифа. Детали — на странице «Тарифы».'},
+      {q:'Можно ли передать проект клиенту?',a:'Да, владение проектом передаётся другому аккаунту без переноса данных и переподключения ботов.'}
+    ]
+  },
+  'site-to-telegram':{
+    crumb:'Сайт → Telegram',eyebrow:'Сайт и мессенджер',
+    title:'Сайт и Telegram как одна воронка',
+    lede:'Виджет собирает лидов на сайте, переводит их в Telegram и склеивает историю в одной карточке CRM. Разрыв между сайтом и мессенджером исчезает.',
+    mock:MOCKS.widget,
+    pains:['Лиды с сайта и из Telegram живут в разных системах','Гость уходит в мессенджер и теряется','Менеджер не знает, что человек уже спрашивал на сайте','Невозможно посчитать реальную конверсию'],
+    steps:[
+      {t:'Ставите виджет на сайт',d:'Одна строка кода, Shadow DOM, никаких конфликтов со стилями.'},
+      {t:'Запускаете сценарий приветствия',d:'Квалификация, ответы на частые вопросы, предложение перейти в Telegram.'},
+      {t:'Переводите гостя в бота',d:'Deep link с токеном сессии переносит контекст разговора.'},
+      {t:'Продолжаете в единой CRM',d:'Вся история — веб и Telegram — в одной карточке контакта.'}
+    ],
+    metrics:[['Склейка','Гость сайта = Telegram-контакт'],['Скорость','Ответ в чате без перезагрузки'],['Аналитика','Видна конверсия сайт → оплата']],
+    faq:[
+      {q:'А если у нас уже стоит другой онлайн-чат?',a:'Виджет GramOS можно поставить рядом на отдельные страницы или полностью заменить текущий чат — вопрос в том, где вы хотите вести историю клиента.'},
+      {q:'Собирает ли виджет персональные данные?',a:'Виджет создаёт анонимную сессию; e-mail или телефон запрашиваются только если вы добавили такой шаг в сценарий.'}
+    ]
+  }
+};
+
+function solutionPage(s){
+  return pageHero({
+    crumbs:[['Главная','#/'],['Решения','#/solutions'],[s.crumb,'']],
+    eyebrow:s.eyebrow,title:s.title,lede:s.lede,mock:s.mock
+  })+
+  '<section class="section soft"><div class="wrap"><div class="split">'+
+    '<div><div class="eyebrow">Знакомо?</div><h2>Что обычно мешает</h2>'+checks(s.pains)+'</div>'+
+    '<div><div class="grid" style="gap:14px">'+s.metrics.map(function(m){
+      return '<div class="card rv" style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:18px 22px"><span class="muted small">'+m[0]+'</span><b style="font-family:Manrope">'+m[1]+'</b></div>';
+    }).join('')+'</div></div>'+
+  '</div></div></section>'+
+  '<section class="section"><div class="wrap">'+
+    '<div class="center" style="max-width:700px;margin:0 auto 42px"><div class="eyebrow">Как собрать</div><h2>Конфигурация GramOS под этот сценарий</h2></div>'+
+    '<div class="grid g2" style="max-width:880px;margin:0 auto">'+s.steps.map(function(st,i){
+      return '<div class="card rv"><div class="ico">'+ic(['bolt','card','flow','send'][i]||'spark')+'</div><h3>'+st.t+'</h3><p class="muted small">'+st.d+'</p></div>';
+    }).join('')+'</div>'+
+  '</div></section>'+
+  '<section class="section soft"><div class="wrap" style="max-width:820px"><div class="center" style="margin-bottom:32px"><h2>Вопросы</h2></div>'+faq(s.faq)+'</div></section>'+
+  ctaBand('Соберём этот сценарий вместе','Покажем, как настроить GramOS под вашу модель продаж, и поможем перенести текущих клиентов.');
+}
+
+function solutionsIndex(){
+  return pageHero({
+    crumbs:[['Главная','#/'],['Решения','']],
+    eyebrow:'Решения',
+    title:'Выберите сценарий своего бизнеса',
+    lede:'Одни и те же модули собираются по-разному в зависимости от того, что именно вы продаёте в Telegram.',
+    mock:MOCKS.flow
+  })+
+  '<section class="section soft"><div class="wrap"><div class="grid g3">'+
+    linkCard({i:'key',t:'Платный клуб',d:'Подписки, доступ в закрытый канал, продления и возврат ушедших.',link:'#/solutions/paid-community'})+
+    linkCard({i:'book',t:'Онлайн-школа',d:'Курсы, потоки, личный кабинет ученика и контроль доходимости.',link:'#/solutions/online-school'})+
+    linkCard({i:'spark',t:'Эксперт и автор',d:'Лид-магнит, прогрев, консультации и продажи без ручной переписки.',link:'#/solutions/expert'})+
+    linkCard({i:'layers',t:'Агентство и продюсер',d:'Мультипроекты, команда, роли и быстрый запуск новых клиентов.',link:'#/solutions/agency'})+
+    linkCard({i:'globe',t:'Сайт → Telegram',d:'Виджет как вход в воронку и склейка истории гостя с контактом.',link:'#/solutions/site-to-telegram'})+
+    linkCard({i:'chat',t:'Поддержка и сервис',d:'Обращения из лички переезжают в CRM с тегами, историей и ответственными.',link:'#/product/crm'})+
+  '</div></div></section>'+ctaBand();
+}
+
+/* =========================================================
+   PRICING
+   ========================================================= */
+var PLANS = [
+  {name:'Starter',desc:'Для первого проекта и первых продаж',m:990,y:790,hot:false,
+   f:['1 проект','1 Telegram-бот','До 1 000 контактов','3 активных сценария','5 000 сообщений рассылок в месяц','Checkout и 1 платёжный провайдер','Личный кабинет покупателя','Поддержка в чате']},
+  {name:'Growth',desc:'Для стабильного потока заявок и продаж',m:2900,y:2320,hot:true,
+   f:['3 проекта','5 Telegram-ботов','До 15 000 контактов','Безлимит сценариев','50 000 сообщений рассылок в месяц','Все платёжные провайдеры','Web-виджет для сайта','3 участника команды','Расширенная аналитика']},
+  {name:'Agency',desc:'Для агентств, продюсеров и команд',m:7900,y:6320,hot:false,
+   f:['15 проектов','Безлимит ботов','До 100 000 контактов','Безлимит сценариев и рассылок*','Роли и права для команды','15 участников','API и webhooks','Перенос проектов между аккаунтами','Персональный менеджер']}
+];
+function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');}
+function pricingCards(yearly,compact){
+  return '<div class="price-grid">'+PLANS.map(function(p){
+    var price = yearly? p.y : p.m;
+    var list = compact? p.f.slice(0,5) : p.f;
+    return '<div class="plan rv'+(p.hot?' hot':'')+'">'+
+      (p.hot?'<span class="badge" style="align-self:flex-start;margin-bottom:10px;color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent)">Популярный</span>':'')+
+      '<h3 style="margin-bottom:.15em">'+p.name+'</h3>'+
+      '<p class="small muted" style="min-height:42px">'+p.desc+'</p>'+
+      '<div class="amount">₽'+fmt(price)+' <span>/ мес</span></div>'+
+      '<p class="tiny muted" style="margin:6px 0 0">'+(yearly?'при оплате за год, экономия 20%':'при помесячной оплате')+'</p>'+
+      '<a class="btn '+(p.hot?'btn-primary':'btn-ghost')+'" href="#/demo">Попробовать 14 дней</a>'+
+      checks(list)+
+      (compact?'':'<p class="tiny muted" style="margin-top:14px">* в рамках лимитов Telegram и правил честного использования</p>')+
+    '</div>';
+  }).join('')+'</div>';
+}
+function pricingPage(){
+  return '<section class="hero"><div class="wrap center">'+
+    '<div class="eyebrow">Тарифы</div>'+
+    '<h1>Прозрачная подписка, без комиссии с ваших продаж</h1>'+
+    '<p class="lede center">14 дней бесплатно на любом тарифе. Без привязки карты. Деньги от клиентов идут напрямую через вашего платёжного провайдера.</p>'+
+    '<div style="margin:30px 0 8px" class="toggle" id="billToggle"><button class="on" data-y="0">Помесячно</button><button data-y="1">За год −20%</button></div>'+
+  '</div></section>'+
+  '<section class="section" style="padding-top:0"><div class="wrap"><div id="planHolder">'+pricingCards(false,false)+'</div></div></section>'+
+  '<section class="section soft"><div class="wrap">'+
+    '<div class="center" style="margin-bottom:34px"><h2>Сравнение тарифов</h2><p class="lede center">Все тарифы включают CRM, сценарии, checkout и личный кабинет покупателя.</p></div>'+
+    '<div class="table-wrap"><table>'+
+      '<thead><tr><th>Возможность</th><th>Starter</th><th>Growth</th><th>Agency</th></tr></thead><tbody>'+
+      [['Проекты','1','3','15'],
+       ['Telegram-боты','1','5','Безлимит'],
+       ['Контакты в CRM','1 000','15 000','100 000'],
+       ['Активные сценарии','3','Безлимит','Безлимит'],
+       ['Сообщений рассылок / мес','5 000','50 000','300 000'],
+       ['Платёжные провайдеры','1','Все','Все'],
+       ['Web-виджет','—','✓','✓'],
+       ['Telegram Mini App','✓','✓','✓'],
+       ['Личный кабинет покупателя','✓','✓','✓'],
+       ['Участники команды','1','3','15'],
+       ['Роли и права','—','Базовые','Расширенные'],
+       ['API и webhooks','—','✓','✓'],
+       ['Audit log сценариев','—','✓','✓'],
+       ['Поддержка','Чат','Приоритетная','Персональный менеджер']
+      ].map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>';}).join('')+
+    '</tbody></table></div>'+
+    '<p class="tiny muted" style="margin-top:14px">Нужны другие лимиты, приватное развёртывание или договор с закрывающими документами? <a class="btn-link" href="#/contact">Напишите нам</a> — соберём индивидуальные условия.</p>'+
+  '</div></section>'+
+  '<section class="section"><div class="wrap" style="max-width:820px">'+
+    '<div class="center" style="margin-bottom:32px"><h2>FAQ по оплате</h2></div>'+
+    faq([
+      {q:'Как считается лимит контактов?',a:'Учитываются уникальные контакты в CRM по всем проектам аккаунта. Заблокировавшие бота и удалённые контакты в лимит не входят.'},
+      {q:'Что будет, если я превышу лимит рассылок?',a:'Отправка приостановится, и вы получите уведомление. Можно докупить пакет сообщений или перейти на старший тариф — данные при этом не теряются.'},
+      {q:'Берёт ли GramOS процент с продаж?',a:'Нет. Вы платите фиксированную подписку, а комиссию удерживает только ваш платёжный провайдер по его тарифам.'},
+      {q:'Можно ли платить как юрлицо?',a:'Да, доступна оплата по счёту с закрывающими документами. Напишите нам, и мы выставим счёт на нужный период.'},
+      {q:'Что будет с данными, если я перестану платить?',a:'Аккаунт переходит в режим только для чтения, отправка и сценарии останавливаются. Данные хранятся ещё 90 дней — их можно выгрузить или возобновить подписку.'},
+      {q:'Можно ли сменить тариф в середине месяца?',a:'Да. При переходе на старший тариф разница пересчитывается пропорционально остатку периода.'}
+    ])+
+  '</div></section>'+
+  ctaBand('Попробуйте GramOS бесплатно 14 дней','Полный доступ к функциям тарифа Growth. Карта не нужна.');
+}
+
+/* =========================================================
+   DEMO / TOUR
+   ========================================================= */
+var TOUR = [
+  {k:'crm',t:'CRM и диалоги',d:'Лид из бота, канала или сайта сразу становится карточкой с историей, тегами и суммой покупок.'},
+  {k:'flow',t:'Сценарий',d:'Триггер, сообщение, условие, задержка и выдача доступа — собираются мышкой на canvas.'},
+  {k:'pay',t:'Checkout',d:'Страница оплаты с тарифом и промокодом. После оплаты доступ выдаётся автоматически.'},
+  {k:'broadcast',t:'Рассылка',d:'Сегмент по тегам, выбор бота, планирование и отчёт по доставке и оплатам.'},
+  {k:'widget',t:'Виджет на сайте',d:'Чат на сайте переводит гостя в Telegram и склеивает историю в одной карточке.'},
+  {k:'analytics',t:'Аналитика',d:'Выручка, конверсия, топ-источники и статусы лидов обновляются сами.'}
+];
+function demoPage(){
+  return '<section class="hero"><div class="wrap center">'+
+    '<div class="eyebrow">Демо</div>'+
+    '<h1>Посмотрите GramOS за две минуты</h1>'+
+    '<p class="lede center">Кликабельный тур по интерфейсу: CRM, сценарии, checkout, рассылки, виджет и аналитика. Без регистрации.</p>'+
+  '</div></section>'+
+  '<section class="section" style="padding-top:0"><div class="wrap">'+
+    '<div class="tabs center" id="tourTabs" style="justify-content:center">'+TOUR.map(function(t,i){
+      return '<button class="'+(i===0?'on':'')+'" data-i="'+i+'">'+t.t+'</button>';}).join('')+'</div>'+
+    '<div id="tourPanels">'+TOUR.map(function(t,i){
+      return '<div class="tabpanel'+(i===0?' on':'')+'" data-i="'+i+'"><div class="split">'+
+        '<div><h2>'+t.t+'</h2><p class="lede">'+t.d+'</p>'+
+        '<div class="btns" style="margin-top:20px"><a class="btn btn-primary" href="#/contact">Запросить живое демо</a></div></div>'+
+        '<div>'+MOCKS[t.k]+'</div></div></div>';}).join('')+'</div>'+
+  '</div></section>'+
+  '<section class="section soft"><div class="wrap"><div class="split">'+
+    '<div><div class="eyebrow">Старт</div><h2>Создайте аккаунт и подключите бота</h2>'+
+    '<p class="lede">Заполните форму — мы создадим аккаунт, пришлём доступ и поможем подключить первого бота и собрать стартовый сценарий.</p>'+
+    checks(['14 дней бесплатно, без карты','Помощь с подключением бота и платежей','Шаблоны воронок под ваш тип продукта','Перенос текущей базы контактов'])+
+    '</div>'+
+    '<div class="card rv"><h3>Заявка на доступ</h3>'+
+    '<form class="form" data-form="signup">'+
+      '<div><label for="s-name">Как к вам обращаться</label><input id="s-name" name="name" required placeholder="Имя"></div>'+
+      '<div><label for="s-tg">Telegram</label><input id="s-tg" name="tg" required placeholder="@username"></div>'+
+      '<div><label for="s-mail">E-mail</label><input id="s-mail" type="email" name="email" required placeholder="you@company.com"></div>'+
+      '<div><label for="s-type">Что продаёте</label><select id="s-type" name="type">'+
+        '<option>Платный клуб или канал</option><option>Онлайн-курсы</option><option>Консультации и услуги</option><option>Агентство / несколько клиентов</option><option>Другое</option>'+
+      '</select></div>'+
+      '<button class="btn btn-primary btn-lg" type="submit">Получить доступ</button>'+
+      '<p class="form-note">Нажимая кнопку, вы соглашаетесь с <a class="btn-link" href="#/legal/terms">условиями</a> и <a class="btn-link" href="#/legal/privacy">политикой конфиденциальности</a>.</p>'+
+    '</form></div>'+
+  '</div></div></section>';
+}
+
+/* =========================================================
+   INTEGRATIONS
+   ========================================================= */
+var INTEGRATIONS = [
+  {t:'Telegram Bot API',s:'ok',d:'Боты, группы, каналы, inline-кнопки, deep links и события вступления и выхода.',i:'send'},
+  {t:'Telegram Mini App',s:'ok',d:'Панель управления внутри Telegram с проверкой initData на сервере.',i:'phone'},
+  {t:'Telegram Stars',s:'ok',d:'Оплата цифровых товаров и доступов внутри Telegram.',i:'spark'},
+  {t:'ЮKassa',s:'ok',d:'Приём платежей в рублях, чеки и webhooks с проверкой подписи.',i:'card'},
+  {t:'bePaid',s:'ok',d:'Платежи для рынков СНГ, рекуррентные списания.',i:'card'},
+  {t:'Stripe',s:'ok',d:'Международные платежи и подписки в валюте.',i:'card'},
+  {t:'Tribute',s:'ok',d:'Донаты и подписки для Telegram-авторов.',i:'card'},
+  {t:'Ручные оплаты',s:'ok',d:'Подтверждение платежа менеджером для переводов и счетов юрлицам.',i:'note'},
+  {t:'Web-виджет',s:'ok',d:'Скрипт чата для любого сайта с изоляцией стилей через Shadow DOM.',i:'globe'},
+  {t:'Webhooks и API',s:'beta',d:'Исходящие события и вызовы из сценариев для связи с вашими сервисами.',i:'plug'},
+  {t:'AmoCRM',s:'soon',d:'Двусторонняя синхронизация сделок и контактов.',i:'users'},
+  {t:'Bitrix24',s:'soon',d:'Передача лидов и статусов в корпоративную CRM.',i:'users'},
+  {t:'Google Sheets',s:'soon',d:'Выгрузка контактов и платежей в таблицу.',i:'chart'}
+];
+function statusBadge(s){
+  return s==='ok'?'<span class="badge ok">Доступно</span>':s==='beta'?'<span class="badge beta">Beta</span>':'<span class="badge soon">Скоро</span>';
+}
+function integrationsPage(){
+  return '<section class="hero"><div class="wrap center">'+
+    '<div class="eyebrow">Интеграции</div><h1>С чем GramOS работает</h1>'+
+    '<p class="lede center">Платёжные провайдеры, Telegram-платформа, ваш сайт и внешние системы через webhooks.</p>'+
+  '</div></section>'+
+  '<section class="section" style="padding-top:0"><div class="wrap"><div class="grid g3">'+
+    INTEGRATIONS.map(function(x){
+      return '<div class="card rv"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">'+
+        '<div class="ico">'+ic(x.i)+'</div>'+statusBadge(x.s)+'</div>'+
+        '<h3>'+x.t+'</h3><p class="muted small">'+x.d+'</p></div>';
+    }).join('')+
+  '</div>'+
+  '<div class="callout" style="margin-top:28px">Статусы отражают текущий релиз и обновляются вместе с <a class="btn-link" href="#/roadmap">Roadmap</a>. Нужной интеграции нет в списке? <a class="btn-link" href="#/contact">Расскажите</a> — мы учитываем запросы при планировании.</div>'+
+  '</div></section>'+ctaBand();
+}
+
+/* =========================================================
+   ROADMAP
+   ========================================================= */
+var ROADMAP = {
+  now:['CRM: карточки, timeline, теги, статусы, поиск','Сценарии: визуальный canvas, триггеры и действия','Рассылки: сегменты, планирование, статистика','Продукты, тарифы и публичный checkout','Telegram Stars, ЮKassa, bePaid, Stripe, Tribute','Личный кабинет покупателя','Telegram Mini App и веб-панель','Мультипроекты, участники и приглашения','Web-виджет с Shadow DOM и WebSocket-чатом'],
+  beta:['Автоматический отзыв доступа при окончании подписки','Расширенные роли и права участников','Webhooks и публичное API','Версии сценариев и audit log','A/B-варианты сообщений в рассылках'],
+  soon:['Интеграции с AmoCRM и Bitrix24','Выгрузка в Google Sheets','Шаблоны воронок из библиотеки','Сквозная аналитика по источникам','Командные отчёты и планы продаж']
+};
+function roadmapPage(){
+  function col(title,badge,items){
+    return '<div class="card rv"><div style="margin-bottom:14px">'+badge+'</div><h3>'+title+'</h3>'+checks(items)+'</div>';
+  }
+  return '<section class="hero"><div class="wrap center">'+
+    '<div class="eyebrow">Roadmap</div><h1>Честный статус возможностей</h1>'+
+    '<p class="lede center">Мы не обещаем на сайте того, что ещё не работает. Здесь видно, что доступно сейчас, что в beta, а что в планах.</p>'+
+  '</div></section>'+
+  '<section class="section" style="padding-top:0"><div class="wrap"><div class="grid g3" style="align-items:start">'+
+    col('Доступно сейчас','<span class="badge ok">В релизе</span>',ROADMAP.now)+
+    col('В beta','<span class="badge beta">Beta</span>',ROADMAP.beta)+
+    col('Скоро','<span class="badge soon">В планах</span>',ROADMAP.soon)+
+  '</div>'+
+  '<div class="callout" style="margin-top:28px">Beta-функции доступны по запросу и могут меняться. Если какая-то из них критична для вашего запуска — <a class="btn-link" href="#/contact">напишите нам</a>, мы подскажем сроки и подключим раньше.</div>'+
+  '</div></section>'+ctaBand();
+}
+
+/* =========================================================
+   SECURITY
+   ========================================================= */
+function securityPage(){
+  return pageHero({
+    crumbs:[['Главная','#/'],['Безопасность','']],
+    eyebrow:'Безопасность и доверие',
+    title:'Данные клиентов, токены и платежи под контролем',
+    lede:'GramOS работает с деньгами и перепиской ваших клиентов, поэтому изоляция проектов, права доступа и корректная обработка платежей заложены в архитектуру.',
+    mock:MOCKS.cabinet,second:'Запросить детали',secondHref:'#/contact'
+  })+
+  '<section class="section soft"><div class="wrap"><div class="grid g3">'+
+    card({i:'layers',t:'Изоляция проектов',d:'Контакты, боты, каналы, платежи и сценарии принадлежат конкретному проекту. Данные разных клиентов и брендов не пересекаются.'})+
+    card({i:'team',t:'Роли и доступы',d:'Участник команды видит только то, что разрешает его роль: от просмотра аналитики до полного управления настройками.'})+
+    card({i:'key',t:'Хранение токенов',d:'Токены ботов и ключи платёжных провайдеров хранятся в зашифрованном виде и не показываются в интерфейсе повторно.'})+
+    card({i:'shield',t:'Подписи webhook',d:'Входящие уведомления от платёжных систем проверяются по подписи — подделать событие оплаты нельзя.'})+
+    card({i:'check',t:'Идемпотентность платежей',d:'Повторная доставка webhook не приводит к двойному начислению, двойной выдаче доступа или двойному списанию.'})+
+    card({i:'phone',t:'Telegram initData',d:'Авторизация в Mini App проверяется криптографически на сервере, а не на стороне клиента.'})+
+    card({i:'note',t:'Аудит действий',d:'Изменения сценариев и ключевых настроек логируются: видно, кто и когда что поменял.'})+
+    card({i:'globe',t:'Изоляция виджета',d:'Shadow DOM и ограниченный контекст исполнения не дают виджету получить доступ к данным вашего сайта.'})+
+    card({i:'card',t:'Деньги напрямую',d:'GramOS не является платёжным агентом: средства идут напрямую через вашего провайдера на ваш счёт.'})+
+  '</div></div></section>'+
+  '<section class="section"><div class="wrap" style="max-width:820px">'+
+    '<div class="center" style="margin-bottom:32px"><h2>Частые вопросы по безопасности</h2></div>'+
+    faq([
+      {q:'Кто имеет доступ к переписке моих клиентов?',a:'Только участники вашего аккаунта с соответствующей ролью. Сотрудники GramOS не читают переписку; доступ к данным для диагностики возможен только по вашему явному запросу.'},
+      {q:'Где хранятся данные?',a:'Данные хранятся на серверах, используемых платформой, с регулярным резервным копированием. Для корпоративных клиентов возможны отдельные условия размещения — обсуждаются индивидуально.'},
+      {q:'Можно ли выгрузить или удалить данные?',a:'Да. Контакты и платежи выгружаются в файл, а по запросу аккаунт и связанные данные удаляются безвозвратно.'},
+      {q:'Что произойдёт при компрометации токена бота?',a:'Токен можно отозвать в BotFather и заменить в GramOS — сценарии и контакты при этом сохраняются.'}
+    ])+
+    '<div class="callout">Раздел описывает принципы работы платформы и не заменяет юридические документы. Точные условия обработки данных — в <a class="btn-link" href="#/legal/privacy">политике конфиденциальности</a>.</div>'+
+  '</div></section>'+ctaBand('Нужны детали для службы безопасности?','Пришлём описание архитектуры, порядок обработки данных и ответим на вопросы вашей команды.');
+}
+
+/* =========================================================
+   DOCS
+   ========================================================= */
+var DOC_GROUPS = [
+  {g:'Начало работы',items:['connect-bot','add-channel','first-scenario']},
+  {g:'Продажи',items:['create-product','payments-setup','access']},
+  {g:'Каналы связи',items:['broadcasts','widget','mini-app']},
+  {g:'Аккаунт',items:['projects-roles','security-checklist']}
+];
+var DOCS = {
+  'connect-bot':{t:'Как подключить Telegram-бота',d:'Пять минут: создать бота в BotFather, скопировать токен и добавить его в проект GramOS.',
+   body:'<h2>Шаг 1. Создайте бота в BotFather</h2><p>Откройте <strong>@BotFather</strong> в Telegram, отправьте команду создания нового бота, укажите имя и username. В ответ придёт токен вида <code>1234567890:AA...</code>. Этот токен — ключ к боту, не публикуйте его.</p>'+
+   '<h2>Шаг 2. Добавьте бота в GramOS</h2><p>В веб-панели откройте <strong>Проект → Боты → Добавить бота</strong> и вставьте токен. GramOS проверит его, подтянет имя и аватар и подпишется на нужные обновления.</p>'+
+   '<div class="callout">Если бот уже используется в другом сервисе, Telegram разрешает только один активный webhook. Отключите старый сервис, иначе сообщения будут приходить туда.</div>'+
+   '<h2>Шаг 3. Проверьте связь</h2><p>Напишите боту любое сообщение. В разделе <strong>CRM → Контакты</strong> должен появиться новый контакт, а в диалоге — ваше сообщение.</p>'+
+   '<h2>Шаг 4. Настройте права</h2><p>Если бот должен работать в группе или канале, добавьте его администратором с правами на приглашение пользователей и отправку сообщений — это нужно для выдачи доступов.</p>'+
+   '<h2>Что дальше</h2><p>Соберите первый сценарий приветствия, чтобы бот отвечал новым подписчикам автоматически.</p>'},
+  'add-channel':{t:'Как добавить канал или группу',d:'Подключение каналов для выдачи доступов, welcome-сценариев и модерации.',
+   body:'<h2>Требования</h2><p>Бот должен быть администратором канала или группы с правом добавлять участников и создавать ссылки-приглашения.</p>'+
+   '<h2>Подключение</h2><p>Откройте <strong>Проект → Каналы → Добавить</strong>, выберите бота и перешлите любое сообщение из канала — GramOS определит его ID и проверит права.</p>'+
+   '<h2>Что это даёт</h2><ul><li>Автоматическую выдачу персональных ссылок-приглашений после оплаты</li><li>Триггеры сценариев на вступление и выход участника</li><li>Welcome-сообщения новым участникам</li><li>Контроль состава: кто оплатил, а кто зашёл по старой ссылке</li></ul>'+
+   '<div class="callout">Используйте персональные одноразовые ссылки вместо общей: так доступ нельзя передать друзьям, а в CRM видно, кто именно вошёл.</div>'},
+  'first-scenario':{t:'Как собрать первый сценарий',d:'Пошаговая сборка воронки: триггер, сообщение, условие, оплата и выдача доступа.',
+   body:'<h2>Идея сценария</h2><p>Соберём простую воронку: человек пишет боту «цена», получает тарифы, нажимает кнопку и попадает на оплату. После оплаты — доступ и тег «покупатель».</p>'+
+   '<h2>Шаг 1. Триггер</h2><p>Создайте сценарий и выберите триггер <strong>Ключевое слово</strong> со значением «цена», «стоимость», «сколько».</p>'+
+   '<h2>Шаг 2. Сообщение с кнопками</h2><p>Добавьте действие <strong>Отправить сообщение</strong>: текст с тарифами и две inline-кнопки — «Купить» со ссылкой на checkout и «Задать вопрос».</p>'+
+   '<h2>Шаг 3. Условие и задержка</h2><p>Добавьте <strong>Задержку</strong> на 2 часа и <strong>Условие</strong>: если у контакта нет тега «покупатель» — отправьте догоняющее сообщение с ответом на частое возражение.</p>'+
+   '<h2>Шаг 4. После оплаты</h2><p>В сценарии продукта укажите действия: выдать доступ, поставить тег «покупатель», отправить приветствие и остановить догоняющие сообщения.</p>'+
+   '<pre class="code">Триггер: keyword("цена")\n  → message("Тарифы", buttons=[Купить, Вопрос])\n  → delay(2h)\n  → if not tag("покупатель"): message("Ответ на возражение")\n\nСобытие: payment.succeeded\n  → grant_access(product)\n  → add_tag("покупатель")\n  → stop_scenario("Догрев")</pre>'+
+   '<h2>Шаг 5. Тест</h2><p>Запустите тестовый прогон на себе. Проверьте, что кнопки открывают нужный тариф, а после тестовой оплаты доступ действительно выдаётся.</p>'},
+  'create-product':{t:'Как создать продукт и тариф',d:'Продукты, тарифы, подписки, промокоды и публичная страница оплаты.',
+   body:'<h2>Продукт</h2><p>Откройте <strong>Продажи → Продукты → Создать</strong>. Укажите название, описание и что получает клиент: доступ в канал, материалы в кабинете или и то, и другое.</p>'+
+   '<h2>Тарифы</h2><p>У одного продукта может быть несколько тарифов: разовая покупка, подписка на месяц, на год. Для подписок укажите период продления и поведение при неоплате.</p>'+
+   '<h2>Checkout</h2><p>Страница оплаты создаётся автоматически. Ссылку можно отправить в чат, поставить на кнопку в сценарии или разместить на сайте.</p>'+
+   '<h2>Промокоды</h2><p>Создайте код со скидкой в процентах или сумме, ограничьте срок действия и количество применений.</p>'+
+   '<div class="callout">Для допродажи включите OTO-экран: после успешной оплаты клиент увидит предложение дополнительного продукта.</div>'},
+  'payments-setup':{t:'Как настроить платежи',d:'Подключение провайдера, тестовый режим, webhooks и проверка первой оплаты.',
+   body:'<h2>Выбор провайдера</h2><p>GramOS поддерживает Telegram Stars, ЮKassa, bePaid, Stripe, Tribute и ручное подтверждение. Можно подключить несколько и выбирать провайдера на уровне тарифа.</p>'+
+   '<h2>Подключение</h2><p>В разделе <strong>Продажи → Платежи</strong> выберите провайдера и введите ключи из его личного кабинета. Скопируйте URL для webhook и добавьте его в настройки провайдера.</p>'+
+   '<h2>Тестовый режим</h2><p>Проведите тестовую оплату минимальной суммой и убедитесь, что платёж появился в карточке контакта, а доступ выдался.</p>'+
+   '<h2>Безопасность</h2><p>Подписи webhook проверяются автоматически, операции идемпотентны. Ключи хранятся зашифрованными и не отображаются повторно.</p>'+
+   '<div class="callout">GramOS не является платёжным агентом: деньги идут напрямую на ваш счёт у провайдера, комиссия платформы с продаж не взимается.</div>'},
+  access:{t:'Как работает выдача доступов',d:'Что происходит после оплаты: доступ в канал, материалы, продление и отзыв.',
+   body:'<h2>После успешной оплаты</h2><p>Провайдер отправляет webhook, GramOS фиксирует платёж в карточке контакта и запускает связанные действия: выдать доступ, поставить тег, отправить сообщение.</p>'+
+   '<h2>Доступ в закрытый канал</h2><p>Создаётся персональная ссылка-приглашение с ограничением на одно использование. Вступление фиксируется в timeline контакта.</p>'+
+   '<h2>Материалы в кабинете</h2><p>Уроки и файлы открываются сразу или по расписанию, если вы настроили поэтапную выдачу.</p>'+
+   '<h2>Подписки</h2><p>Перед продлением клиент получает напоминание. При неудачном списании выполняется повторная попытка, затем — сценарий возврата. Автоматический отзыв доступа доступен в beta.</p>'},
+  broadcasts:{t:'Как отправить рассылку',d:'Сегмент, отправитель, расписание и разбор статистики.',
+   body:'<h2>Шаг 1. Соберите сегмент</h2><p>Выберите условия: теги, статус, наличие оплаты, источник, активность. Система сразу покажет размер аудитории.</p>'+
+   '<h2>Шаг 2. Выберите бота</h2><p>Рассылка уходит от имени одного бота — того, с которым контакт уже общался.</p>'+
+   '<h2>Шаг 3. Подготовьте сообщение</h2><p>Текст, медиа и кнопки. Сохраните черновик и отправьте тест на себя.</p>'+
+   '<h2>Шаг 4. Запуск и отчёт</h2><p>Отправляйте сразу или по расписанию. В отчёте: доставлено, ошибки, блокировки, переходы и оплаты.</p>'+
+   '<div class="callout">Пишите только тем, кто сам начал диалог с ботом. Это правило Telegram, и его нарушение приводит к ограничениям для бота.</div>'},
+  widget:{t:'Как установить web-виджет',d:'Скрипт на сайт, настройки показа и склейка гостя с Telegram-контактом.',
+   body:'<h2>Установка</h2><p>Скопируйте код из раздела <strong>Каналы → Виджет</strong> и вставьте его перед закрывающим тегом body на всех страницах сайта.</p>'+
+   '<pre class="code">&lt;script src="https://cdn.gramos.app/widget.js"\n        data-project="YOUR_PROJECT_KEY"\n        async&gt;&lt;/script&gt;</pre>'+
+   '<h2>Настройки</h2><ul><li>Позиция и цвет кнопки</li><li>Задержка появления и страницы показа</li><li>Сценарий, который запускается при открытии чата</li><li>Текст приглашения перейти в Telegram</li></ul>'+
+   '<h2>Склейка с Telegram</h2><p>При переходе по кнопке формируется deep link с токеном сессии. Когда гость запускает бота, GramOS объединяет его веб-сессию и Telegram-контакт в одну карточку вместе с историей переписки.</p>'+
+   '<div class="callout">Виджет работает в Shadow DOM: стили сайта его не ломают, а сам он не влияет на вёрстку страницы.</div>'},
+  'mini-app':{t:'Как работает Telegram Mini App',d:'Вход, права и что доступно в мобильной панели управления.',
+   body:'<h2>Запуск</h2><p>Откройте вашего служебного бота GramOS и нажмите кнопку меню — Mini App запустится внутри Telegram.</p>'+
+   '<h2>Авторизация</h2><p>Вход выполняется по данным Telegram <code>initData</code>, подпись которых проверяется на сервере. Отдельный пароль не нужен.</p>'+
+   '<h2>Возможности</h2><ul><li>Диалоги и быстрые ответы</li><li>Карточки контактов с тегами и оплатами</li><li>Метрики дня: лиды, оплаты, выручка</li><li>Запуск подготовленных рассылок</li><li>Переключение между проектами</li></ul>'+
+   '<h2>Права</h2><p>Mini App подчиняется тем же ролям, что и веб-панель: участник видит только разрешённые проекты и разделы.</p>'},
+  'projects-roles':{t:'Проекты, команда и роли',d:'Изоляция данных, приглашения участников и разграничение прав.',
+   body:'<h2>Проект как граница данных</h2><p>Каждый проект содержит свои боты, каналы, контакты, продукты, платежи и сценарии. Между проектами данные не пересекаются — это база для агентской работы.</p>'+
+   '<h2>Приглашение участников</h2><p>В разделе <strong>Настройки → Команда</strong> отправьте приглашение по e-mail или ссылке и выберите роль.</p>'+
+   '<h2>Роли</h2><ul><li><strong>Владелец</strong> — полный доступ, биллинг, удаление проекта</li><li><strong>Администратор</strong> — настройки, платежи, сценарии</li><li><strong>Менеджер</strong> — диалоги, контакты, заметки</li><li><strong>Наблюдатель</strong> — только просмотр аналитики</li></ul>'+
+   '<div class="callout">Передача владения проектом другому аккаунту выполняется без переноса данных и переподключения ботов.</div>'},
+  'security-checklist':{t:'Чек-лист безопасности запуска',d:'Что проверить перед тем, как пускать в систему деньги и клиентов.',
+   body:'<h2>Перед запуском</h2><ul><li>Токен бота нигде не опубликован, старый webhook отключён</li><li>Webhook платёжного провайдера настроен и проверен тестовой оплатой</li><li>У участников команды выданы минимально необходимые роли</li><li>Для закрытых каналов используются одноразовые ссылки-приглашения</li><li>Настроено поведение при неоплате подписки</li><li>Проверено, что рассылки уходят только тем, кто начал диалог</li></ul>'+
+   '<h2>Регулярно</h2><ul><li>Просматривайте audit log изменений сценариев</li><li>Отзывайте доступы уволившихся сотрудников</li><li>Выгружайте резервную копию контактов</li></ul>'+
+   '<div class="callout">Подробнее об архитектуре — на странице <a class="btn-link" href="#/security">Безопасность</a>.</div>'}
+};
+function docsNav(active){
+  return '<nav class="doc-nav">'+DOC_GROUPS.map(function(g){
+    return '<h4>'+g.g+'</h4>'+g.items.map(function(k){
+      return '<a class="'+(k===active?'active':'')+'" href="#/docs/'+k+'">'+DOCS[k].t+'</a>';}).join('');
+  }).join('')+'</nav>';
+}
+function docsIndex(){
+  return '<section class="section"><div class="wrap">'+
+    crumbs([['Главная','#/'],['Документация','']])+
+    '<h1>Документация</h1><p class="lede">Как подключить бота, настроить платежи, собрать сценарий и поставить виджет. Начните с раздела «Начало работы».</p>'+
+    '<div class="grid g2" style="margin-top:36px">'+
+      DOC_GROUPS.map(function(g){
+        return '<div class="card rv"><h3>'+g.g+'</h3>'+
+          '<div style="margin-top:10px">'+g.items.map(function(k){
+            return '<p style="margin:0 0 10px"><a class="btn-link" href="#/docs/'+k+'">'+DOCS[k].t+'</a><br><span class="tiny muted">'+DOCS[k].d+'</span></p>';
+          }).join('')+'</div></div>';
+      }).join('')+
+    '</div>'+
+    '<div class="callout" style="margin-top:28px">Не нашли ответ? Напишите в поддержку через <a class="btn-link" href="#/contact">форму контактов</a> — отвечаем в рабочие часы.</div>'+
+  '</div></section>';
+}
+function docPage(key){
+  var d=DOCS[key];
+  return '<section class="section"><div class="wrap"><div class="docs-layout">'+
+    docsNav(key)+
+    '<article class="prose">'+crumbs([['Главная','#/'],['Документация','#/docs'],[d.t,'']])+
+    '<h1 style="font-size:clamp(1.8rem,3.6vw,2.4rem)">'+d.t+'</h1><p class="lede">'+d.d+'</p>'+d.body+
+    '<hr><div class="btns"><a class="btn btn-primary" href="#/demo">Начать бесплатно</a><a class="btn btn-ghost" href="#/contact">Задать вопрос</a></div>'+
+    '</article></div></div></section>';
+}
+
+/* =========================================================
+   BLOG
+   ========================================================= */
+var POSTS = {
+  'monetize-channel':{t:'Как монетизировать Telegram-канал: 5 рабочих моделей',date:'12 марта 2026',read:'7 мин',tag:'Монетизация',
+    ex:'Реклама — не единственный способ. Разбираем подписку, разовые продукты, платные чаты, консультации и партнёрские продажи.',
+    body:'<h2>1. Платная подписка на закрытый канал</h2><p>Самая предсказуемая модель: клиент платит ежемесячно и получает доступ к контенту, которого нет в открытом канале. Главная сложность здесь техническая — выдавать и отзывать доступы вручную невозможно уже на сотне подписчиков.</p>'+
+    '<h2>2. Разовые цифровые продукты</h2><p>Гайды, шаблоны, записи эфиров. Продаются одним сообщением с кнопкой на оплату, а материалы отдаются в личном кабинете.</p>'+
+    '<h2>3. Платный чат сообщества</h2><p>Ценность создаёт не контент, а окружение. Работает, если вы модерируете дискуссию и даёте участникам повод возвращаться.</p>'+
+    '<h2>4. Консультации и услуги</h2><p>Канал работает как витрина, бот — как квалификация: собирает запрос, показывает окна в расписании и берёт предоплату.</p>'+
+    '<h2>5. Партнёрские и реферальные продажи</h2><p>Продавайте чужой продукт своей аудитории с отслеживанием переходов через deep links и тегами в CRM.</p>'+
+    '<h2>Что общего у всех моделей</h2><p>В каждой из них нужно знать, кто ваш подписчик, что он покупал и на каком этапе воронки находится. Без CRM и автоматизации любая модель упирается в ручной труд.</p>'},
+  'telegram-funnel':{t:'Как построить автоворонку в Telegram: схема из 6 шагов',date:'28 февраля 2026',read:'9 мин',tag:'Автоворонки',
+    ex:'Разбираем структуру воронки от лид-магнита до допродажи и типичные ошибки, из-за которых она не окупается.',
+    body:'<h2>Шаг 1. Точка входа</h2><p>Кнопка в канале, ссылка в описании, реклама или виджет на сайте. У каждой точки входа должен быть свой deep link, иначе вы не поймёте, что работает.</p>'+
+    '<h2>Шаг 2. Лид-магнит</h2><p>Быстрая польза в обмен на начало диалога. Чем ближе лид-магнит к платному продукту, тем выше конверсия дальше.</p>'+
+    '<h2>Шаг 3. Квалификация</h2><p>Два-три вопроса с кнопками. Ответы превращаются в теги, а теги определяют, что человек получит дальше.</p>'+
+    '<h2>Шаг 4. Прогрев</h2><p>3–5 сообщений с интервалами: кейс, ответ на возражение, детали продукта. Обязательно с проверкой — не купил ли человек уже.</p>'+
+    '<h2>Шаг 5. Оффер и оплата</h2><p>Кнопка ведёт на checkout с нужным тарифом. Чем меньше шагов между решением и оплатой, тем выше конверсия.</p>'+
+    '<h2>Шаг 6. После оплаты</h2><p>Доступ, онбординг, просьба о фидбэке и допродажа. Большинство воронок здесь обрываются — и теряют самую дешёвую выручку.</p>'+
+    '<h2>Три частые ошибки</h2><ul><li>Длинный прогрев без возможности купить сразу</li><li>Отсутствие сегментации: одно и то же сообщение всем</li><li>Ручная выдача доступов, из-за которой всё ломается на пике продаж</li></ul>'},
+  'support-to-crm':{t:'Как перевести поддержку из лички в CRM и не потерять клиентов',date:'5 февраля 2026',read:'6 мин',tag:'Процессы',
+    ex:'Личка эксперта не масштабируется. Показываем, как перенести общение в систему без потери человечности.',
+    body:'<h2>Почему личка ломается</h2><p>Нет истории, нет ответственных, нет статусов. При двух менеджерах начинается дублирование, при четырёх — хаос.</p>'+
+    '<h2>Шаг 1. Один вход</h2><p>Сведите все обращения в бота: из канала, с сайта, из рекламы. Один вход — одна очередь.</p>'+
+    '<h2>Шаг 2. Быстрые ответы</h2><p>20% вопросов повторяются. Соберите их в сценарий: он закроет типовое и передаст менеджеру только сложное.</p>'+
+    '<h2>Шаг 3. Статусы и теги</h2><p>«Новый», «в работе», «ждёт оплаты», «закрыт» — минимальный набор, который сразу даёт управляемость.</p>'+
+    '<h2>Шаг 4. Контекст покупки</h2><p>Менеджер должен видеть оплаты и доступы клиента в той же карточке, иначе он снова пойдёт уточнять в другой сервис.</p>'+
+    '<h2>Что изменится за месяц</h2><p>Время ответа падает, повторные вопросы исчезают, а владелец впервые видит, сколько обращений реально приходит и сколько из них превращается в деньги.</p>'},
+  'segments':{t:'Сегментация аудитории в Telegram: что считать и по чему делить',date:'21 января 2026',read:'5 мин',tag:'Рассылки',
+    ex:'Рассылка «всем» выжигает базу. Разбираем минимальный набор сегментов, который повышает конверсию без сложной аналитики.',
+    body:'<h2>Базовые сегменты</h2><ul><li>Новые: подписались, но ничего не делали</li><li>Вовлечённые: нажимали кнопки, задавали вопросы</li><li>Смотрели тарифы, но не купили</li><li>Покупатели с активным доступом</li><li>Бывшие клиенты</li></ul>'+
+    '<h2>Как собирать сегменты</h2><p>Не вручную. Теги должны ставиться сценариями: открыл checkout — тег, оплатил — тег, не ответил за 7 дней — тег.</p>'+
+    '<h2>Что отправлять каждому сегменту</h2><p>Новым — пользу и знакомство. Сомневающимся — ответ на возражение и дедлайн. Покупателям — следующий продукт. Бывшим — возврат со специальным условием.</p>'+
+    '<h2>Как понять, что сегментация работает</h2><p>Сравнивайте не открываемость, а долю оплат на отправленное сообщение. Хорошая сегментация почти всегда даёт меньше отправок и больше денег.</p>'},
+  'site-plus-telegram':{t:'Как связать сайт и Telegram-бота в одну воронку',date:'9 января 2026',read:'6 мин',tag:'Интеграции',
+    ex:'Самый частый разрыв в воронке — переход с сайта в мессенджер. Разбираем, как его закрыть технически.',
+    body:'<h2>Где теряются лиды</h2><p>Гость оставляет заявку на сайте, потом пишет в Telegram — и менеджер не понимает, что это один и тот же человек. В итоге клиент повторяет свой вопрос дважды.</p>'+
+    '<h2>Решение 1. Виджет с переходом в бота</h2><p>Чат на сайте начинает разговор, а кнопка переводит гостя в Telegram по deep link с токеном сессии. История переносится автоматически.</p>'+
+    '<h2>Решение 2. Deep links в кнопках сайта</h2><p>Каждой кнопке — свой параметр. Так вы видите, с какой страницы пришёл контакт, и запускаете соответствующий сценарий.</p>'+
+    '<h2>Решение 3. Единая CRM</h2><p>Главное условие: веб-сессия и Telegram-контакт должны быть одной карточкой. Иначе любая склейка остаётся ручной работой менеджера.</p>'+
+    '<h2>Как измерить эффект</h2><p>Смотрите долю гостей сайта, дошедших до диалога в Telegram, и конверсию этих диалогов в оплату. Обычно именно этот участок даёт самый быстрый прирост.</p>'}
+};
+function blogIndex(){
+  var keys=Object.keys(POSTS);
+  return '<section class="section"><div class="wrap">'+
+    crumbs([['Главная','#/'],['Блог','']])+
+    '<h1>Блог и гайды</h1><p class="lede">Практика Telegram-продаж: воронки, монетизация, сегментация и процессы поддержки.</p>'+
+    '<div class="grid g2" style="margin-top:36px">'+keys.map(function(k){
+      var p=POSTS[k];
+      return '<a class="card rv" href="#/blog/'+k+'">'+
+        '<div style="display:flex;gap:10px;align-items:center;margin-bottom:12px"><span class="badge">'+p.tag+'</span><span class="tiny muted">'+p.date+' · '+p.read+'</span></div>'+
+        '<h3>'+p.t+'</h3><p class="muted small">'+p.ex+'</p>'+
+        '<p style="margin:12px 0 0"><span class="btn-link small">Читать →</span></p></a>';
+    }).join('')+'</div>'+
+  '</div></section>'+ctaBand('Попробуйте применить это в своём Telegram','Соберите первую воронку в GramOS за вечер — бесплатно 14 дней.');
+}
+function postPage(key){
+  var p=POSTS[key];
+  var others=Object.keys(POSTS).filter(function(k){return k!==key;}).slice(0,3);
+  return '<section class="section"><div class="wrap" style="max-width:780px">'+
+    crumbs([['Главная','#/'],['Блог','#/blog'],[p.tag,'']])+
+    '<div style="display:flex;gap:10px;align-items:center;margin-bottom:14px"><span class="badge">'+p.tag+'</span><span class="tiny muted">'+p.date+' · '+p.read+'</span></div>'+
+    '<h1 style="font-size:clamp(1.9rem,4vw,2.7rem)">'+p.t+'</h1>'+
+    '<p class="lede">'+p.ex+'</p><div class="prose" style="max-width:none">'+p.body+'</div>'+
+    '<div class="cta-band" style="margin-top:40px"><h3 style="font-size:1.35rem">Соберите это в GramOS</h3>'+
+    '<p class="muted small" style="max-width:52ch;margin:0 auto 18px">CRM, сценарии, оплаты и доступы в одном контуре. 14 дней бесплатно.</p>'+
+    '<div class="btns"><a class="btn btn-primary" href="#/demo">Начать бесплатно</a></div></div>'+
+    '<h3 style="margin-top:48px">Читайте также</h3>'+
+    '<div class="grid" style="gap:12px">'+others.map(function(k){
+      return '<a class="card rv" href="#/blog/'+k+'" style="padding:16px 20px"><b>'+POSTS[k].t+'</b><br><span class="tiny muted">'+POSTS[k].date+' · '+POSTS[k].read+'</span></a>';
+    }).join('')+'</div>'+
+  '</div></section>';
+}
+
+/* =========================================================
+   CONTACT / LOGIN / LEGAL / 404
+   ========================================================= */
+function contactPage(){
+  return '<section class="section"><div class="wrap"><div class="split">'+
+    '<div>'+crumbs([['Главная','#/'],['Контакты','']])+
+      '<div class="eyebrow">Контакты</div><h1>Поговорим о вашем Telegram-бизнесе</h1>'+
+      '<p class="lede">Расскажите, что вы продаёте и как сейчас устроены продажи. Покажем, как это собирается в GramOS, и поможем с переносом.</p>'+
+      '<div class="grid" style="gap:12px;margin-top:28px;max-width:420px">'+
+        '<div class="card" style="padding:16px 20px;display:flex;gap:12px;align-items:center"><div class="ico" style="margin:0">'+ic('send')+'</div><div><b>Telegram</b><br><span class="small muted">@gramos_support — быстрее всего</span></div></div>'+
+        '<div class="card" style="padding:16px 20px;display:flex;gap:12px;align-items:center"><div class="ico" style="margin:0">'+ic('mail')+'</div><div><b>E-mail</b><br><span class="small muted">hello@gramos.app</span></div></div>'+
+        '<div class="card" style="padding:16px 20px;display:flex;gap:12px;align-items:center"><div class="ico" style="margin:0">'+ic('book')+'</div><div><b>Документация</b><br><span class="small muted"><a class="btn-link" href="#/docs">Ответы на технические вопросы</a></span></div></div>'+
+      '</div>'+
+      '<p class="tiny muted" style="margin-top:22px">Отвечаем в рабочие дни с 10:00 до 19:00 (МСК). Заявки на демо обрабатываем в течение одного рабочего дня.</p>'+
+    '</div>'+
+    '<div class="card rv"><h3>Оставьте заявку</h3><p class="small muted">Ответим в Telegram или на почту — как вам удобнее.</p>'+
+      '<form class="form" data-form="contact" style="margin-top:16px">'+
+        '<div><label for="c-name">Имя</label><input id="c-name" name="name" required placeholder="Как к вам обращаться"></div>'+
+        '<div><label for="c-contact">Telegram или e-mail</label><input id="c-contact" name="contact" required placeholder="@username или you@mail.com"></div>'+
+        '<div><label for="c-topic">Тема</label><select id="c-topic" name="topic"><option>Демо и запуск</option><option>Вопрос по тарифам</option><option>Техническая поддержка</option><option>Партнёрство</option><option>Другое</option></select></div>'+
+        '<div><label for="c-msg">Сообщение</label><textarea id="c-msg" name="message" placeholder="Что продаёте, сколько контактов, какие задачи"></textarea></div>'+
+        '<button class="btn btn-primary btn-lg" type="submit">Отправить заявку</button>'+
+        '<p class="form-note">Отправляя форму, вы соглашаетесь с <a class="btn-link" href="#/legal/privacy">политикой конфиденциальности</a>.</p>'+
+      '</form></div>'+
+  '</div></div></section>';
+}
+function loginPage(){
+  return '<section class="section"><div class="wrap" style="max-width:460px">'+
+    '<div class="card rv" style="padding:32px">'+
+      '<h1 style="font-size:1.7rem">Вход в GramOS</h1>'+
+      '<p class="small muted">Войдите через Telegram или по e-mail, чтобы попасть в рабочую панель.</p>'+
+      '<a class="btn btn-primary btn-lg" style="width:100%;margin:18px 0 10px" href="#/demo">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg> Войти через Telegram</a>'+
+      '<div style="display:flex;align-items:center;gap:12px;margin:16px 0"><hr style="flex:1;margin:0"><span class="tiny muted">или</span><hr style="flex:1;margin:0"></div>'+
+      '<form class="form" data-form="login">'+
+        '<div><label for="l-mail">E-mail</label><input id="l-mail" type="email" name="email" required placeholder="you@company.com"></div>'+
+        '<div><label for="l-pass">Пароль</label><input id="l-pass" type="password" name="password" required placeholder="••••••••"></div>'+
+        '<button class="btn btn-ghost" type="submit">Войти</button>'+
+      '</form>'+
+      '<p class="tiny muted" style="margin-top:18px;text-align:center">Нет аккаунта? <a class="btn-link" href="#/demo">Начните бесплатно</a></p>'+
+    '</div>'+
+    '<p class="tiny muted center" style="margin-top:18px">Это демонстрационная версия сайта: форма входа не подключена к бэкенду.</p>'+
+  '</div></section>';
+}
+function legalPage(kind){
+  var privacy = kind==='privacy';
+  return '<section class="section"><div class="wrap" style="max-width:780px">'+
+    crumbs([['Главная','#/'],[privacy?'Политика конфиденциальности':'Условия использования','']])+
+    '<h1 style="font-size:clamp(1.8rem,3.6vw,2.4rem)">'+(privacy?'Политика конфиденциальности':'Условия использования')+'</h1>'+
+    '<p class="lede">Шаблон документа. Перед публичным запуском замените текст на версию, согласованную с вашим юристом, и укажите реквизиты компании.</p>'+
+    '<div class="prose" style="max-width:none">'+
+    (privacy?
+      '<h2>1. Какие данные мы обрабатываем</h2><p>Данные аккаунта (имя, e-mail, Telegram-аккаунт), данные проектов (контакты, сообщения, платежи) и технические данные (логи, IP-адрес, тип устройства).</p>'+
+      '<h2>2. Зачем</h2><p>Для предоставления сервиса, поддержки, биллинга и улучшения продукта. Данные не продаются третьим лицам.</p>'+
+      '<h2>3. Кто имеет доступ</h2><p>Участники вашего аккаунта в соответствии с их ролями, а также платёжные провайдеры в объёме, необходимом для проведения платежа.</p>'+
+      '<h2>4. Хранение и удаление</h2><p>Данные хранятся, пока действует аккаунт, и ещё 90 дней после его закрытия. По запросу владельца аккаунт и связанные данные удаляются.</p>'+
+      '<h2>5. Права пользователя</h2><p>Вы можете запросить выгрузку, исправление или удаление данных, написав на указанный адрес поддержки.</p>'+
+      '<h2>6. Контакты</h2><p>Вопросы по обработке данных: hello@gramos.app</p>'
+      :
+      '<h2>1. Предмет</h2><p>Сервис предоставляет доступ к платформе автоматизации продаж и коммуникаций в Telegram на условиях подписки.</p>'+
+      '<h2>2. Аккаунт</h2><p>Пользователь отвечает за сохранность доступа к аккаунту и за действия участников своей команды.</p>'+
+      '<h2>3. Допустимое использование</h2><p>Запрещены рассылки без согласия получателей, нарушение правил Telegram, распространение запрещённого законом контента и попытки обхода ограничений платформы.</p>'+
+      '<h2>4. Оплата</h2><p>Подписка оплачивается авансом за выбранный период. Сервис не является платёжным агентом: расчёты с клиентами пользователя проходят через подключённого им провайдера.</p>'+
+      '<h2>5. Ответственность</h2><p>Сервис предоставляется «как есть». Мы стремимся к бесперебойной работе, но не отвечаем за перебои на стороне Telegram и платёжных провайдеров.</p>'+
+      '<h2>6. Изменения</h2><p>Условия могут обновляться; существенные изменения сообщаются заранее по e-mail или в интерфейсе.</p>')+
+    '</div>'+
+    '<p class="tiny muted" style="margin-top:22px">Последнее обновление: 21 сентября 2026.</p>'+
+  '</div></section>';
+}
+function notFound(){
+  return '<section class="section center"><div class="wrap" style="max-width:520px">'+
+    '<h1 style="font-size:4rem;margin-bottom:0" class="grad">404</h1>'+
+    '<h2>Страница не найдена</h2>'+
+    '<p class="lede center">Похоже, такой страницы нет. Вернитесь на главную или загляните в документацию.</p>'+
+    '<div class="btns" style="margin-top:22px"><a class="btn btn-primary" href="#/">На главную</a><a class="btn btn-ghost" href="#/docs">Документация</a></div>'+
+  '</div></section>';
+}
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+var TITLES = {
+  '/':'GramOS — операционная система для Telegram-бизнеса',
+  '/product':'Продукт — GramOS',
+  '/pricing':'Тарифы — GramOS',
+  '/demo':'Демо и старт — GramOS',
+  '/integrations':'Интеграции — GramOS',
+  '/docs':'Документация — GramOS',
+  '/blog':'Блог — GramOS',
+  '/roadmap':'Roadmap — GramOS',
+  '/security':'Безопасность — GramOS',
+  '/contact':'Контакты — GramOS',
+  '/login':'Вход — GramOS',
+  '/solutions':'Решения — GramOS'
+};
+function resolve(path){
+  if(path==='/'||path==='') return {html:home(),title:TITLES['/']};
+  if(path==='/product') return {html:productOverview(),title:TITLES['/product']};
+  var m=path.match(/^\/product\/(.+)$/);
+  if(m&&PRODUCTS[m[1]]) return {html:productPage(PRODUCTS[m[1]]),title:PRODUCTS[m[1]].title+' — GramOS'};
+  if(path==='/solutions') return {html:solutionsIndex(),title:TITLES['/solutions']};
+  m=path.match(/^\/solutions\/(.+)$/);
+  if(m&&SOLUTIONS[m[1]]) return {html:solutionPage(SOLUTIONS[m[1]]),title:SOLUTIONS[m[1]].title+' — GramOS'};
+  if(path==='/pricing') return {html:pricingPage(),title:TITLES['/pricing']};
+  if(path==='/demo') return {html:demoPage(),title:TITLES['/demo']};
+  if(path==='/integrations') return {html:integrationsPage(),title:TITLES['/integrations']};
+  if(path==='/roadmap') return {html:roadmapPage(),title:TITLES['/roadmap']};
+  if(path==='/security') return {html:securityPage(),title:TITLES['/security']};
+  if(path==='/docs') return {html:docsIndex(),title:TITLES['/docs']};
+  m=path.match(/^\/docs\/(.+)$/);
+  if(m&&DOCS[m[1]]) return {html:docPage(m[1]),title:DOCS[m[1]].t+' — Документация GramOS'};
+  if(path==='/blog') return {html:blogIndex(),title:TITLES['/blog']};
+  m=path.match(/^\/blog\/(.+)$/);
+  if(m&&POSTS[m[1]]) return {html:postPage(m[1]),title:POSTS[m[1]].t+' — Блог GramOS'};
+  if(path==='/contact') return {html:contactPage(),title:TITLES['/contact']};
+  if(path==='/login') return {html:loginPage(),title:TITLES['/login']};
+  if(path==='/legal/privacy') return {html:legalPage('privacy'),title:'Политика конфиденциальности — GramOS'};
+  if(path==='/legal/terms') return {html:legalPage('terms'),title:'Условия использования — GramOS'};
+  return {html:notFound(),title:'Страница не найдена — GramOS'};
+}
+
+var app=document.getElementById('app');
+var io=null;
+function reveal(){
+  var els=app.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){[].forEach.call(els,function(e){e.classList.add('in');});return;}
+  if(io) io.disconnect();
+  io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+  },{rootMargin:'0px 0px -8% 0px',threshold:.05});
+  [].forEach.call(els,function(e,i){ e.style.transitionDelay=Math.min(i%6,5)*45+'ms'; io.observe(e); });
+}
+function markActive(path){
+  var links=document.querySelectorAll('.nav-links a');
+  [].forEach.call(links,function(a){
+    var href=(a.getAttribute('href')||'').replace('#','');
+    a.classList.toggle('active', href!=='/' && path.indexOf(href)===0);
+  });
+}
+function render(){
+  var path=(location.hash||'#/').replace(/^#/,'');
+  if(path.charAt(0)!=='/') path='/'+path;
+  var r=resolve(path);
+  app.innerHTML=r.html;
+  document.title=r.title;
+  markActive(path);
+  reveal();
+  bindPage();
+  closeDrawer();
+  window.scrollTo({top:0,behavior:'auto'});
+}
+window.addEventListener('hashchange',render);
+
+/* ---------- page-level interactions ---------- */
+function bindPage(){
+  /* pricing toggle */
+  var tg=document.getElementById('billToggle');
+  if(tg){
+    tg.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      [].forEach.call(tg.querySelectorAll('button'),function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      document.getElementById('planHolder').innerHTML=pricingCards(b.getAttribute('data-y')==='1',false);
+      reveal();
+    });
+  }
+  /* demo tour tabs */
+  var tt=document.getElementById('tourTabs');
+  if(tt){
+    tt.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      var i=b.getAttribute('data-i');
+      [].forEach.call(tt.querySelectorAll('button'),function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      [].forEach.call(document.querySelectorAll('#tourPanels .tabpanel'),function(p){
+        p.classList.toggle('on',p.getAttribute('data-i')===i);
+      });
+    });
+  }
+  /* forms */
+  [].forEach.call(document.querySelectorAll('form[data-form]'),function(f){
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var kind=f.getAttribute('data-form');
+      var data={};
+      [].forEach.call(f.elements,function(el){ if(el.name) data[el.name]=el.value; });
+      data.ts=new Date().toISOString(); data.kind=kind;
+      try{
+        var key='gramos:leads';
+        var all=JSON.parse(localStorage.getItem(key)||'[]');
+        all.push(data);
+        localStorage.setItem(key,JSON.stringify(all.slice(-50)));
+      }catch(err){/* storage may be unavailable — not critical */}
+      var ok=document.createElement('div');
+      ok.className='notice';
+      ok.innerHTML= kind==='login'
+        ? 'Демо-режим: вход не подключён. Чтобы получить рабочий аккаунт, оставьте заявку на странице «Начать бесплатно».'
+        : 'Спасибо! Заявка принята. Мы свяжемся с вами в течение рабочего дня.<br><span class="tiny">Это демонстрационная версия: чтобы заявки приходили вам, подключите форму к своему бэкенду или Telegram-боту.</span>';
+      f.parentNode.replaceChild(ok,f);
+    });
+  });
+}
+
+/* ---------- theme ---------- */
+var themeBtn=document.getElementById('themeBtn');
+var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>';
+var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  themeBtn.innerHTML = t==='dark'? SUN : MOON;
+  try{ localStorage.setItem('gramos:theme',t); }catch(e){}
+}
+(function initTheme(){
+  var saved=null;
+  try{ saved=localStorage.getItem('gramos:theme'); }catch(e){}
+  if(!saved){
+    saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light':'dark';
+  }
+  applyTheme(saved);
+})();
+themeBtn.addEventListener('click',function(){
+  applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+});
+
+/* ---------- drawer ---------- */
+var drawer=document.getElementById('drawer');
+function closeDrawer(){ drawer.classList.remove('open'); document.body.style.overflow=''; }
+document.getElementById('burger').addEventListener('click',function(){
+  drawer.classList.add('open'); document.body.style.overflow='hidden';
+});
+document.getElementById('drawerClose').addEventListener('click',closeDrawer);
+drawer.addEventListener('click',function(e){ if(e.target.tagName==='A') closeDrawer(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeDrawer(); });
+
+/* ---------- boot ---------- */
+document.getElementById('year').textContent=new Date().getFullYear();
+if(!location.hash) location.replace('#/');
+render();
+
+})();
+</script>
+</body>
+</html>
