@@ -31,6 +31,21 @@
   text-decoration: none;
 }
 
+.logo-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  box-shadow: 0 4px 14px rgba(26, 143, 240, 0.38);
+  flex-shrink: 0;
+  display: block;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.logo:hover .logo-mark {
+  transform: scale(1.08) rotate(-1deg);
+  box-shadow: 0 6px 18px rgba(26, 143, 240, 0.52);
+}
+
 .logo-img {
   width: 36px;
   height: 36px;
@@ -38,35 +53,6 @@
   flex-shrink: 0;
   display: block;
   transition: transform 0.2s ease;
-}
-
-.logo:hover .logo-img {
-  transform: scale(1.06);
-}
-
-/* Theme switching for logo images */
-html[data-theme="light"] .logo-theme-dark {
-  display: none !important;
-}
-html[data-theme="light"] .logo-theme-light {
-  display: block !important;
-}
-
-html[data-theme="dark"] .logo-theme-light {
-  display: none !important;
-}
-html[data-theme="dark"] .logo-theme-dark {
-  display: block !important;
-}
-
-/* Fallback for system theme / initial render */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .logo-theme-light { display: none !important; }
-  :root:not([data-theme="light"]) .logo-theme-dark { display: block !important; }
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .logo-theme-dark { display: none !important; }
-  :root:not([data-theme="dark"]) .logo-theme-light { display: block !important; }
 }
 
 .logo-text {

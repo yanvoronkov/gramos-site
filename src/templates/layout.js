@@ -60,8 +60,7 @@ function renderLayout(page, content, buildId = '1') {
 <header class="header">
   <nav class="wrap nav">
     <a href="/" class="logo" aria-label="GramOS">
-      <img src="/GRAMOS-BLACK.svg" class="logo-img logo-theme-light" alt="GramOS" width="36" height="36">
-      <img src="/GRAMOS-WHITE.svg" class="logo-img logo-theme-dark" alt="GramOS" width="36" height="36">
+      <img src="/favicon.svg" class="logo-mark" alt="GramOS" width="34" height="34">
       <span class="logo-text">GramOS</span>
     </a>
     
@@ -255,8 +254,7 @@ function renderLayout(page, content, buildId = '1') {
 <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Навигационное меню">
   <div class="drawer-head">
     <a href="/" class="logo" aria-label="GramOS">
-      <img src="/GRAMOS-BLACK.svg" class="logo-img logo-theme-light" alt="GramOS" width="34" height="34">
-      <img src="/GRAMOS-WHITE.svg" class="logo-img logo-theme-dark" alt="GramOS" width="34" height="34">
+      <img src="/favicon.svg" class="logo-mark" alt="GramOS" width="32" height="32">
       <span class="logo-text">GramOS</span>
     </a>
     <button class="icon-btn" id="drawerClose" aria-label="Закрыть меню">
@@ -411,8 +409,7 @@ function renderLayout(page, content, buildId = '1') {
     <div class="f-grid">
       <div>
         <a href="/" class="logo" style="margin-bottom:12px" aria-label="GramOS">
-          <img src="/GRAMOS-BLACK.svg" class="logo-img logo-theme-light" alt="GramOS" width="38" height="38">
-          <img src="/GRAMOS-WHITE.svg" class="logo-img logo-theme-dark" alt="GramOS" width="38" height="38">
+          <img src="/favicon.svg" class="logo-mark" alt="GramOS" width="36" height="36">
           <span class="logo-text">GramOS</span>
         </a>
         <p class="small muted" style="max-width:34ch">Операционная система для бизнеса в Telegram: CRM, сценарии, платежи, доступы и рассылки в одном контуре.</p>
