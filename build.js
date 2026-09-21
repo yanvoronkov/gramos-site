@@ -337,7 +337,10 @@ ${pages
   // Generate robots.txt
   console.log('🤖 Generating robots.txt for Yandex & Google...');
   const hostDomain = siteConfig.domain.replace(/^https?:\/\//, '');
-  const robotsTxt = `User-agent: *
+  const robotsTxt = siteConfig.disallowIndexing ? `# Индексация временно заблокирована на период доработки сайта
+User-agent: *
+Disallow: /
+` : `User-agent: *
 Allow: /
 Disallow: /login/
 

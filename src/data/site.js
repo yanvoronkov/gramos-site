@@ -7,6 +7,7 @@ module.exports = {
   author: 'GramOS Team',
   locale: 'ru_RU',
   ogImage: '/images/og-cover.png',
+  disallowIndexing: true, // Защита от индексации поисковиками на время доработки
   contacts: {
     telegram: '@gramos_support',
     telegramUrl: 'https://t.me/gramos_support',

@@ -17,6 +17,7 @@ function generateMeta(page) {
   return `
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(desc)}">
+    ${siteConfig.disallowIndexing ? '<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">' : '<meta name="robots" content="index, follow">'}
     <link rel="canonical" href="${url}">
     
     <!-- Open Graph / Facebook / Telegram -->
