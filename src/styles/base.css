@@ -114,7 +114,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-text);
   margin-bottom: 14px;
 }
 
@@ -196,15 +196,15 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   padding: 6px 14px;
   border-radius: 999px;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-text);
   border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   margin-bottom: 20px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .pill b {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--accent-text);
+  color: #ffffff;
   padding: 2px 7px;
   border-radius: 999px;
   font-size: 0.7rem;
@@ -266,7 +266,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 }
 
 .btn-link {
-  color: var(--accent);
+  color: var(--accent-text);
   font-weight: 600;
   display: inline-flex;
   align-items: center;

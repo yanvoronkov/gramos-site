@@ -44,15 +44,17 @@ function renderLayout(page, content, buildId = '1') {
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#1a8ff0">
   
-  <!-- Fonts -->
+  <!-- Fonts: Non-blocking asynchronous loading with fallback -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  </noscript>
   
-  <!-- Styles with Cache-Busting Version -->
-  <link rel="stylesheet" href="/css/tokens.css?v=${buildId}">
-  <link rel="stylesheet" href="/css/base.css?v=${buildId}">
-  <link rel="stylesheet" href="/css/components.css?v=${buildId}">
+  <!-- Consolidated Stylesheet with Cache-Busting Version -->
+  <link rel="stylesheet" href="/css/bundle.css?v=${buildId}">
 </head>
 <body>
 
@@ -419,7 +421,7 @@ function renderLayout(page, content, buildId = '1') {
       </div>
       
       <div>
-        <h5>Продукт</h5>
+        <div class="f-col-title">Продукт</div>
         <a href="/product/crm/">CRM</a>
         <a href="/product/automations/">Сценарии</a>
         <a href="/product/payments/">Платежи</a>
@@ -430,7 +432,7 @@ function renderLayout(page, content, buildId = '1') {
       </div>
       
       <div>
-        <h5>Решения</h5>
+        <div class="f-col-title">Решения</div>
         <a href="/solutions/paid-community/">Платный клуб</a>
         <a href="/solutions/online-school/">Онлайн-школа</a>
         <a href="/solutions/expert/">Эксперты</a>
@@ -440,7 +442,7 @@ function renderLayout(page, content, buildId = '1') {
       </div>
       
       <div>
-        <h5>Ресурсы</h5>
+        <div class="f-col-title">Ресурсы</div>
         <a href="/docs/">Документация</a>
         <a href="/blog/">Блог</a>
         <a href="/integrations/">Интеграции</a>
@@ -450,7 +452,7 @@ function renderLayout(page, content, buildId = '1') {
       </div>
       
       <div>
-        <h5>Компания</h5>
+        <div class="f-col-title">Компания</div>
         <a href="/pricing/">Тарифы</a>
         <a href="/contact/">Контакты</a>
         <a href="/login/">Войти</a>

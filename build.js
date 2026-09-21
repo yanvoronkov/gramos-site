@@ -355,10 +355,16 @@ Sitemap: ${siteConfig.domain}/sitemap.xml
 `;
   fs.writeFileSync(path.join(DIST_DIR, 'robots.txt'), robotsTxt, 'utf-8');
 
-  // Copy CSS
-  console.log('🎨 Copying CSS styles...');
+  // Copy CSS & Create Consolidated bundle.css
+  console.log('🎨 Compiling & copying CSS styles...');
   const cssDest = path.join(DIST_DIR, 'css');
   copyDir(path.join(__dirname, 'src', 'styles'), cssDest);
+  
+  const tokensCss = fs.readFileSync(path.join(__dirname, 'src', 'styles', 'tokens.css'), 'utf-8');
+  const baseCss = fs.readFileSync(path.join(__dirname, 'src', 'styles', 'base.css'), 'utf-8');
+  const componentsCss = fs.readFileSync(path.join(__dirname, 'src', 'styles', 'components.css'), 'utf-8');
+  const bundleCss = `/* GramOS Consolidated Production Stylesheet */\n${tokensCss}\n${baseCss}\n${componentsCss}`;
+  fs.writeFileSync(path.join(cssDest, 'bundle.css'), bundleCss, 'utf-8');
 
   // Copy JS
   console.log('⚡ Copying JavaScript client scripts...');

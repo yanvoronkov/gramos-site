@@ -578,7 +578,7 @@
   font-family: Manrope, sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--faint);
+  color: var(--muted);
   letter-spacing: 0.02em;
 }
 
@@ -805,8 +805,10 @@ ul.checks li::before {
   color: var(--muted);
 }
 
-.mock-row .tag.g { background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }
-.mock-row .tag.v { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+.mock-row .tag.g { background: color-mix(in srgb, var(--ok) 15%, transparent); color: #087f56; font-weight: 700; }
+.mock-row .tag.v { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent-text); font-weight: 700; }
+
+:root[data-theme="dark"] .mock-row .tag.g { color: var(--ok); }
 
 .stat-mini {
   display: grid;
@@ -822,7 +824,7 @@ ul.checks li::before {
   display: block;
   font-family: Manrope, sans-serif;
   font-size: 1.1rem;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .stat-mini span {
@@ -1318,8 +1320,13 @@ tr:last-child td {
   gap: 36px 24px;
 }
 
-.f-grid h5 {
+.f-grid h5,
+.f-col-title {
+  font-family: Manrope, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
   margin-bottom: 16px;
+  color: var(--text);
 }
 
 .f-grid a {
