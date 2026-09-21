@@ -13,10 +13,25 @@ function renderLayout(page, content) {
   }
 
   return `<!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  
+  <!-- Zero-FOUC Instant Theme Initialization (Prevents flash of inaccurate theme) -->
+  <script>
+    (function() {
+      try {
+        var pref = localStorage.getItem('gramos:theme');
+        var theme = pref;
+        if (!theme || theme === 'system') {
+          theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.setAttribute('data-theme-preference', pref || 'system');
+      } catch (e) {}
+    })();
+  </script>
   
   <!-- SEO & Open Graph Meta -->
   ${generateMeta(page)}
@@ -220,7 +235,28 @@ function renderLayout(page, content) {
     </div>
     
     <div class="nav-right">
-      <button class="icon-btn" id="themeBtn" aria-label="Сменить тему оформления" title="Сменить тему"></button>
+      <div class="theme-wrapper" id="themeWrapper">
+        <button class="icon-btn" id="themeBtn" aria-label="Тема оформления" aria-haspopup="true" aria-expanded="false" title="Тема оформления">
+          ${icon('sun')}
+        </button>
+        <div class="theme-popover" id="themeMenu" role="menu" aria-label="Выбор темы">
+          <button type="button" class="theme-opt" data-theme-val="light" role="menuitem">
+            <span class="t-ico">${icon('sun')}</span>
+            <span class="t-name">Светлая</span>
+            <span class="t-check">${icon('check')}</span>
+          </button>
+          <button type="button" class="theme-opt" data-theme-val="dark" role="menuitem">
+            <span class="t-ico">${icon('moon')}</span>
+            <span class="t-name">Тёмная</span>
+            <span class="t-check">${icon('check')}</span>
+          </button>
+          <button type="button" class="theme-opt" data-theme-val="system" role="menuitem">
+            <span class="t-ico">${icon('monitor')}</span>
+            <span class="t-name">Системная</span>
+            <span class="t-check">${icon('check')}</span>
+          </button>
+        </div>
+      </div>
       <a class="btn btn-ghost btn-sm" href="/login/">Войти</a>
       <a class="btn btn-primary btn-sm" href="/demo/">Начать бесплатно</a>
       <button class="icon-btn burger" id="burger" aria-label="Открыть мобильное меню">
@@ -352,6 +388,25 @@ function renderLayout(page, content) {
           <span class="d-ico">${icon('mail')}</span>
           <span class="d-text">Контакты</span>
         </a>
+      </div>
+    </div>
+
+    <!-- Section 4: Тема оформления -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Тема оформления</div>
+      <div class="theme-segmented">
+        <button type="button" class="theme-seg-btn" data-theme-val="light">
+          <span class="t-ico">${icon('sun')}</span>
+          <span>Светлая</span>
+        </button>
+        <button type="button" class="theme-seg-btn" data-theme-val="dark">
+          <span class="t-ico">${icon('moon')}</span>
+          <span>Тёмная</span>
+        </button>
+        <button type="button" class="theme-seg-btn" data-theme-val="system">
+          <span class="t-ico">${icon('monitor')}</span>
+          <span>Авто</span>
+        </button>
       </div>
     </div>
   </div>

@@ -26,7 +26,8 @@ const ICONS = {
   moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>',
   burger: '<path d="M3 6h18M3 12h18M3 18h18"/>',
   close: '<path d="M18 6 6 18M6 6l12 12"/>',
-  caret: '<path d="m6 9 6 6 6-6"/>'
+  caret: '<path d="m6 9 6 6 6-6"/>',
+  monitor: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>'
 };
 
 function icon(name, extraClass = '') {
