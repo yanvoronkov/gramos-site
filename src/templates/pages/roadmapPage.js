@@ -29,7 +29,17 @@ function renderRoadmapPage() {
         ${col('Скоро', '<span class="badge soon">В планах</span>', ROADMAP.soon)}
       </div>
       
-      <div class="callout" style="margin-top:28px">
+      <div class="callout" style="margin-top:28px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div>
+          <strong>Журнал изменений по версиям</strong>
+          <div style="font-size:0.92rem; color:var(--muted); margin-top:4px;">
+            История каждого обновления платформы с подробным списком новых функций и доработок доступна в нашем чейнджлоге.
+          </div>
+        </div>
+        <a class="btn btn-ghost btn-sm" href="/releases/">Смотреть релизы →</a>
+      </div>
+
+      <div class="callout" style="margin-top:16px">
         Beta-функции доступны по запросу и могут меняться. Если какая-то из них критична для вашего запуска — 
         <a class="btn-link" href="/contact/">напишите нам</a>, мы подскажем сроки и подключим функцию в ваш аккаунт раньше.
       </div>

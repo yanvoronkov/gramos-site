@@ -24,6 +24,7 @@ const { renderPricingPage } = require('./src/templates/pages/pricingPage');
 const { renderDemoPage } = require('./src/templates/pages/demoPage');
 const { renderIntegrationsPage } = require('./src/templates/pages/integrationsPage');
 const { renderRoadmapPage } = require('./src/templates/pages/roadmapPage');
+const { renderReleasesPage } = require('./src/templates/pages/releasesPage');
 const { renderSecurityPage } = require('./src/templates/pages/securityPage');
 const { renderDocsIndex } = require('./src/templates/pages/docsIndex');
 const { renderDocPage } = require('./src/templates/pages/docPage');
@@ -192,6 +193,17 @@ function build() {
     metaDesc: 'Актуальный статус разработки: что доступно сейчас, что находится в стадии открытой beta, и какие функции появятся в ближайших релизах.',
     crumbs: [['Главная', '/'], ['Roadmap', '']],
     content: renderRoadmapPage()
+  });
+
+  // 9b. Releases / Changelog
+  pages.push({
+    path: '/releases/',
+    priority: '0.8',
+    changefreq: 'weekly',
+    metaTitle: 'История обновлений и релизы платформы | GramOS Changelog',
+    metaDesc: 'Хронология релизов GramOS: новые возможности визуального конструктора воронок, CRM, платежей, рассылок и улучшений производительности.',
+    crumbs: [['Главная', '/'], ['Релизы', '']],
+    content: renderReleasesPage()
   });
 
   // 10. Security

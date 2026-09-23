@@ -38,6 +38,7 @@ const PAGES_TO_TEST = [
   '/docs/security-checklist/',
   '/demo/',
   '/roadmap/',
+  '/releases/',
   '/security/',
   '/blog/',
   '/blog/telegram-funnel/',

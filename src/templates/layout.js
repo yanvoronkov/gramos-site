@@ -192,7 +192,7 @@ function renderLayout(page, content, buildId = '1') {
       
       <!-- Ещё Dropdown -->
       <div class="has-menu">
-        <button class="navbtn ${['/demo/', '/roadmap/', '/security/', '/blog/', '/contact/'].some(p => currentPath.startsWith(p)) ? 'active' : ''}" type="button">
+        <button class="navbtn ${['/demo/', '/roadmap/', '/releases/', '/security/', '/blog/', '/contact/'].some(p => currentPath.startsWith(p)) ? 'active' : ''}" type="button">
           <span>Ещё</span>
           <svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
@@ -209,6 +209,13 @@ function renderLayout(page, content, buildId = '1') {
             <div class="menu-info">
               <strong class="menu-title">Roadmap</strong>
               <span class="menu-desc">Текущие релизы и план развития платформы</span>
+            </div>
+          </a>
+          <a href="/releases/" class="menu-item ${isActive('/releases/')}">
+            <div class="menu-ico">${icon('bolt')}</div>
+            <div class="menu-info">
+              <strong class="menu-title">Релизы</strong>
+              <span class="menu-desc">История версий и журнал обновлений</span>
             </div>
           </a>
           <a href="/security/" class="menu-item ${isActive('/security/')}">
@@ -359,6 +366,10 @@ function renderLayout(page, content, buildId = '1') {
           <span class="d-ico">${icon('clock')}</span>
           <span class="d-text">Roadmap</span>
         </a>
+        <a href="/releases/" class="drawer-link ${isActive('/releases/')}">
+          <span class="d-ico">${icon('bolt')}</span>
+          <span class="d-text">Релизы</span>
+        </a>
         <a href="/security/" class="drawer-link ${isActive('/security/')}">
           <span class="d-ico">${icon('shield')}</span>
           <span class="d-text">Безопасность</span>
@@ -447,6 +458,7 @@ function renderLayout(page, content, buildId = '1') {
         <a href="/blog/">Блог</a>
         <a href="/integrations/">Интеграции</a>
         <a href="/roadmap/">Roadmap</a>
+        <a href="/releases/">Релизы</a>
         <a href="/demo/">Демо</a>
         <a href="/security/">Безопасность</a>
       </div>
