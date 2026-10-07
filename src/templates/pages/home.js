@@ -28,8 +28,8 @@ function renderHome() {
   <!-- HERO -->
   <section class="hero">
     <div class="wrap">
-      <div class="split">
-        <div>
+      <div class="split hero-split">
+        <div class="hero-text-col">
           <div class="hero-eyebrow"><span class="dot"></span> Для платных каналов, онлайн-школ, клубов и авторов</div>
           <h1 class="hero-title">Создавайте в Telegram без кода:<br>
             <span class="hero-typewriter-wrap">
@@ -46,11 +46,6 @@ function renderHome() {
             <span><b class="check">✓</b> Без карты</span>
             <span><b class="check">✓</b> Без комиссии GramOS</span>
             <span><b class="check">✓</b> Можно подключить существующего бота</span>
-          </div>
-
-          <div class="hero-offer-badge">
-            <span class="offer-tag">Тариф Бесплатный</span>
-            <span class="offer-text">Для новых клиентов <b>неограниченный бесплатный доступ до 300 контактов</b></span>
           </div>
         </div>
 
@@ -87,6 +82,14 @@ function renderHome() {
           <div class="hero-progress-bar">
             <div class="hero-progress-fill" id="heroProgressFill"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- Centered Offer Badge across the hero width -->
+      <div class="hero-offer-center">
+        <div class="hero-offer-badge">
+          <span class="offer-tag">Тариф Бесплатный</span>
+          <span class="offer-text">Для новых клиентов <b>неограниченный бесплатный доступ до 300 контактов</b></span>
         </div>
       </div>
     </div>
