@@ -622,28 +622,38 @@
   }
 }
 
-/* Dynamic Hero Rotator & Synchronized Scenarios */
+/* Dynamic Hero Typewriter & Synchronized Scenarios */
 .hero-title {
-  font-size: clamp(2.1rem, 3.8vw, 3.2rem);
-  line-height: 1.08;
-  letter-spacing: -0.04em;
-  margin-bottom: 22px;
+  font-size: clamp(1.68rem, 2.7vw, 2.35rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  margin-bottom: 20px;
 }
 
-.hero-rotator-wrap {
+.hero-typewriter-wrap {
+  display: inline-flex;
+  align-items: baseline;
+  min-height: 1.25em;
+  white-space: nowrap;
+}
+
+.hero-typewriter-text {
   display: inline-block;
-  min-width: 280px;
+  font-weight: 800;
 }
 
-.hero-rotator {
+.hero-typewriter-cursor {
   display: inline-block;
-  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, opacity;
+  color: var(--accent);
+  font-weight: 300;
+  margin-left: 2px;
+  animation: cursor-blink 0.9s infinite step-start;
+  user-select: none;
 }
 
-.hero-rotator.fade-out {
-  opacity: 0;
-  transform: translateY(10px);
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 .hero-visual-col {

@@ -308,12 +308,12 @@
     });
   }
 
-  /* ---------- Dynamic Hero Synchronizer (Rotator + Panels) ---------- */
+  /* ---------- Dynamic Hero Typewriter Synchronizer ---------- */
   function initHeroRotator() {
-    var rotatorEl = document.getElementById('heroRotatorText');
+    var textEl = document.getElementById('heroTypewriterText');
     var tabsWrap = document.getElementById('heroScenarioTabs');
     var progressEl = document.getElementById('heroProgressFill');
-    if (!rotatorEl || !tabsWrap) return;
+    if (!textEl || !tabsWrap) return;
 
     var SCENARIOS = [
       { key: 'club', label: 'платные клубы' },
@@ -323,72 +323,119 @@
     ];
 
     var currentIndex = 0;
-    var duration = 4800; // 4.8 seconds per scenario
-    var startTime = performance.now();
-    var animFrame = null;
+    var currentWord = SCENARIOS[0].label;
+    var charIndex = currentWord.length;
+    var isDeleting = false;
     var isPaused = false;
+    var timerId = null;
 
-    function applyScenario(idx) {
-      currentIndex = idx;
-      var item = SCENARIOS[currentIndex];
+    var TYPE_SPEED = 70;      // мс на букву при наборе
+    var DELETE_SPEED = 32;    // мс на букву при стирании
+    var HOLD_DELAY = 2800;    // пауза после завершения слова для чтения и просмотра макета
+    var START_DELAY = 350;    // пауза перед началом набора нового слова
 
-      // 1. Text transition
-      rotatorEl.classList.add('fade-out');
-      setTimeout(function() {
-        rotatorEl.textContent = item.label;
-        rotatorEl.classList.remove('fade-out');
-      }, 180);
+    function switchPanels(idx) {
+      var item = SCENARIOS[idx];
 
-      // 2. Tabs highlight
+      // Highlight active tab
       [].forEach.call(tabsWrap.querySelectorAll('.hero-tab'), function(tab) {
         tab.classList.toggle('on', tab.getAttribute('data-scenario') === item.key);
       });
 
-      // 3. Panel switch
+      // Show matching mock panel
       [].forEach.call(document.querySelectorAll('#heroPanelsWrap .hero-panel'), function(panel) {
         panel.classList.toggle('active', panel.getAttribute('data-panel') === item.key);
       });
-
-      startTime = performance.now();
     }
 
-    function tick(now) {
-      if (!isPaused) {
-        var elapsed = now - startTime;
-        var progress = Math.min(100, (elapsed / duration) * 100);
-        if (progressEl) progressEl.style.width = progress + '%';
-
-        if (elapsed >= duration) {
-          applyScenario((currentIndex + 1) % SCENARIOS.length);
-        }
+    function typeLoop() {
+      if (isPaused) {
+        timerId = setTimeout(typeLoop, 200);
+        return;
       }
-      animFrame = requestAnimationFrame(tick);
+
+      var targetWord = SCENARIOS[currentIndex].label;
+
+      if (!isDeleting) {
+        // Typing letters forward
+        charIndex++;
+        textEl.textContent = targetWord.slice(0, charIndex);
+
+        if (charIndex === targetWord.length) {
+          // Word complete: activate matching panel & hold
+          switchPanels(currentIndex);
+          if (progressEl) {
+            progressEl.style.transition = 'width ' + HOLD_DELAY + 'ms linear';
+            progressEl.style.width = '100%';
+          }
+          isDeleting = true;
+          timerId = setTimeout(typeLoop, HOLD_DELAY);
+          return;
+        }
+
+        timerId = setTimeout(typeLoop, TYPE_SPEED);
+      } else {
+        // Deleting letters backward
+        charIndex--;
+        textEl.textContent = targetWord.slice(0, charIndex);
+
+        if (progressEl && charIndex === targetWord.length - 1) {
+          progressEl.style.transition = 'none';
+          progressEl.style.width = '0%';
+        }
+
+        if (charIndex === 0) {
+          // Word deleted: advance to next scenario
+          isDeleting = false;
+          currentIndex = (currentIndex + 1) % SCENARIOS.length;
+          timerId = setTimeout(typeLoop, START_DELAY);
+          return;
+        }
+
+        timerId = setTimeout(typeLoop, DELETE_SPEED);
+      }
     }
 
-    // Manual click on tabs
+    // Manual click on tabs: instantly switches to target scenario
     tabsWrap.addEventListener('click', function(e) {
       var btn = e.target.closest('.hero-tab');
       if (!btn) return;
       var targetKey = btn.getAttribute('data-scenario');
       var targetIdx = SCENARIOS.findIndex(function(s) { return s.key === targetKey; });
       if (targetIdx !== -1) {
-        applyScenario(targetIdx);
-        if (progressEl) progressEl.style.width = '0%';
+        clearTimeout(timerId);
+        currentIndex = targetIdx;
+        isDeleting = false;
+        var chosenWord = SCENARIOS[currentIndex].label;
+        textEl.textContent = chosenWord;
+        charIndex = chosenWord.length;
+        switchPanels(currentIndex);
+
+        if (progressEl) {
+          progressEl.style.transition = 'none';
+          progressEl.style.width = '100%';
+        }
+
+        isDeleting = true;
+        timerId = setTimeout(typeLoop, HOLD_DELAY);
       }
     });
 
-    // Pause auto-rotation on mouse hover over the visual block
+    // Pause typing loop on mouse hover
     var heroCol = document.querySelector('.hero-visual-col');
     if (heroCol) {
       heroCol.addEventListener('mouseenter', function() { isPaused = true; });
-      heroCol.addEventListener('mouseleave', function() {
-        isPaused = false;
-        startTime = performance.now();
-      });
+      heroCol.addEventListener('mouseleave', function() { isPaused = false; });
     }
 
-    // Start auto loop
-    animFrame = requestAnimationFrame(tick);
+    // Initial setup: start after brief delay
+    switchPanels(0);
+    if (progressEl) {
+      progressEl.style.transition = 'width ' + HOLD_DELAY + 'ms linear';
+      progressEl.style.width = '100%';
+    }
+    isDeleting = true;
+    timerId = setTimeout(typeLoop, HOLD_DELAY);
   }
 
   /* ---------- Initialize on DOM Ready ---------- */

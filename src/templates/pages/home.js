@@ -31,12 +31,12 @@ function renderHome() {
       <div class="split">
         <div>
           <div class="hero-eyebrow"><span class="dot"></span> Для платных каналов, онлайн-школ, клубов и авторов</div>
-          <h1 class="hero-title">Продавайте в Telegram через Mini App:<br>
-            <span class="hero-rotator-wrap">
-              <span class="hero-rotator grad" id="heroRotatorText">платные клубы</span>
+          <h1 class="hero-title">Создавайте в Telegram без кода:<br>
+            <span class="hero-typewriter-wrap">
+              <span class="hero-typewriter-text grad" id="heroTypewriterText">платные клубы</span><span class="hero-typewriter-cursor" id="heroCursor" aria-hidden="true">|</span>
             </span>
           </h1>
-          <p class="lede">Принимайте оплату, автоматизируйте доступы к продуктам, запускайте ботов и автоворонки, храните клиентов в CRM — без зоопарка сервисов и ручной работы.</p>
+          <p class="lede">Принимайте оплату, автоматизируйте доступы к продуктам, запускайте ботов и автоворонки, храните клиентов в CRM — всё в одном мини-приложении Telegram.</p>
           
           <div class="hero-actions">
             <a class="btn btn-primary btn-lg" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_hero" data-smart-cta="site_hero" target="_blank" rel="noopener">Начать в один клик →</a>
