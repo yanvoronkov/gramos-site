@@ -67,7 +67,7 @@ function renderHome() {
             </button>
             <button type="button" class="hero-tab" data-scenario="course">
               <span class="hero-tab-dot"></span>
-              <span>Онлайн-курс</span>
+              <span>ИИ-консультант</span>
             </button>
             <button type="button" class="hero-tab" data-scenario="subs">
               <span class="hero-tab-dot"></span>

@@ -318,7 +318,7 @@
     var SCENARIOS = [
       { key: 'club', label: 'платные клубы' },
       { key: 'flow', label: 'воронки продаж' },
-      { key: 'course', label: 'онлайн-курсы' },
+      { key: 'course', label: 'ИИ-консультантов' },
       { key: 'subs', label: 'закрытые подписки' }
     ];
 

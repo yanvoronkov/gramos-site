@@ -46,19 +46,18 @@ const MOCKS = {
     </div>
   </div>`,
 
-  // 3. Сценарий: Онлайн-курс (Личный кабинет ученика и выдача уроков)
+  // 3. Сценарий: ИИ-консультанты (Умный бот-консультант с автоответами и квалификацией)
   course: `<div class="mock mock-hero-sync">
-    <div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">GramOS · Кабинет ученика в Telegram</span><span class="live-pill" style="margin-left:auto">● Mini App</span></div>
+    <div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">GramOS · ИИ-Консультант 24/7</span><span class="live-pill" style="margin-left:auto">● AI онлайн</span></div>
     <div class="mock-body">
-      <div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#5b5cf0,#8c6cf6)">К</span><span class="t"><b>Курс «Telegram-маркетинг 2026»</b><span>Тариф с куратором · Доступ активен</span></span><span class="tag g">Оплачен</span></div>
-      <div class="stat-mini"><div><b>14 из 20</b><span>уроков открыто</span></div><div><b>85%</b><span>прогресс курса</span></div><div><b>3</b><span>ДЗ проверено</span></div></div>
-      <div class="mock-row" style="justify-content:space-between">
-        <span class="t"><b>Модуль 3: Запуск платных воронок</b><span>Видео 24 мин · Домашнее задание сдано</span></span>
-        <span class="tag v">Смотреть</span>
+      <div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#5b5cf0,#8c6cf6)">AI</span><span class="t"><b>Нейро-ассистент по продуктам</b><span>Обучен на вашей базе знаний · отвечает за 1.2 сек</span></span><span class="tag g">Активен</span></div>
+      <div class="chat" style="display:flex;flex-direction:column;gap:8px;padding:6px 0">
+        <div class="bub in" style="align-self:flex-start;max-width:85%;padding:8px 12px;background:var(--surface-2);border-radius:12px;font-size:0.83rem">Здравствуйте! Подскажите, какой тариф подойдет для сообщества на 2 000 человек?</div>
+        <div class="bub out" style="align-self:flex-end;max-width:88%;padding:8px 12px;background:color-mix(in srgb,var(--accent) 15%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;font-size:0.83rem;color:var(--text)">Вам идеально подойдет тариф «Growth»: до 15 000 контактов, рекуррентные подписки и автокик. Сформировать счет со скидкой 20%? 👇</div>
       </div>
-      <div class="mock-row" style="justify-content:space-between">
-        <span class="t"><b>Модуль 4: Прием платежей и CRM</b><span>Откроется завтра в 10:00 (по расписанию)</span></span>
-        <span class="tag">Заблокирован</span>
+      <div class="mock-row" style="justify-content:space-between;background:color-mix(in srgb,var(--good) 8%,var(--surface));border-color:color-mix(in srgb,var(--good) 30%,transparent)">
+        <span class="t"><b style="color:var(--good)">Лид квалифицирован ИИ</b><span>Бюджет подтвержден · Ссылка на оплату отправлена</span></span>
+        <span class="tag g">В CRM</span>
       </div>
     </div>
   </div>`,
