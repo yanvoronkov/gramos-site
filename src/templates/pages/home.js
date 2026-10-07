@@ -70,12 +70,52 @@ function renderHome() {
             </button>
           </div>
 
-          <!-- Synchronized mock displays -->
-          <div class="hero-panels-wrap" id="heroPanelsWrap">
-            <div class="hero-panel active" data-panel="club">${MOCKS.club}</div>
-            <div class="hero-panel" data-panel="flow">${MOCKS.flow}</div>
-            <div class="hero-panel" data-panel="course">${MOCKS.course}</div>
-            <div class="hero-panel" data-panel="subs">${MOCKS.subs}</div>
+          <!-- Smartphone Mockup Stage -->
+          <div class="phone-stage">
+            <div class="phone-device">
+              <!-- Physical hardware elements -->
+              <span class="phone-btn phone-btn-mute" aria-hidden="true"></span>
+              <span class="phone-btn phone-btn-up" aria-hidden="true"></span>
+              <span class="phone-btn phone-btn-down" aria-hidden="true"></span>
+              <span class="phone-btn phone-btn-power" aria-hidden="true"></span>
+
+              <!-- Display Screen Frame -->
+              <div class="phone-screen-frame">
+                <div class="phone-screens-wrap" id="heroPanelsWrap">
+                  <div class="phone-screen hero-panel active" data-panel="club">
+                    <img src="/screen-1.png" alt="GramOS в Telegram: Сценарии платного клуба" class="phone-screen-img" loading="eager" width="1179" height="2556">
+                  </div>
+                  <div class="phone-screen hero-panel" data-panel="flow">
+                    <img src="/screen-2.png" alt="GramOS в Telegram: Визуальный конструктор воронки" class="phone-screen-img" loading="lazy" width="1179" height="2556">
+                  </div>
+                  <div class="phone-screen hero-panel" data-panel="course">
+                    <img src="/screen-3.png" alt="GramOS в Telegram: CRM база контактов и ИИ" class="phone-screen-img" loading="lazy" width="1179" height="2556">
+                  </div>
+                  <div class="phone-screen hero-panel" data-panel="subs">
+                    <img src="/screen-1.png" alt="GramOS в Telegram: Подписки и рекуррентные платежи" class="phone-screen-img" loading="lazy" width="1179" height="2556">
+                  </div>
+                </div>
+                <!-- Screen glass reflection overlay -->
+                <div class="phone-glare" aria-hidden="true"></div>
+              </div>
+            </div>
+
+            <!-- Floating SaaS Highlights around device -->
+            <div class="phone-float-badge badge-float-left">
+              <span class="badge-float-ico">⚡</span>
+              <div class="badge-float-info">
+                <b>Автовыдача за 1 сек</b>
+                <small>Доступ в закрытый канал</small>
+              </div>
+            </div>
+
+            <div class="phone-float-badge badge-float-right">
+              <span class="badge-float-ico">💳</span>
+              <div class="badge-float-info">
+                <b>0% комиссии</b>
+                <small>ЮKassa • Stars • Мир</small>
+              </div>
+            </div>
           </div>
 
           <!-- Auto-rotation progress indicator -->
