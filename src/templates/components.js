@@ -47,7 +47,7 @@ function ctaBand(title, text) {
         <h2>${title || 'Запустите Telegram-продажи без связки из десятка сервисов'}</h2>
         <p class="lede center" style="margin:0 auto 24px">${text || '14 дней бесплатно, без карты. Подключите бота и соберите первую воронку за вечер.'}</p>
         <div class="btns">
-          <a class="btn btn-primary btn-lg" href="/demo/">Начать бесплатно</a>
+          <a class="btn btn-primary btn-lg" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_band" data-smart-cta="site_band" target="_blank" rel="noopener">Начать бесплатно</a>
           <a class="btn btn-ghost btn-lg" href="/contact/">Получить консультацию</a>
         </div>
       </div>
@@ -66,7 +66,7 @@ function pageHero(o) {
           <h1>${o.title}</h1>
           <p class="lede">${o.lede}</p>
           <div class="btns" style="margin-top:26px">
-            <a class="btn btn-primary btn-lg" href="/demo/">Начать бесплатно</a>
+            <a class="btn btn-primary btn-lg" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_page" data-smart-cta="site_page" target="_blank" rel="noopener">Начать бесплатно</a>
             <a class="btn btn-ghost btn-lg" href="${o.secondHref || '/contact/'}">${o.second || 'Получить демо'}</a>
           </div>
         </div>

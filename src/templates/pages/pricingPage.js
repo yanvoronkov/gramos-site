@@ -14,7 +14,7 @@ function renderPricingCardsFull() {
       <p class="small muted" style="min-height:42px">${p.desc}</p>
       <div class="amount">₽${fmt(p.m)} <span>/ мес</span></div>
       <p class="tiny muted" style="margin:6px 0 0">при помесячной оплате</p>
-      <a class="btn ${p.hot ? 'btn-primary' : 'btn-ghost'}" href="/demo/">Попробовать 14 дней</a>
+      <a class="btn ${p.hot ? 'btn-primary' : 'btn-ghost'}" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=pricing_${p.name.toLowerCase()}" data-smart-cta="pricing_${p.name.toLowerCase()}" target="_blank" rel="noopener">Попробовать 14 дней</a>
       ${checks(p.f)}
       <p class="tiny muted" style="margin-top:14px">* в рамках лимитов Telegram и правил честного использования платформы</p>
     </div>

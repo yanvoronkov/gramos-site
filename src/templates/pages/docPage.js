@@ -28,7 +28,7 @@ function renderDocPage(key) {
           ${d.body}
           <hr>
           <div class="btns">
-            <a class="btn btn-primary" href="/demo/">Начать бесплатно</a>
+            <a class="btn btn-primary" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=doc_${key}" data-smart-cta="doc_${key}" target="_blank" rel="noopener">Начать бесплатно</a>
             <a class="btn btn-ghost" href="/contact/">Задать вопрос</a>
           </div>
         </article>

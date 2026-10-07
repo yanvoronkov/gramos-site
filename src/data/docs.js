@@ -134,7 +134,7 @@ const DOCS = {
     d: 'Скрипт на сайт, настройки показа и склейка гостя с Telegram-контактом.',
     body: `<h2>Установка</h2>
 <p>Скопируйте код из раздела <strong>Каналы → Виджет</strong> и вставьте его перед закрывающим тегом <code>&lt;/body&gt;</code> на страницах вашего сайта.</p>
-<pre class="code">&lt;script src="https://gramos.yanvoronkov.ru/widget.js"
+<pre class="code">&lt;script src="https://gramos.pro/widget.js"
         data-project="YOUR_PROJECT_KEY"
         async&gt;&lt;/script&gt;</pre>
 <h2>Настройки</h2>

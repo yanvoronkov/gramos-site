@@ -3,6 +3,7 @@ const { MOCKS } = require('../../data/mocks');
 const { card, linkCard, checks, faq, ctaBand } = require('../components');
 const { HOME_FAQS } = require('../../data/faqs');
 const { PLANS } = require('../../data/plans');
+const { icon } = require('../../data/icons');
 
 function fmt(n) {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -16,7 +17,7 @@ function renderPricingCardsCompact() {
       <p class="small muted" style="min-height:42px">${p.desc}</p>
       <div class="amount">₽${fmt(p.m)} <span>/ мес</span></div>
       <p class="tiny muted" style="margin:6px 0 0">при помесячной оплате</p>
-      <a class="btn ${p.hot ? 'btn-primary' : 'btn-ghost'}" href="/demo/">Попробовать 14 дней</a>
+      <a class="btn ${p.hot ? 'btn-primary' : 'btn-ghost'}" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=home_pricing_${p.name.toLowerCase()}" data-smart-cta="home_pricing_${p.name.toLowerCase()}" target="_blank" rel="noopener">Попробовать 14 дней</a>
       ${checks(p.f.slice(0, 5))}
     </div>
   `).join('')}</div>`;
@@ -29,17 +30,23 @@ function renderHome() {
     <div class="wrap">
       <div class="split">
         <div>
-          <div class="pill"><b>NEW</b> Telegram Mini App + веб-панель в одном аккаунте</div>
+          <div class="hero-eyebrow"><span class="dot"></span> Для платных Telegram-каналов, клубов и подписок</div>
           <h1>Telegram как <span class="nowrap"><span class="grad">система продаж</span>,</span><br class="hero-br"> а&nbsp;не просто мессенджер</h1>
-          <p class="lede">GramOS объединяет CRM, ботов, автоворонки, рассылки, оплаты и доступы к закрытым продуктам в одной Telegram Mini App и веб-панели.</p>
-          <div class="btns" style="margin-top:28px">
-            <a class="btn btn-primary btn-lg" href="/demo/">Начать бесплатно</a>
-            <a class="btn btn-ghost btn-lg" href="/demo/">Посмотреть демо</a>
+          <p class="lede">Принимайте оплату, автоматически выдавайте и забирайте доступ, запускайте ботов и автоворонки и храните клиентов в CRM — без десятка сервисов и ручной работы.</p>
+          
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_hero" data-smart-cta="site_hero" target="_blank" rel="noopener">Начать в один клик →</a>
+            <a class="btn btn-ghost btn-lg" href="#how">Посмотреть, как работает</a>
           </div>
-          <div class="hero-stats">
-            <div><b>5 в 1</b><span>CRM, сценарии, оплаты, рассылки, кабинет</span></div>
-            <div><b>&lt; 1 дня</b><span>от подключения бота до первой продажи</span></div>
-            <div><b>0 ₽</b><span>первые 14 дней, без карты</span></div>
+          <div class="hero-notes">
+            <span><b class="check">✓</b> Без карты</span>
+            <span><b class="check">✓</b> Без комиссии GramOS</span>
+            <span><b class="check">✓</b> Можно подключить существующего бота</span>
+          </div>
+
+          <div class="hero-offer-badge">
+            <span class="offer-tag">Тариф Бесплатный</span>
+            <span class="offer-text">Для новых клиентов <b>неограниченный бесплатный доступ до 300 контактов</b></span>
           </div>
         </div>
         <div class="rv">${MOCKS.crm}</div>
@@ -102,7 +109,7 @@ function renderHome() {
   </section>
 
   <!-- HOW IT WORKS -->
-  <section class="section">
+  <section class="section" id="how">
     <div class="wrap">
       <div class="split">
         <div>

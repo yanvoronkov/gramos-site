@@ -1,6 +1,6 @@
 // Конфигурация сайта GramOS и метаданные
 module.exports = {
-  domain: 'https://gramos.yanvoronkov.ru',
+  domain: 'https://gramos.pro',
   siteName: 'GramOS',
   defaultTitle: 'GramOS — операционная система для Telegram-бизнеса',
   defaultDesc: 'GramOS объединяет CRM, ботов, автоворонки, рассылки, оплаты и доступы к закрытым продуктам в одной Telegram Mini App и веб-панели.',
@@ -8,6 +8,16 @@ module.exports = {
   locale: 'ru_RU',
   ogImage: '/images/og-cover.png',
   disallowIndexing: true, // Защита от индексации поисковиками на время доработки
+  bot: {
+    username: 'gram_os_bot',
+    url: 'https://t.me/gram_os_bot',
+    tmaUrl: 'https://t.me/gram_os_bot/app',
+    desktopFallback: 'https://t.me/gram_os_bot?start=site_desktop'
+  },
+  app: {
+    url: 'https://app.gramos.pro',
+    authUrl: 'https://app.gramos.pro/auth'
+  },
   contacts: {
     telegram: '@gramos_support',
     telegramUrl: 'https://t.me/gramos_support',

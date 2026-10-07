@@ -29,7 +29,7 @@ function renderPostPage(key) {
           CRM, сценарии, автооплаты и доступы в одном закрытом контуре. 14 дней бесплатно.
         </p>
         <div class="btns">
-          <a class="btn btn-primary" href="/demo/">Начать бесплатно</a>
+          <a class="btn btn-primary" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=blog_post" data-smart-cta="blog_post" target="_blank" rel="noopener">Начать бесплатно</a>
         </div>
       </div>
       

@@ -247,8 +247,7 @@ function renderLayout(page, content, buildId = '1') {
       <button class="icon-btn" id="themeBtn" aria-label="Сменить тему оформления" title="Тема оформления (кликните для смены)" type="button">
         ${icon('sun')}
       </button>
-      <a class="btn btn-ghost btn-sm" href="/login/">Войти</a>
-      <a class="btn btn-primary btn-sm" href="/demo/">Начать бесплатно</a>
+      <a class="btn btn-primary btn-sm" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_header" data-smart-cta="site_header" target="_blank" rel="noopener">Запустить</a>
       <button class="icon-btn burger" id="burger" aria-label="Открыть мобильное меню">
         ${icon('burger')}
       </button>
@@ -406,8 +405,7 @@ function renderLayout(page, content, buildId = '1') {
   </div>
   
   <div class="drawer-actions">
-    <a class="btn btn-ghost btn-sm" href="/login/" style="flex:1">Войти</a>
-    <a class="btn btn-primary btn-sm" href="/demo/" style="flex:1">Начать бесплатно</a>
+    <a class="btn btn-primary btn-sm" href="https://t.me/gram_os_bot/app?startapp=site_drawer" data-smart-cta="site_drawer" target="_blank" rel="noopener" style="flex:1">Запустить</a>
   </div>
 </div>
 
@@ -427,7 +425,7 @@ function renderLayout(page, content, buildId = '1') {
         </a>
         <p class="small muted" style="max-width:34ch">Операционная система для бизнеса в Telegram: CRM, сценарии, платежи, доступы и рассылки в одном контуре.</p>
         <div class="btns">
-          <a class="btn btn-primary btn-sm" href="/demo/">Начать бесплатно</a>
+          <a class="btn btn-primary btn-sm" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_footer" data-smart-cta="site_footer" target="_blank" rel="noopener">Запустить бесплатно</a>
         </div>
       </div>
       
@@ -467,7 +465,7 @@ function renderLayout(page, content, buildId = '1') {
         <div class="f-col-title">Компания</div>
         <a href="/pricing/">Тарифы</a>
         <a href="/contact/">Контакты</a>
-        <a href="/login/">Войти</a>
+        <a href="https://app.gramos.pro/auth" target="_blank" rel="noopener">Войти</a>
         <a href="/legal/privacy/">Политика конфиденциальности</a>
         <a href="/legal/terms/">Условия использования</a>
       </div>

@@ -1,5 +1,6 @@
 // Страница входа в веб-панель GramOS
 const { icon } = require('../../data/icons');
+const siteConfig = require('../../data/site');
 
 function renderLoginPage() {
   return `
@@ -7,9 +8,9 @@ function renderLoginPage() {
     <div class="wrap" style="max-width:460px">
       <div class="card rv" style="padding:32px">
         <h1 style="font-size:1.7rem">Вход в GramOS</h1>
-        <p class="small muted">Войдите через Telegram или по e-mail, чтобы перейти в панель управления.</p>
+        <p class="small muted">Войдите через Telegram или по e-mail, чтобы перейти в панель управления проектом.</p>
         
-        <a class="btn btn-primary btn-lg" style="width:100%;margin:18px 0 10px" href="/demo/">
+        <a class="btn btn-primary btn-lg" style="width:100%;margin:18px 0 10px" href="${siteConfig.app.authUrl}?utm_source=site&utm_medium=login_page&utm_campaign=direct" data-smart-cta="site_login" target="_blank" rel="noopener">
           ${icon('send')} Войти через Telegram
         </a>
         
@@ -32,12 +33,12 @@ function renderLoginPage() {
         </form>
         
         <p class="tiny muted" style="margin-top:18px;text-align:center">
-          Нет аккаунта? <a class="btn-link" href="/demo/">Начните бесплатно</a>
+          Нет аккаунта? <a class="btn-link" href="${siteConfig.app.authUrl}?utm_source=site&utm_medium=login_page&utm_campaign=signup" data-smart-cta="site_login_signup" target="_blank" rel="noopener">Зарегистрироваться бесплатно</a>
         </p>
       </div>
       
       <p class="tiny muted center" style="margin-top:18px">
-        Корпоративный сайт GramOS: рабочая веб-панель запускается на поддомене app.gramos.ru.
+        Официальный веб-кабинет GramOS: <a class="btn-link" href="${siteConfig.app.url}" target="_blank" rel="noopener">app.gramos.pro</a>
       </p>
     </div>
   </section>

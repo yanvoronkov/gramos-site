@@ -244,6 +244,70 @@
     });
   }
 
+  /* ---------- Unified Smart CTA Router (Mobile Mini App vs Desktop Web App) ---------- */
+  function initSmartCta() {
+    var BOT_USERNAME = 'gram_os_bot';
+    var TMA_BASE = 'https://t.me/' + BOT_USERNAME + '/app';
+    var WEB_AUTH_BASE = 'https://app.gramos.pro/auth';
+    var BOT_DESKTOP_FALLBACK = 'https://t.me/' + BOT_USERNAME + '?start=site_desktop';
+
+    function checkIsMobile() {
+      var ua = navigator.userAgent || '';
+      var isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      var isTouchMac = /Macintosh/i.test(ua) && (navigator.maxTouchPoints > 1);
+      return isMobileUA || isTouchMac;
+    }
+
+    var isMobile = checkIsMobile();
+
+    // Preserve incoming UTM parameters if user arrived via campaign
+    var incomingParams = {};
+    try {
+      var searchParams = new URLSearchParams(window.location.search);
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function(k) {
+        var v = searchParams.get(k);
+        if (v) incomingParams[k] = v;
+      });
+    } catch (e) {}
+
+    function buildSmartUrl(context, mobile) {
+      var ctx = context || 'site_main';
+      if (mobile) {
+        // Mobile device -> Instant Telegram Mini App
+        var startappVal = ctx.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50);
+        return TMA_BASE + '?startapp=' + encodeURIComponent(startappVal);
+      } else {
+        // Desktop device -> Direct 1-click Web Cabinet Auth with Telegram Login Widget
+        var p = new URLSearchParams();
+        p.set('utm_source', incomingParams.utm_source || 'site');
+        p.set('utm_medium', incomingParams.utm_medium || 'desktop');
+        p.set('utm_campaign', incomingParams.utm_campaign ? ctx + '_' + incomingParams.utm_campaign : ctx);
+        if (incomingParams.utm_content) p.set('utm_content', incomingParams.utm_content);
+        if (incomingParams.utm_term) p.set('utm_term', incomingParams.utm_term);
+        return WEB_AUTH_BASE + '?' + p.toString();
+      }
+    }
+
+    // 1. Update all smart CTA buttons on the page
+    var smartBtns = document.querySelectorAll('[data-smart-cta]');
+    [].forEach.call(smartBtns, function(btn) {
+      var context = btn.getAttribute('data-smart-cta') || 'site_generic';
+      btn.href = buildSmartUrl(context, isMobile);
+      if (!btn.getAttribute('target')) {
+        btn.setAttribute('target', '_blank');
+        btn.setAttribute('rel', 'noopener');
+      }
+    });
+
+    // 2. Fallback click handler ensuring up-to-date orientation/device routing
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-smart-cta]');
+      if (!btn) return;
+      var context = btn.getAttribute('data-smart-cta') || 'site_generic';
+      btn.href = buildSmartUrl(context, checkIsMobile());
+    });
+  }
+
   /* ---------- Initialize on DOM Ready ---------- */
   document.addEventListener('DOMContentLoaded', function() {
     var yearEl = document.getElementById('year');
@@ -253,5 +317,6 @@
     initPricingToggle();
     initTourTabs();
     initForms();
+    initSmartCta();
   });
 })();
