@@ -308,6 +308,89 @@
     });
   }
 
+  /* ---------- Dynamic Hero Synchronizer (Rotator + Panels) ---------- */
+  function initHeroRotator() {
+    var rotatorEl = document.getElementById('heroRotatorText');
+    var tabsWrap = document.getElementById('heroScenarioTabs');
+    var progressEl = document.getElementById('heroProgressFill');
+    if (!rotatorEl || !tabsWrap) return;
+
+    var SCENARIOS = [
+      { key: 'club', label: 'платные клубы' },
+      { key: 'flow', label: 'воронки продаж' },
+      { key: 'course', label: 'онлайн-курсы' },
+      { key: 'subs', label: 'закрытые подписки' }
+    ];
+
+    var currentIndex = 0;
+    var duration = 4800; // 4.8 seconds per scenario
+    var startTime = performance.now();
+    var animFrame = null;
+    var isPaused = false;
+
+    function applyScenario(idx) {
+      currentIndex = idx;
+      var item = SCENARIOS[currentIndex];
+
+      // 1. Text transition
+      rotatorEl.classList.add('fade-out');
+      setTimeout(function() {
+        rotatorEl.textContent = item.label;
+        rotatorEl.classList.remove('fade-out');
+      }, 180);
+
+      // 2. Tabs highlight
+      [].forEach.call(tabsWrap.querySelectorAll('.hero-tab'), function(tab) {
+        tab.classList.toggle('on', tab.getAttribute('data-scenario') === item.key);
+      });
+
+      // 3. Panel switch
+      [].forEach.call(document.querySelectorAll('#heroPanelsWrap .hero-panel'), function(panel) {
+        panel.classList.toggle('active', panel.getAttribute('data-panel') === item.key);
+      });
+
+      startTime = performance.now();
+    }
+
+    function tick(now) {
+      if (!isPaused) {
+        var elapsed = now - startTime;
+        var progress = Math.min(100, (elapsed / duration) * 100);
+        if (progressEl) progressEl.style.width = progress + '%';
+
+        if (elapsed >= duration) {
+          applyScenario((currentIndex + 1) % SCENARIOS.length);
+        }
+      }
+      animFrame = requestAnimationFrame(tick);
+    }
+
+    // Manual click on tabs
+    tabsWrap.addEventListener('click', function(e) {
+      var btn = e.target.closest('.hero-tab');
+      if (!btn) return;
+      var targetKey = btn.getAttribute('data-scenario');
+      var targetIdx = SCENARIOS.findIndex(function(s) { return s.key === targetKey; });
+      if (targetIdx !== -1) {
+        applyScenario(targetIdx);
+        if (progressEl) progressEl.style.width = '0%';
+      }
+    });
+
+    // Pause auto-rotation on mouse hover over the visual block
+    var heroCol = document.querySelector('.hero-visual-col');
+    if (heroCol) {
+      heroCol.addEventListener('mouseenter', function() { isPaused = true; });
+      heroCol.addEventListener('mouseleave', function() {
+        isPaused = false;
+        startTime = performance.now();
+      });
+    }
+
+    // Start auto loop
+    animFrame = requestAnimationFrame(tick);
+  }
+
   /* ---------- Initialize on DOM Ready ---------- */
   document.addEventListener('DOMContentLoaded', function() {
     var yearEl = document.getElementById('year');
@@ -318,5 +401,6 @@
     initTourTabs();
     initForms();
     initSmartCta();
+    initHeroRotator();
   });
 })();

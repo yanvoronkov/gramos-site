@@ -30,9 +30,13 @@ function renderHome() {
     <div class="wrap">
       <div class="split">
         <div>
-          <div class="hero-eyebrow"><span class="dot"></span> Для платных Telegram-каналов, клубов и подписок</div>
-          <h1>Telegram как <span class="nowrap"><span class="grad">система продаж</span>,</span><br class="hero-br"> а&nbsp;не просто мессенджер</h1>
-          <p class="lede">Принимайте оплату, автоматически выдавайте и забирайте доступ, запускайте ботов и автоворонки и храните клиентов в CRM — без десятка сервисов и ручной работы.</p>
+          <div class="hero-eyebrow"><span class="dot"></span> Для платных каналов, онлайн-школ, клубов и авторов</div>
+          <h1 class="hero-title">Продавайте в Telegram через Mini App:<br>
+            <span class="hero-rotator-wrap">
+              <span class="hero-rotator grad" id="heroRotatorText">платные клубы</span>
+            </span>
+          </h1>
+          <p class="lede">Принимайте оплату, автоматизируйте доступы к продуктам, запускайте ботов и автоворонки, храните клиентов в CRM — без зоопарка сервисов и ручной работы.</p>
           
           <div class="hero-actions">
             <a class="btn btn-primary btn-lg" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_hero" data-smart-cta="site_hero" target="_blank" rel="noopener">Начать в один клик →</a>
@@ -49,7 +53,41 @@ function renderHome() {
             <span class="offer-text">Для новых клиентов <b>неограниченный бесплатный доступ до 300 контактов</b></span>
           </div>
         </div>
-        <div class="rv">${MOCKS.crm}</div>
+
+        <div class="hero-visual-col">
+          <!-- Scenario selector tabs -->
+          <div class="hero-scenario-tabs" id="heroScenarioTabs">
+            <button type="button" class="hero-tab on" data-scenario="club">
+              <span class="hero-tab-dot"></span>
+              <span>Платный клуб</span>
+            </button>
+            <button type="button" class="hero-tab" data-scenario="flow">
+              <span class="hero-tab-dot"></span>
+              <span>Воронка продаж</span>
+            </button>
+            <button type="button" class="hero-tab" data-scenario="course">
+              <span class="hero-tab-dot"></span>
+              <span>Онлайн-курс</span>
+            </button>
+            <button type="button" class="hero-tab" data-scenario="subs">
+              <span class="hero-tab-dot"></span>
+              <span>Подписки</span>
+            </button>
+          </div>
+
+          <!-- Synchronized mock displays -->
+          <div class="hero-panels-wrap" id="heroPanelsWrap">
+            <div class="hero-panel active" data-panel="club">${MOCKS.club}</div>
+            <div class="hero-panel" data-panel="flow">${MOCKS.flow}</div>
+            <div class="hero-panel" data-panel="course">${MOCKS.course}</div>
+            <div class="hero-panel" data-panel="subs">${MOCKS.subs}</div>
+          </div>
+
+          <!-- Auto-rotation progress indicator -->
+          <div class="hero-progress-bar">
+            <div class="hero-progress-fill" id="heroProgressFill"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

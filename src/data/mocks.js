@@ -2,6 +2,78 @@
 const { icon } = require('./icons');
 
 const MOCKS = {
+  // 1. Сценарий: Платный клуб (Чекаут + моментальная автовыдача доступа в закрытый канал)
+  club: `<div class="mock mock-hero-sync">
+    <div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">GramOS · Checkout & Автовыдача доступа</span><span class="live-pill" style="margin-left:auto">● онлайн</span></div>
+    <div class="mock-body">
+      <div class="mock-row" style="justify-content:space-between">
+        <span class="t"><b>Закрытый Telegram-клуб «INSIDERS»</b><span>Подписка на 1 месяц · закрытый канал + чат</span></span>
+        <b>₽2 490</b>
+      </div>
+      <div class="mock-row" style="justify-content:space-between">
+        <span class="t"><b>Промокод «START»</b><span>Скидка 20% на первый месяц</span></span>
+        <span class="tag g">−₽498</span>
+      </div>
+      <div class="kbd">
+        <span>Telegram Stars (⭐ 1 200)</span>
+        <span>ЮKassa / Карты РФ</span>
+        <span>bePaid (Мир)</span>
+        <span>Stripe</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0">
+        <span class="muted small">Итого к оплате</span>
+        <b style="font-family:Manrope,sans-serif;font-size:1.35rem;color:var(--text)">₽1 992</b>
+      </div>
+      <div class="btn btn-primary" style="width:100%;pointer-events:none">Оплатить и получить ссылку</div>
+      <div class="mock-row" style="background:color-mix(in srgb,var(--good) 10%,var(--surface));border-color:color-mix(in srgb,var(--good) 35%,transparent);margin-top:2px">
+        <span class="n-ico" style="background:var(--good);color:#fff;border-radius:6px;width:22px;height:22px;display:grid;place-items:center;font-size:12px;font-weight:900">✓</span>
+        <span class="t"><b style="color:var(--good)">Оплата прошла мгновенно</b><span>Одноразовая ссылка в канал выслана в Telegram бота</span></span>
+      </div>
+    </div>
+  </div>`,
+
+  // 2. Сценарий: Воронка продаж (Визуальный граф нод сценария в Telegram)
+  flow: `<div class="mock mock-hero-sync">
+    <div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">GramOS Canvas · Воронка продаж лидов</span><span class="live-pill" style="margin-left:auto">● активен</span></div>
+    <div class="flow" style="padding:14px">
+      <div class="node trigger"><span class="n-ico">${icon('bolt')}</span><span><b>1. Триггер: ключевое слово «старт»</b><small>Канал · Бот · Реклама Telegram Ads</small></span></div>
+      <div class="conn"></div>
+      <div class="node"><span class="n-ico">${icon('chat')}</span><span><b>2. Лид-магнит + квалификация</b><small>Выдача PDF + кнопки выбора тарифа</small></span></div>
+      <div class="conn"></div>
+      <div class="node"><span class="n-ico">${icon('clock')}</span><span><b>3. Задержка 2 часа, если нет оплаты</b><small>Условие: тег ≠ «покупатель» → дожим</small></span></div>
+      <div class="conn"></div>
+      <div class="node pay"><span class="n-ico">${icon('key')}</span><span><b>4. После оплаты: тег + доступ в CRM</b><small>Сегмент «Горячие клиенты» · LTV обновлен</small></span></div>
+    </div>
+  </div>`,
+
+  // 3. Сценарий: Онлайн-курс (Личный кабинет ученика и выдача уроков)
+  course: `<div class="mock mock-hero-sync">
+    <div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">GramOS · Кабинет ученика в Telegram</span><span class="live-pill" style="margin-left:auto">● Mini App</span></div>
+    <div class="mock-body">
+      <div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#5b5cf0,#8c6cf6)">К</span><span class="t"><b>Курс «Telegram-маркетинг 2026»</b><span>Тариф с куратором · Доступ активен</span></span><span class="tag g">Оплачен</span></div>
+      <div class="stat-mini"><div><b>14 из 20</b><span>уроков открыто</span></div><div><b>85%</b><span>прогресс курса</span></div><div><b>3</b><span>ДЗ проверено</span></div></div>
+      <div class="mock-row" style="justify-content:space-between">
+        <span class="t"><b>Модуль 3: Запуск платных воронок</b><span>Видео 24 мин · Домашнее задание сдано</span></span>
+        <span class="tag v">Смотреть</span>
+      </div>
+      <div class="mock-row" style="justify-content:space-between">
+        <span class="t"><b>Модуль 4: Прием платежей и CRM</b><span>Откроется завтра в 10:00 (по расписанию)</span></span>
+        <span class="tag">Заблокирован</span>
+      </div>
+    </div>
+  </div>`,
+
+  // 4. Сценарий: Закрытые подписки (Рекурренты, автопродления и авто-кик)
+  subs: `<div class="mock mock-hero-sync">
+    <div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">GramOS · Управление рекуррентными подписками</span><span class="live-pill" style="margin-left:auto">● рекуррент</span></div>
+    <div class="mock-body">
+      <div class="stat-mini"><div><b>₽482k</b><span>MRR подписок</span></div><div><b>94,2%</b><span>успешных автосписаний</span></div><div><b>0</b><span>ручных сверок</span></div></div>
+      <div class="mock-row"><span class="av">АМ</span><span class="t"><b>Анна Морозова</b><span>Автоплатеж ₽1 990 списан успешно · Продлено до 15.11</span></span><span class="tag g">Продлена</span></div>
+      <div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#f0883b,#f0576f)">ИВ</span><span class="t"><b>Иван Васильев</b><span>Недостаточно средств · Отправлено напоминание в бот</span></span><span class="tag" style="color:#d97706;background:#fef3c7">Повтор через 24ч</span></div>
+      <div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#64748b,#475569)">ДС</span><span class="t"><b>Дмитрий Смирнов</b><span>Подписка отменена → Автокик из 3 закрытых каналов</span></span><span class="tag" style="color:#ef4444;background:#fee2e2">Доступ снят</span></div>
+    </div>
+  </div>`,
+
   crm: `<div class="mock">
     <div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">GramOS — CRM · Контакты</span></div>
     <div class="mock-body">
@@ -9,18 +81,6 @@ const MOCKS = {
       <div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#f0883b,#f0576f)">ИК</span><span class="t"><b>Игорь Козлов</b><span>@ikozlov · Смотрел тарифы 2 раза</span></span><span class="tag">Горячий</span></div>
       <div class="mock-row"><span class="av" style="background:linear-gradient(135deg,#31c48d,#0ea371)">ДС</span><span class="t"><b>Дарья Соколова</b><span>Пришла с сайта · виджет</span></span><span class="tag v">Новый лид</span></div>
       <div class="stat-mini"><div><b>1 248</b><span>контактов</span></div><div><b>37</b><span>активных чатов</span></div><div><b>₽412k</b><span>выручка за месяц</span></div></div>
-    </div></div>`,
-
-  flow: `<div class="mock">
-    <div class="mock-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">Сценарий · «Воронка на курс»</span></div>
-    <div class="flow">
-      <div class="node trigger"><span class="n-ico">${icon('bolt')}</span><span><b>Триггер: ключевое слово «цена»</b><small>Бот · канал · виджет</small></span></div>
-      <div class="conn"></div>
-      <div class="node"><span class="n-ico">${icon('chat')}</span><span><b>Сообщение с тарифами</b><small>+ кнопки «Купить» и «Вопрос»</small></span></div>
-      <div class="conn"></div>
-      <div class="node"><span class="n-ico">${icon('clock')}</span><span><b>Задержка 2 часа, если нет оплаты</b><small>Условие: тег ≠ «покупатель»</small></span></div>
-      <div class="conn"></div>
-      <div class="node pay"><span class="n-ico">${icon('key')}</span><span><b>После оплаты: выдать доступ + тег</b><small>Контакт → сегмент «Покупатели»</small></span></div>
     </div></div>`,
 
   pay: `<div class="mock">
