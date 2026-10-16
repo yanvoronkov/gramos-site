@@ -27,8 +27,8 @@ function renderDocsIndex() {
       </div>
       
       <div class="callout" style="margin-top:28px">
-        Не нашли ответ на свой вопрос? Напишите в нашу службу поддержки через 
-        <a class="btn-link" href="/contact/">форму контактов</a> — оперативно ответим в рабочие часы.
+        Не нашли ответ на свой вопрос? Напишите в нашу службу поддержки в 
+        <a class="btn-link" href="https://t.me/gramos_support" target="_blank" rel="noopener">Telegram @gramos_support</a> или через <a class="btn-link" href="/contact/">Telegram Hub</a> — оперативно ответим в рабочие часы.
       </div>
     </div>
   </section>

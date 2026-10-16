@@ -1,85 +1,97 @@
-// Страница контактов GramOS
-const { crumbs } = require('../components');
+// Страница контактов GramOS — Telegram-First Contact Hub (Zero Web-Forms)
+const { crumbs, ctaBand } = require('../components');
 const { icon } = require('../../data/icons');
 const siteConfig = require('../../data/site');
 
 function renderContactPage() {
   return `
-  <section class="section">
+  <section class="hero">
+    <div class="wrap center">
+      ${crumbs([['Главная', '/'], ['Контакты', '']])}
+      <div class="eyebrow">Telegram Contact Hub</div>
+      <h1>Свяжитесь с нами без ожидания</h1>
+      <p class="lede center" style="max-width:680px;margin:0 auto">Никаких долгих веб-форм и ожидания ответа на e-mail. Общайтесь с нами напрямую в Telegram или через живой чат на сайте.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
     <div class="wrap">
-      <div class="split">
-        <div>
-          ${crumbs([['Главная', '/'], ['Контакты', '']])}
-          <div class="eyebrow">Контакты</div>
-          <h1>Поговорим о вашем Telegram-бизнесе</h1>
-          <p class="lede">Расскажите, что вы продаёте и как сейчас устроены продажи. Покажем, как это собирается в GramOS, и поможем с переносом.</p>
-          
-          <div class="grid" style="gap:12px;margin-top:28px;max-width:420px">
-            <div class="card" style="padding:16px 20px;display:flex;gap:12px;align-items:center">
-              <div class="ico" style="margin:0">${icon('send')}</div>
-              <div>
-                <b>Telegram</b><br>
-                <span class="small muted"><a class="btn-link" href="${siteConfig.contacts.telegramUrl}">${siteConfig.contacts.telegram}</a> — быстрее всего</span>
-              </div>
+      <div class="grid g2" style="gap:24px">
+        <!-- 1. Telegram AI Bot -->
+        <div class="card rv" style="padding:32px;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <div class="ico" style="margin:0">${icon('spark')}</div>
+              <span class="badge" style="color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent)">Ответ за секунду • 24/7</span>
             </div>
-            
-            <div class="card" style="padding:16px 20px;display:flex;gap:12px;align-items:center">
-              <div class="ico" style="margin:0">${icon('mail')}</div>
-              <div>
-                <b>E-mail</b><br>
-                <span class="small muted"><a class="btn-link" href="mailto:${siteConfig.contacts.email}">${siteConfig.contacts.email}</a></span>
-              </div>
-            </div>
-            
-            <div class="card" style="padding:16px 20px;display:flex;gap:12px;align-items:center">
-              <div class="ico" style="margin:0">${icon('book')}</div>
-              <div>
-                <b>Документация</b><br>
-                <span class="small muted"><a class="btn-link" href="/docs/">Ответы на технические вопросы</a></span>
-              </div>
-            </div>
+            <h3 style="margin-bottom:10px">🤖 Бот GramOS с ИИ-ассистентом 24/7</h3>
+            <p class="muted" style="margin-bottom:24px;font-size:0.95rem;line-height:1.55">Задайте любой вопрос по платформе, тарифам и воронкам. ИИ ответит мгновенно в любое время суток.</p>
           </div>
-          
-          <p class="tiny muted" style="margin-top:22px">
-            Отвечаем в рабочие дни с 10:00 до 19:00 (МСК). Заявки на демонстрацию обрабатываем в течение рабочего дня.
-          </p>
+          <div>
+            <a class="btn btn-primary" href="${siteConfig.contacts.botUrl}" target="_blank" rel="noopener" style="width:100%;justify-content:center">Написать в Telegram-бот →</a>
+          </div>
         </div>
-        
-        <div class="card rv">
-          <h3>Оставьте заявку</h3>
-          <p class="small muted">Ответим в Telegram или на почту — как вам удобнее.</p>
-          <form class="form" data-form="contact" style="margin-top:16px">
-            <div>
-              <label for="c-name">Имя</label>
-              <input id="c-name" name="name" required placeholder="Как к вам обращаться">
+
+        <!-- 2. Founder & CEO -->
+        <div class="card rv" style="padding:32px;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <div class="ico" style="margin:0">${icon('users')}</div>
+              <span class="badge">Основатель</span>
             </div>
-            <div>
-              <label for="c-contact">Telegram или e-mail</label>
-              <input id="c-contact" name="contact" required placeholder="@username или you@mail.com">
+            <h3 style="margin-bottom:10px">👤 Ян Воронков, Основатель & CEO</h3>
+            <p class="muted" style="margin-bottom:24px;font-size:0.95rem;line-height:1.55">Вопросы партнёрства, индивидуальные внедрения и стратегические консультации напрямую с создателем GramOS.</p>
+          </div>
+          <div>
+            <a class="btn btn-ghost" href="${siteConfig.contacts.ceoTelegramUrl}" target="_blank" rel="noopener" style="width:100%;justify-content:center">Написать Яну в Telegram →</a>
+          </div>
+        </div>
+
+        <!-- 3. Support -->
+        <div class="card rv" style="padding:32px;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <div class="ico" style="margin:0">${icon('chat')}</div>
+              <span class="badge">Поддержка</span>
             </div>
-            <div>
-              <label for="c-topic">Тема</label>
-              <select id="c-topic" name="topic">
-                <option>Демо и запуск</option>
-                <option>Вопрос по тарифам</option>
-                <option>Техническая поддержка</option>
-                <option>Партнёрство</option>
-                <option>Другое</option>
-              </select>
+            <h3 style="margin-bottom:10px">💬 Служба заботы и поддержки</h3>
+            <p class="muted" style="margin-bottom:24px;font-size:0.95rem;line-height:1.55">Помощь с настройкой сценариев, переносом базы и техническими вопросами.</p>
+          </div>
+          <div>
+            <a class="btn btn-ghost" href="${siteConfig.contacts.telegramUrl}" target="_blank" rel="noopener" style="width:100%;justify-content:center">Чат поддержки →</a>
+          </div>
+        </div>
+
+        <!-- 4. Web Live Chat -->
+        <div class="card rv" style="padding:32px;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <div class="ico" style="margin:0">${icon('globe')}</div>
+              <span class="badge">Без перехода в мессенджер</span>
             </div>
-            <div>
-              <label for="c-msg">Сообщение</label>
-              <textarea id="c-msg" name="message" placeholder="Что продаёте, сколько контактов в базе, какие задачи хотите решить"></textarea>
-            </div>
-            <button class="btn btn-primary btn-lg" type="submit">Отправить заявку</button>
-            <p class="form-note">
-              Отправляя форму, вы соглашаетесь с <a class="btn-link" href="/legal/privacy/">политикой конфиденциальности</a>.
-            </p>
-          </form>
+            <h3 style="margin-bottom:10px">⚡ Чат прямо на сайте</h3>
+            <p class="muted" style="margin-bottom:24px;font-size:0.95rem;line-height:1.55">Хотите задать вопрос прямо здесь? Нажмите на круглый значок виджета в правом нижнем углу экрана.</p>
+          </div>
+          <div>
+            <button type="button" class="btn btn-ghost" onclick="if(window.GramOSWidget&&window.GramOSWidget.open){window.GramOSWidget.open()}" style="width:100%;justify-content:center">Открыть чат на сайте</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional direct contact info bar -->
+      <div class="card rv" style="margin-top:28px;padding:22px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+        <div>
+          <span class="small muted">Официальный e-mail для документов и запросов:</span>
+          <a class="btn-link" href="mailto:${siteConfig.contacts.email}" style="margin-left:8px;font-weight:600">${siteConfig.contacts.email}</a>
+        </div>
+        <div class="small muted">
+          График команды: ${siteConfig.contacts.workHours}
         </div>
       </div>
     </div>
   </section>
+
+  ${ctaBand('Готовы начать автоматизацию в Telegram?', '14 дней бесплатного доступа без привязки карты. Начните в браузере или в Telegram Mini App.')}
   `;
 }
 

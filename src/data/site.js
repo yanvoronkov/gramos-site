@@ -21,6 +21,9 @@ module.exports = {
   contacts: {
     telegram: '@gramos_support',
     telegramUrl: 'https://t.me/gramos_support',
+    ceoTelegram: '@yanvoronkov',
+    ceoTelegramUrl: 'https://t.me/yanvoronkov',
+    botUrl: 'https://t.me/gram_os_bot',
     email: 'hello@gramos.app',
     workHours: 'Пн-Пт: 10:00 - 19:00 (МСК)'
   },
@@ -35,6 +38,7 @@ module.exports = {
         { title: 'Web-виджет', desc: 'Чат на сайте со склейкой с Telegram', url: '/product/web-widget/' },
         { title: 'Кабинет покупателя', desc: 'Доступы, подписки, платежи', url: '/product/customer-cabinet/' },
         { title: 'Telegram Mini App', desc: 'Управление бизнесом внутри Telegram', url: '/product/mini-app/' },
+        { title: 'ИИ и База знаний', desc: 'RAG pgvector, парсинг документов и ИИ-нода в воронках', url: '/product/ai/' },
         { title: 'Обзор платформы', desc: 'Все модули на одной странице', url: '/product/' }
       ]
     },

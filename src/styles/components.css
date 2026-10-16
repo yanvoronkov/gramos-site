@@ -975,6 +975,83 @@
   transition: width 0.1s linear;
 }
 
+/* Reusable Device & Mockup Frame for TMA Screens */
+.mock-device-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.mock-device {
+  position: relative;
+  width: min(290px, 86vw);
+  border-radius: 40px;
+  padding: 8px;
+  background: linear-gradient(155deg, #2d323f 0%, #151820 60%, #0d0f14 100%);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 0 0 3px rgba(0, 0, 0, 0.45),
+    0 24px 55px -12px rgba(0, 0, 0, 0.5),
+    0 12px 28px -5px rgba(91, 92, 240, 0.22);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  z-index: 2;
+  margin: 0 auto;
+}
+
+.mock-device:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.24),
+    0 0 0 3px rgba(0, 0, 0, 0.5),
+    0 32px 75px -16px rgba(0, 0, 0, 0.6),
+    0 16px 36px -5px rgba(91, 92, 240, 0.32);
+}
+
+.mock-screen-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1179 / 2480;
+  border-radius: 32px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.85);
+}
+
+.mock-screen-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.mock-screen-glare {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 26%, transparent 48%);
+  pointer-events: none;
+  z-index: 5;
+  border-radius: 32px;
+}
+
+.mock-browser {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.mock-browser-body {
+  position: relative;
+  overflow: hidden;
+}
+
 .logos {
   display: flex;
   flex-wrap: wrap;
@@ -1738,7 +1815,7 @@ tr:last-child td {
   color: var(--text);
 }
 
-.f-grid a {
+.f-grid a:not(.logo):not(.btn) {
   display: block;
   font-size: 0.9rem;
   color: var(--muted);
@@ -1746,8 +1823,50 @@ tr:last-child td {
   transition: color 0.15s ease;
 }
 
-.f-grid a:hover {
+.f-grid a:not(.logo):not(.btn):hover {
   color: var(--accent);
+}
+
+.f-grid .logo {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  text-decoration: none;
+}
+
+.f-grid .logo .logo-mark {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.f-grid .logo .logo-text {
+  font-family: Manrope, sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.f-grid .btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  align-items: flex-start;
+}
+
+.f-grid .btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0 !important;
+  color: #ffffff !important;
+}
+
+.f-grid .btn.btn-ghost {
+  color: var(--text) !important;
 }
 
 .f-bottom {
@@ -1782,3 +1901,510 @@ tr:last-child td {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ==========================================================================
+   Interactive Pricing Calculator (Starter vs Business)
+   ========================================================================== */
+.calc-wrapper {
+  margin: 30px auto 0;
+  max-width: 1040px;
+}
+
+.calc-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.calc-switchers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.calc-switcher-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calc-group-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.calc-pills {
+  display: inline-flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 2px;
+}
+
+.calc-pill {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.calc-pill:hover {
+  color: var(--text);
+}
+
+.calc-pill.active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.calc-pill-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+}
+
+.calc-pill.active .calc-pill-badge {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Contacts Slider Box */
+.calc-slider-box {
+  width: 100%;
+  max-width: 640px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.calc-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calc-slider-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.calc-contacts-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--accent);
+  font-family: Manrope, sans-serif;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+/* Range input styling */
+.calc-range-wrap {
+  position: relative;
+  width: 100%;
+  padding: 6px 0;
+}
+
+.calc-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--range-pct, 0%), var(--surface-2) var(--range-pct, 0%), var(--surface-2) 100%);
+  border: 1px solid var(--border);
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+}
+
+.calc-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.calc-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(26, 143, 240, 0.4);
+}
+
+.calc-range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.calc-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 0 4px;
+}
+
+.calc-tick {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+  user-select: none;
+}
+
+.calc-tick:hover,
+.calc-tick.active {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Two-Card Grid */
+.pricing-calc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+@media (max-width: 860px) {
+  .pricing-calc-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.calc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+}
+
+.calc-card.featured {
+  border-color: var(--accent);
+  box-shadow: 0 20px 48px -12px rgba(26, 143, 240, 0.28);
+}
+
+.calc-card-badge {
+  align-self: flex-start;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.calc-card-badge.neutral {
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.calc-card-badge.accent {
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.calc-card-header h3 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+  font-family: Manrope, sans-serif;
+}
+
+.calc-card-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.4;
+  min-height: 42px;
+  margin: 0 0 18px;
+}
+
+.calc-price-area {
+  margin: 8px 0 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.calc-old-price {
+  font-size: 1rem;
+  color: var(--muted);
+  text-decoration: line-through;
+  margin-bottom: 2px;
+  height: 20px;
+}
+
+.calc-main-price {
+  font-family: Manrope, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.1;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.calc-main-price span.period-lbl {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.calc-total-note {
+  font-size: 0.84rem;
+  color: var(--muted);
+  margin-top: 8px;
+  min-height: 22px;
+}
+
+.calc-savings-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, #10b981 15%, var(--surface));
+  color: #10b981;
+  margin-left: 6px;
+}
+
+.calc-card .btn {
+  margin: 12px 0 24px;
+  width: 100%;
+}
+
+.calc-features-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.calc-limitations-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 18px 0 10px;
+}
+
+.calc-limits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.calc-limits-list li {
+  font-size: 0.86rem;
+  color: var(--muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  line-height: 1.35;
+}
+
+.calc-limits-list li .cross {
+  color: var(--muted);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   How It Works Interactive Stepper (4 Steps + Screen / Video Mockup)
+   ========================================================================== */
+.stepper-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+@media (max-width: 900px) {
+  .stepper-wrap {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.stepper-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stepper-item {
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.stepper-item:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  transform: translateX(4px);
+}
+
+.stepper-item.active {
+  background: color-mix(in srgb, var(--accent) 4%, var(--surface));
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px -6px rgba(26, 143, 240, 0.18);
+}
+
+.stepper-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-weight: 800;
+  font-family: Manrope, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.stepper-item:hover .stepper-num {
+  color: var(--text);
+}
+
+.stepper-item.active .stepper-num {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(26, 143, 240, 0.35);
+}
+
+.stepper-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.stepper-info h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--text);
+  font-family: Manrope, sans-serif;
+  line-height: 1.3;
+}
+
+.stepper-info p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.42;
+}
+
+/* Linear progress fill on active step */
+.stepper-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+}
+
+.stepper-item.active .stepper-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width linear;
+}
+
+/* Stepper Stage (Mockup & Slides) */
+.stepper-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stepper-slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.stepper-slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stepper-slide.active {
+  display: block;
+  opacity: 1;
+}
+

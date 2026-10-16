@@ -48,7 +48,7 @@ function ctaBand(title, text) {
         <p class="lede center" style="margin:0 auto 24px">${text || '14 дней бесплатно, без карты. Подключите бота и соберите первую воронку за вечер.'}</p>
         <div class="btns">
           <a class="btn btn-primary btn-lg" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_band" data-smart-cta="site_band" target="_blank" rel="noopener">Начать бесплатно</a>
-          <a class="btn btn-ghost btn-lg" href="/contact/">Получить консультацию</a>
+          <a class="btn btn-ghost btn-lg" href="https://t.me/gram_os_bot" target="_blank" rel="noopener">Задать вопрос в Telegram</a>
         </div>
       </div>
     </div>
@@ -56,6 +56,9 @@ function ctaBand(title, text) {
 }
 
 function pageHero(o) {
+  const secondHref = o.secondHref || 'https://t.me/gram_os_bot';
+  const secondText = o.second || 'Задать вопрос в боте';
+  const isExternal = secondHref.startsWith('http');
   return `
   <section class="hero">
     <div class="wrap">
@@ -67,7 +70,7 @@ function pageHero(o) {
           <p class="lede">${o.lede}</p>
           <div class="btns" style="margin-top:26px">
             <a class="btn btn-primary btn-lg" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_page" data-smart-cta="site_page" target="_blank" rel="noopener">Начать бесплатно</a>
-            <a class="btn btn-ghost btn-lg" href="${o.secondHref || '/contact/'}">${o.second || 'Получить демо'}</a>
+            <a class="btn btn-ghost btn-lg" href="${secondHref}" ${isExternal ? 'target="_blank" rel="noopener"' : ''}>${secondText}</a>
           </div>
         </div>
         <div class="rv">${o.mock || ''}</div>
@@ -76,4 +79,6 @@ function pageHero(o) {
   </section>`;
 }
 
-module.exports = { card, linkCard, checks, faq, crumbs, ctaBand, pageHero };
+const { mockDevice } = require('../data/mocks');
+
+module.exports = { card, linkCard, checks, faq, crumbs, ctaBand, pageHero, mockDevice };

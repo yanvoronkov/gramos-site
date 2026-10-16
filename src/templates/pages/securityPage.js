@@ -11,8 +11,8 @@ function renderSecurityPage() {
     title: 'Данные клиентов, токены и платежи под контролем',
     lede: 'GramOS работает с деньгами и перепиской ваших клиентов, поэтому изоляция проектов, права доступа и корректная обработка платежей заложены в фундаментальную архитектуру.',
     mock: MOCKS.cabinet,
-    second: 'Запросить детали',
-    secondHref: '/contact/'
+    second: 'Задать вопрос в боте',
+    secondHref: 'https://t.me/gram_os_bot'
   })}
 
   <section class="section soft">

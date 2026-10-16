@@ -1,27 +1,9 @@
 // Главная страница GramOS
-const { MOCKS } = require('../../data/mocks');
+const { MOCKS, mockDevice } = require('../../data/mocks');
 const { card, linkCard, checks, faq, ctaBand } = require('../components');
 const { HOME_FAQS } = require('../../data/faqs');
-const { PLANS } = require('../../data/plans');
+const { renderPricingCalculator } = require('./pricingPage');
 const { icon } = require('../../data/icons');
-
-function fmt(n) {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-}
-
-function renderPricingCardsCompact() {
-  return `<div class="price-grid">${PLANS.map(p => `
-    <div class="plan rv ${p.hot ? 'hot' : ''}">
-      ${p.hot ? '<span class="badge" style="align-self:flex-start;margin-bottom:10px;color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent)">Популярный</span>' : ''}
-      <h3 style="margin-bottom:.15em">${p.name}</h3>
-      <p class="small muted" style="min-height:42px">${p.desc}</p>
-      <div class="amount">₽${fmt(p.m)} <span>/ мес</span></div>
-      <p class="tiny muted" style="margin:6px 0 0">при помесячной оплате</p>
-      <a class="btn ${p.hot ? 'btn-primary' : 'btn-ghost'}" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=home_pricing_${p.name.toLowerCase()}" data-smart-cta="home_pricing_${p.name.toLowerCase()}" target="_blank" rel="noopener">Попробовать 14 дней</a>
-      ${checks(p.f.slice(0, 5))}
-    </div>
-  `).join('')}</div>`;
-}
 
 function renderHome() {
   return `
@@ -86,13 +68,13 @@ function renderHome() {
                     <img src="/screen-1.png" alt="GramOS в Telegram: Сценарии платного клуба" class="phone-screen-img" loading="eager" width="1179" height="2556">
                   </div>
                   <div class="phone-screen hero-panel" data-panel="flow">
-                    <img src="/screen-2.png" alt="GramOS в Telegram: Визуальный конструктор воронки" class="phone-screen-img" loading="lazy" width="1179" height="2556">
+                    <img src="/screenshots/funnel-editor.png" alt="GramOS в Telegram: Визуальный конструктор воронки" class="phone-screen-img" loading="lazy" width="1179" height="2556">
                   </div>
                   <div class="phone-screen hero-panel" data-panel="course">
-                    <img src="/screen-3.png" alt="GramOS в Telegram: CRM база контактов и ИИ" class="phone-screen-img" loading="lazy" width="1179" height="2556">
+                    <img src="/screenshots/ai-knowledge-base.png" alt="GramOS в Telegram: ИИ и База знаний" class="phone-screen-img" loading="lazy" width="1179" height="2556">
                   </div>
                   <div class="phone-screen hero-panel" data-panel="subs">
-                    <img src="/screen-1.png" alt="GramOS в Telegram: Подписки и рекуррентные платежи" class="phone-screen-img" loading="lazy" width="1179" height="2556">
+                    <img src="/screenshots/customer-cabinet.png" alt="GramOS в Telegram: Подписки и личный кабинет" class="phone-screen-img" loading="lazy" width="1179" height="2354">
                   </div>
                 </div>
                 <!-- Screen glass reflection overlay -->
@@ -176,15 +158,15 @@ function renderHome() {
       <div class="center" style="max-width:760px;margin:0 auto 44px">
         <div class="eyebrow">Решение</div>
         <h2>GramOS собирает все процессы Telegram-бизнеса в один рабочий контур</h2>
-        <p class="lede center">Пять модулей, которые работают на одних и тех же контактах, событиях и правах доступа.</p>
+        <p class="lede center">Шесть ключевых модулей, которые работают на одних и тех же контактах, событиях и правах доступа.</p>
       </div>
       <div class="grid g3">
-        ${linkCard({ i: 'users', t: 'CRM и контакты', d: 'Единая карточка клиента, timeline событий, теги, статусы, LTV и ответы прямо из интерфейса.', link: '/product/crm/' })}
-        ${linkCard({ i: 'flow', t: 'Сценарии и автоматизации', d: 'Визуальный canvas, триггеры Telegram, условия, задержки, версии и audit log.', link: '/product/automations/' })}
-        ${linkCard({ i: 'card', t: 'Платежи, продукты и тарифы', d: 'Публичный checkout, Stars, ЮKassa, bePaid, Stripe, Tribute и выдача доступов.', link: '/product/payments/' })}
-        ${linkCard({ i: 'send', t: 'Рассылки и сегменты', d: 'Аудитории по тегам и условиям, выбор бота-отправителя, планирование и статистика.', link: '/product/broadcasts/' })}
-        ${linkCard({ i: 'globe', t: 'Кабинет, checkout и виджет', d: 'Личный кабинет покупателя, страница оплаты и чат на сайте со склейкой с Telegram.', link: '/product/web-widget/' })}
-        ${linkCard({ i: 'layers', t: 'Мультипроекты и команда', d: 'Несколько бизнесов и ботов, изоляция данных, участники, роли и приглашения.', link: '/solutions/agency/' })}
+        ${linkCard({ i: 'users', t: 'CRM и контакты', d: 'Канбан сделок, единая карточка клиента, timeline событий, теги, LTV и ответы прямо из интерфейса.', link: '/product/crm/' })}
+        ${linkCard({ i: 'flow', t: 'Сценарии и автоворонки', d: 'Визуальный canvas, Group Canvas, выравнивание Dagre, конвертер Salebot и развилки Webhook.', link: '/product/automations/' })}
+        ${linkCard({ i: 'spark', t: 'ИИ и База знаний', d: 'RAG pgvector, парсинг документов PDF/DOCX, распознавание аудио/видео сообщений и нода ИИ в воронках.', link: '/product/ai/' })}
+        ${linkCard({ i: 'card', t: 'Платежи, продукты и тарифы', d: 'Публичный checkout с OTO-таймером, Stars, ЮKassa, Stripe и автономный отзыв доступов.', link: '/product/payments/' })}
+        ${linkCard({ i: 'send', t: 'Рассылки и сегменты', d: 'Матричный фильтр UniversalConditionBuilder, живой калькулятор охвата и статистика.', link: '/product/broadcasts/' })}
+        ${linkCard({ i: 'globe', t: 'Кабинет, checkout и виджет', d: 'Личный кабинет покупателя в Telegram, страница оплаты и чат на сайте со склейкой контактов.', link: '/product/web-widget/' })}
       </div>
     </div>
   </section>
@@ -192,33 +174,87 @@ function renderHome() {
   <!-- HOW IT WORKS -->
   <section class="section" id="how">
     <div class="wrap">
-      <div class="split">
-        <div>
-          <div class="eyebrow">Как это работает</div>
-          <h2>Четыре шага до первой автоматической продажи</h2>
-          <div class="steps" style="margin-top:28px">
-            <div class="step rv">
+      <div class="center" style="max-width:760px;margin:0 auto 36px">
+        <div class="eyebrow">Как это работает</div>
+        <h2>Четыре шага до первой автоматической продажи</h2>
+        <p class="lede center">От первого клика до поступающих оплат и закрытых каналов — без программистов и сложных настроек.</p>
+      </div>
+
+      <div class="stepper-wrap" id="howStepper">
+        <div class="stepper-list">
+          <div class="stepper-item active" data-step="0">
+            <div class="stepper-num">1</div>
+            <div class="stepper-info">
               <h3>Подключаете бота и каналы</h3>
-              <p>Вставляете токен Telegram-бота, добавляете каналы и группы. GramOS сам подписывается на нужные события.</p>
+              <p>Вставляете токен Telegram-бота от @BotFather, добавляете каналы и группы. GramOS сам подписывается на события.</p>
             </div>
-            <div class="step rv">
-              <h3>Создаёте продукт и страницу оплаты</h3>
-              <p>Продукт, тариф, цена, промокод — и публичный checkout готов к отправке в чат или на сайт.</p>
-            </div>
-            <div class="step rv">
-              <h3>Собираете сценарий</h3>
-              <p>Сообщение, кнопки, условия, задержки, теги и выдача доступа — на визуальном canvas, без кода.</p>
-            </div>
-            <div class="step rv">
-              <h3>Получаете продажи и цифры</h3>
-              <p>Лиды падают в CRM, рассылки уходят по сегментам, оплаты проходят автоматически, аналитика собирается сама.</p>
-            </div>
+            <div class="stepper-progress"><div class="stepper-progress-fill"></div></div>
           </div>
-          <div class="btns" style="margin-top:28px">
+
+          <div class="stepper-item" data-step="1">
+            <div class="stepper-num">2</div>
+            <div class="stepper-info">
+              <h3>Создаёте продукт и страницу оплаты</h3>
+              <p>Задаете тарифы, цены, скидки OTO и промокоды. Публичный checkout с личным кабинетом готов к приему оплат.</p>
+            </div>
+            <div class="stepper-progress"><div class="stepper-progress-fill"></div></div>
+          </div>
+
+          <div class="stepper-item" data-step="2">
+            <div class="stepper-num">3</div>
+            <div class="stepper-info">
+              <h3>Собираете сценарий на холсте</h3>
+              <p>Сообщения, кнопки, ветвления, задержки, AI-ответы и автоматическая выдача доступа — на визуальном canvas без кода.</p>
+            </div>
+            <div class="stepper-progress"><div class="stepper-progress-fill"></div></div>
+          </div>
+
+          <div class="stepper-item" data-step="3">
+            <div class="stepper-num">4</div>
+            <div class="stepper-info">
+              <h3>Получаете оплаты и аналитику</h3>
+              <p>Лиды фиксируются в CRM, платежи поступают напрямую на ваш счет, 100% автокик работает автономно 24/7.</p>
+            </div>
+            <div class="stepper-progress"><div class="stepper-progress-fill"></div></div>
+          </div>
+
+          <div class="btns" style="margin-top:14px">
             <a class="btn btn-ghost" href="/docs/first-scenario/">Как собрать первый сценарий →</a>
           </div>
         </div>
-        <div class="rv">${MOCKS.flow}</div>
+
+        <div class="stepper-stage">
+          <div class="mock-device-wrap">
+            <div class="mock-device">
+              <span class="phone-btn phone-btn-mute" aria-hidden="true"></span>
+              <span class="phone-btn phone-btn-up" aria-hidden="true"></span>
+              <span class="phone-btn phone-btn-down" aria-hidden="true"></span>
+              <span class="phone-btn phone-btn-power" aria-hidden="true"></span>
+              <div class="mock-screen-frame">
+                <!-- Optional Video Preview -->
+                <video class="stepper-video" id="stepperVideo" autoplay muted loop playsinline preload="none" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:32px;">
+                  <source src="/videos/how-it-works.mp4" type="video/mp4">
+                </video>
+                <!-- Interactive Screenshots Slides -->
+                <div class="stepper-slides" id="stepperSlides">
+                  <div class="stepper-slide active" data-step="0">
+                    <img src="/screen-1.png" alt="Шаг 1: Подключение Telegram-бота и каналов в GramOS" class="mock-screen-img" loading="lazy" width="1179" height="2556">
+                  </div>
+                  <div class="stepper-slide" data-step="1">
+                    <img src="/screenshots/public-checkout.png" alt="Шаг 2: Создание продукта и чекаута GramOS" class="mock-screen-img" loading="lazy" width="1179" height="2556">
+                  </div>
+                  <div class="stepper-slide" data-step="2">
+                    <img src="/screenshots/funnel-editor.png" alt="Шаг 3: Сборка сценария на визуальном холсте GramOS" class="mock-screen-img" loading="lazy" width="1179" height="2556">
+                  </div>
+                  <div class="stepper-slide" data-step="3">
+                    <img src="/screenshots/dashboard-analytics.png" alt="Шаг 4: Получение оплат и аналитика дашборда GramOS" class="mock-screen-img" loading="lazy" width="1179" height="2556">
+                  </div>
+                </div>
+                <div class="mock-screen-glare" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -227,17 +263,17 @@ function renderHome() {
   <section class="section soft">
     <div class="wrap">
       <div class="split">
-        <div class="rv">${MOCKS.cabinet}</div>
+        <div class="rv">${MOCKS.crm}</div>
         <div>
           <div class="eyebrow">CRM</div>
-          <h2>Все клиенты Telegram в одной CRM</h2>
+          <h2>Все клиенты и сделки в единой CRM</h2>
           <p class="lede">Менеджер видит не просто чат, а всю историю отношений с человеком: от первого сообщения до последней оплаты и выданного доступа.</p>
           ${checks([
-            'Единая карточка контакта: Telegram ID, username, источник',
-            'Timeline событий: сообщения, оплаты, заметки, доступы',
-            'Теги, статусы и LTV для сегментации',
-            'Поиск и фильтры по всей базе',
-            'Ответ клиенту прямо из интерфейса GramOS'
+            'Канбан-доска сделок: этапы «Новый», «Квалифицирован», «Оплачен»',
+            'Единая карточка контакта: Telegram ID, username, источник, LTV',
+            'Timeline событий: сообщения, оплаты, заметки, выданные доступы',
+            'Поиск, теги и быстрые фильтры по всей базе',
+            'Ответ клиенту прямо из интерфейса GramOS от имени бота'
           ])}
           <div class="btns" style="margin-top:22px">
             <a class="btn btn-ghost" href="/product/crm/">Подробнее о CRM →</a>
@@ -259,16 +295,16 @@ function renderHome() {
             <p class="quote" style="margin:0">Пользователь пишет «цена» → бот отправляет тарифы → нажатие кнопки открывает checkout → после оплаты контакт получает доступ и попадает в сегмент «покупатель».</p>
           </div>
           ${checks([
-            'Визуальный canvas без кода',
+            'Визуальный canvas без кода с Group Canvas и Dagre',
+            'Конвертер Salebot для быстрого переноса воронок',
             'Условия, задержки, ветвления и переходы',
-            'Версии сценариев и audit log',
-            'Сценарии для ботов, групп, каналов и виджета'
+            'Версии сценариев и audit log'
           ])}
           <div class="btns" style="margin-top:22px">
             <a class="btn btn-ghost" href="/product/automations/">Как работают сценарии →</a>
           </div>
         </div>
-        <div class="rv">${MOCKS.broadcast}</div>
+        <div class="rv">${MOCKS.flow}</div>
       </div>
     </div>
   </section>
@@ -281,15 +317,15 @@ function renderHome() {
         <div>
           <div class="eyebrow">Монетизация</div>
           <h2>Продавайте доступы, курсы и подписки прямо из Telegram</h2>
-          <p class="lede">Продукты и тарифы, публичный checkout, несколько платёжных провайдеров и личный кабинет покупателя.</p>
+          <p class="lede">Продукты и тарифы, публичный checkout с OTO-таймером, несколько платёжных провайдеров и личный кабинет покупателя.</p>
           ${checks([
             'Продукты, тарифы и подписки',
-            'Публичный checkout и оплата из чата',
+            'Публичный checkout с таймером OTO и промокодами',
             'Telegram Stars, ЮKassa, bePaid, Stripe, Tribute',
-            'Промокоды, скидки и допродажи (OTO)',
+            'Автономная выдача и гарантированный отзыв прав (автокик)',
             'История платежей и чеки в кабинете клиента'
           ])}
-          <p class="tiny muted" style="margin-top:14px">Автоматическая выдача и отзыв доступов по подписке доступна в beta — актуальный статус всегда указан в <a class="btn-link" href="/roadmap/">Roadmap</a>.</p>
+          <p class="tiny muted" style="margin-top:14px">Автоматическая выдача и моментальный отзыв доступов по подписке работают автономно 24/7 без ручной сверки выписок.</p>
           <div class="btns" style="margin-top:22px">
             <a class="btn btn-ghost" href="/product/payments/">Платежи и продукты →</a>
           </div>
@@ -298,8 +334,32 @@ function renderHome() {
     </div>
   </section>
 
-  <!-- SECTION WIDGET PREVIEW -->
+  <!-- SECTION AI PREVIEW -->
   <section class="section">
+    <div class="wrap">
+      <div class="split">
+        <div class="rv">${MOCKS.ai}</div>
+        <div>
+          <div class="eyebrow">ИИ и База знаний</div>
+          <h2>Умный нейро-ассистент на базе RAG и pgvector</h2>
+          <p class="lede">Обучите ИИ на базе знаний вашей компании: каталоги, прайс-листы, регламенты в PDF/DOCX. Ассистент консультирует клиентов, распознает голосовые сообщения и видео-кружки до 20 МБ.</p>
+          ${checks([
+            'RAG и pgvector: семантический поиск точных фактов без галлюцинаций',
+            'Парсинг файлов PDF, DOCX, TXT и импорт страниц сайтов',
+            'Мультимодальность: транскрибация аудио и видеосообщений кружков через Whisper',
+            'ИИ-нода в визуальных воронках для квалификации и генерации ответов',
+            'Бесшовный перевод диалога на живого менеджера в CRM'
+          ])}
+          <div class="btns" style="margin-top:22px">
+            <a class="btn btn-ghost" href="/product/ai/">Подробнее об ИИ и Базе знаний →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION WIDGET PREVIEW -->
+  <section class="section soft">
     <div class="wrap">
       <div class="split">
         <div>
@@ -326,18 +386,18 @@ function renderHome() {
   <section class="section soft">
     <div class="wrap">
       <div class="split">
-        <div class="rv">${MOCKS.analytics}</div>
+        <div class="rv">${mockDevice('/screenshots/dashboard-analytics.png', 'Аналитика и дашборд заказов GramOS')}</div>
         <div>
           <div class="eyebrow">Аналитика</div>
           <h2>Видите, что происходит с продажами</h2>
           <p class="lede">Метрики собираются автоматически из событий CRM, сценариев и платежей — без выгрузок и ручных таблиц.</p>
           <div class="grid g2" style="margin-top:18px">
-            <div class="kv"><span class="muted">Новые контакты</span><b>+312</b></div>
-            <div class="kv"><span class="muted">Активные чаты</span><b>37</b></div>
-            <div class="kv"><span class="muted">Выручка</span><b>₽412k</b></div>
-            <div class="kv"><span class="muted">Конверсия в оплату</span><b>9,8%</b></div>
-            <div class="kv"><span class="muted">Топ-канал</span><b>«Внутри продаж»</b></div>
+            <div class="kv"><span class="muted">Период отчета</span><b>За 30 дней</b></div>
+            <div class="kv"><span class="muted">Заказов</span><b>27 шт</b></div>
+            <div class="kv"><span class="muted">Рост к пред. периоду</span><b>+23.3%</b></div>
+            <div class="kv"><span class="muted">Конверсия</span><b>9,8%</b></div>
             <div class="kv"><span class="muted">Выданных доступов</span><b>128</b></div>
+            <div class="kv"><span class="muted">Автокик при неоплате</span><b>100%</b></div>
           </div>
         </div>
       </div>
@@ -369,11 +429,11 @@ function renderHome() {
       <div class="center" style="max-width:700px;margin:0 auto 40px">
         <div class="eyebrow">Тарифы</div>
         <h2>Начните бесплатно, платите по мере роста</h2>
-        <p class="lede center">Без комиссии GramOS с ваших продаж — вы платите только за подписку и комиссию платёжного провайдера.</p>
+        <p class="lede center">Без комиссии GramOS с ваших продаж — вы платите только фиксированную подписку за активную базу контактов.</p>
       </div>
-      ${renderPricingCardsCompact()}
+      ${renderPricingCalculator({ compact: true })}
       <div class="center" style="margin-top:26px">
-        <a class="btn-link" href="/pricing/">Сравнить все тарифы и лимиты →</a>
+        <a class="btn-link" href="/pricing/">Сравнить все возможности и детальные лимиты в таблице →</a>
       </div>
     </div>
   </section>

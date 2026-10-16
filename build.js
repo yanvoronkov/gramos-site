@@ -273,8 +273,8 @@ function build() {
     path: '/contact/',
     priority: '0.7',
     changefreq: 'monthly',
-    metaTitle: 'Контакты и служба поддержки клиентов | GramOS',
-    metaDesc: 'Свяжитесь с командой GramOS: оперативная поддержка в Telegram @gramos_support, электронная почта и заказ персональной демонстрации.',
+    metaTitle: 'Контакты и Telegram Contact Hub | GramOS',
+    metaDesc: 'Свяжитесь с командой GramOS напрямую в Telegram: бот с ИИ-ассистентом 24/7 @gram_os_bot, основатель @yanvoronkov, чат поддержки @gramos_support.',
     crumbs: [['Главная', '/'], ['Контакты', '']],
     content: renderContactPage()
   });

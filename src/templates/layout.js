@@ -123,6 +123,13 @@ function renderLayout(page, content, buildId = '1') {
               <span class="menu-desc">Полноценный web-сервис внутри Telegram</span>
             </div>
           </a>
+          <a href="/product/ai/" class="menu-item ${isActive('/product/ai/')}">
+            <div class="menu-ico">${icon('spark')}</div>
+            <div class="menu-info">
+              <strong class="menu-title">ИИ и База знаний</strong>
+              <span class="menu-desc">RAG pgvector, парсинг документов и ИИ-нода в воронках</span>
+            </div>
+          </a>
           <a href="/product/" class="menu-item ${currentPath === '/product/' ? 'active' : ''}">
             <div class="menu-ico">${icon('layers')}</div>
             <div class="menu-info">
@@ -307,6 +314,10 @@ function renderLayout(page, content, buildId = '1') {
           <span class="d-ico">${icon('phone')}</span>
           <span class="d-text">Telegram Mini App</span>
         </a>
+        <a href="/product/ai/" class="drawer-link ${isActive('/product/ai/')}">
+          <span class="d-ico">${icon('spark')}</span>
+          <span class="d-text">ИИ и База знаний</span>
+        </a>
       </div>
     </div>
     
@@ -419,13 +430,18 @@ function renderLayout(page, content, buildId = '1') {
   <div class="wrap">
     <div class="f-grid">
       <div>
-        <a href="/" class="logo" style="margin-bottom:12px" aria-label="GramOS">
-          <img src="/favicon.svg" class="logo-mark" alt="GramOS" width="36" height="36">
+        <a href="/" class="logo" aria-label="GramOS">
+          <img src="/favicon.svg" class="logo-mark" alt="GramOS" width="32" height="32">
           <span class="logo-text">GramOS</span>
         </a>
         <p class="small muted" style="max-width:34ch">Операционная система для бизнеса в Telegram: CRM, сценарии, платежи, доступы и рассылки в одном контуре.</p>
         <div class="btns">
-          <a class="btn btn-primary btn-sm" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_footer" data-smart-cta="site_footer" target="_blank" rel="noopener">Запустить бесплатно</a>
+          <a class="btn btn-primary btn-sm" href="https://app.gramos.pro/auth?utm_source=site&utm_medium=desktop&utm_campaign=site_footer" data-smart-cta="site_footer" target="_blank" rel="noopener">Запустить GramOS</a>
+          <a class="btn btn-ghost btn-sm" href="https://t.me/gram_os_bot" target="_blank" rel="noopener">Задать вопрос в боте</a>
+        </div>
+        <div style="margin-top:14px;font-size:0.82rem;display:flex;flex-direction:column;gap:4px">
+          <span class="muted">Основатель: <a href="https://t.me/yanvoronkov" target="_blank" rel="noopener" style="color:var(--accent);display:inline">@yanvoronkov</a></span>
+          <span class="muted">Поддержка: <a href="https://t.me/gramos_support" target="_blank" rel="noopener" style="color:var(--accent);display:inline">@gramos_support</a></span>
         </div>
       </div>
       
@@ -438,6 +454,7 @@ function renderLayout(page, content, buildId = '1') {
         <a href="/product/web-widget/">Web-виджет</a>
         <a href="/product/customer-cabinet/">Кабинет покупателя</a>
         <a href="/product/mini-app/">Mini App</a>
+        <a href="/product/ai/">ИИ и База знаний</a>
       </div>
       
       <div>
@@ -480,6 +497,28 @@ function renderLayout(page, content, buildId = '1') {
 
 <!-- Scripts with Cache-Busting Version -->
 <script src="/js/main.js?v=${buildId}" defer></script>
+
+<!-- GramOS Live Chat Widget -->
+<script src="https://app.gramos.pro/widget.js" defer></script>
+<script>
+  (function() {
+    function initWidget() {
+      if (window.GramOSWidget) {
+        window.GramOSWidget.init({
+          token: "widget_50d7a86d7706434f9e6e436ca72b1cbd",
+          apiUrl: "wss://app.gramos.pro"
+        });
+      } else {
+        setTimeout(initWidget, 50);
+      }
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initWidget);
+    } else {
+      initWidget();
+    }
+  })();
+</script>
 </body>
 </html>`;
 }

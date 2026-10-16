@@ -162,7 +162,7 @@
     });
   }
 
-  /* ---------- Pricing Annual / Monthly Switcher ---------- */
+  /* ---------- Pricing Annual / Monthly Switcher (Legacy Fallback) ---------- */
   function initPricingToggle() {
     var tg = document.getElementById('billToggle');
     if (!tg) return;
@@ -195,6 +195,260 @@
         }
       });
     });
+  }
+
+  /* ---------- Interactive Pricing Calculator (Starter vs Business) ---------- */
+  function initPricingCalculators() {
+    var calcs = document.querySelectorAll('.calc-wrapper');
+    if (!calcs.length) return;
+
+    var CONTACTS_STEPS = [
+      { value: 1000, label: 'до 1 000 контактов', display: '1 000', prices: { RUB: 590, BYN: 19, USD: 19, XTR: 400 } },
+      { value: 5000, label: 'до 5 000 контактов', display: '5 000', prices: { RUB: 890, BYN: 29, USD: 29, XTR: 600 } },
+      { value: 10000, label: 'до 10 000 контактов', display: '10 000', prices: { RUB: 1490, BYN: 49, USD: 49, XTR: 1000 } },
+      { value: 25000, label: 'до 25 000 контактов', display: '25 000', prices: { RUB: 2450, BYN: 79, USD: 79, XTR: 1600 } },
+      { value: 50000, label: 'до 50 000 контактов', display: '50 000', prices: { RUB: 3690, BYN: 119, USD: 119, XTR: 2400 } }
+    ];
+
+    var PERIODS = [
+      { value: 1, label: '1 месяц', discount: 0 },
+      { value: 3, label: '3 месяца', discount: 5 },
+      { value: 6, label: '6 месяцев', discount: 10 },
+      { value: 12, label: '12 месяцев', discount: 20 }
+    ];
+
+    var CURRENCIES = {
+      RUB: { symbol: '₽', signBefore: false, perMonth: ' / мес' },
+      BYN: { symbol: 'Br', signBefore: false, perMonth: ' / мес' },
+      USD: { symbol: '$', signBefore: true, perMonth: ' / mo' },
+      XTR: { symbol: '⭐', signBefore: false, perMonth: ' / мес' }
+    };
+
+    function fmtNum(n) {
+      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    function fmtPrice(amount, currCode) {
+      var c = CURRENCIES[currCode] || CURRENCIES.RUB;
+      var f = fmtNum(amount);
+      return c.signBefore ? (c.symbol + f) : (f + ' ' + c.symbol);
+    }
+
+    calcs.forEach(function(calcEl) {
+      if (calcEl._calcInitialized) return;
+      calcEl._calcInitialized = true;
+
+      var state = {
+        stepIdx: 0,
+        periodVal: 1,
+        currency: 'RUB'
+      };
+
+      var rangeInput = calcEl.querySelector('.calc-range');
+      var valLabel = calcEl.querySelector('.calc-contacts-val');
+      var ticks = calcEl.querySelectorAll('.calc-tick');
+      var periodPills = calcEl.querySelectorAll('[data-period]');
+      var currPills = calcEl.querySelectorAll('[data-curr]');
+
+      var starterPriceEl = calcEl.querySelector('.calc-starter-price');
+      var oldPriceEl = calcEl.querySelector('.calc-old-price');
+      var mainAmountEl = calcEl.querySelector('.calc-amount');
+      var periodLblEl = calcEl.querySelector('.calc-period-lbl');
+      var totalNoteEl = calcEl.querySelector('.calc-total-note');
+
+      function update() {
+        var step = CONTACTS_STEPS[state.stepIdx] || CONTACTS_STEPS[0];
+        var period = PERIODS.find(function(p) { return p.value === state.periodVal; }) || PERIODS[0];
+        var curr = state.currency;
+        var currConf = CURRENCIES[curr] || CURRENCIES.RUB;
+
+        // Slider UI
+        if (rangeInput) {
+          rangeInput.value = state.stepIdx;
+          rangeInput.style.setProperty('--range-pct', (state.stepIdx / 4 * 100) + '%');
+        }
+        if (valLabel) {
+          valLabel.textContent = step.label;
+        }
+        ticks.forEach(function(tick, idx) {
+          tick.classList.toggle('active', idx === state.stepIdx);
+        });
+
+        // Switchers UI
+        periodPills.forEach(function(pill) {
+          var pVal = parseInt(pill.getAttribute('data-period'), 10);
+          pill.classList.toggle('active', pVal === state.periodVal);
+        });
+        currPills.forEach(function(pill) {
+          var cVal = pill.getAttribute('data-curr');
+          pill.classList.toggle('active', cVal === state.currency);
+        });
+
+        // Prices calculation
+        var baseMonthly = step.prices[curr] || step.prices.RUB;
+        var discount = period.discount;
+        var effectiveMonthly = discount > 0 ? Math.round(baseMonthly * (1 - discount / 100)) : baseMonthly;
+        var totalPeriod = discount > 0 ? Math.round(baseMonthly * period.value * (1 - discount / 100)) : (baseMonthly * period.value);
+        var totalWithoutDiscount = baseMonthly * period.value;
+        var savings = totalWithoutDiscount - totalPeriod;
+
+        // Starter card
+        if (starterPriceEl) {
+          starterPriceEl.textContent = fmtPrice(0, curr);
+        }
+
+        // Business card
+        if (mainAmountEl) {
+          mainAmountEl.textContent = fmtPrice(effectiveMonthly, curr);
+        }
+        if (periodLblEl) {
+          periodLblEl.textContent = currConf.perMonth;
+        }
+
+        if (oldPriceEl) {
+          if (discount > 0) {
+            oldPriceEl.style.display = 'block';
+            oldPriceEl.textContent = fmtPrice(baseMonthly, curr);
+          } else {
+            oldPriceEl.style.display = 'none';
+          }
+        }
+
+        if (totalNoteEl) {
+          if (discount === 0) {
+            totalNoteEl.textContent = 'при помесячной оплате';
+          } else {
+            totalNoteEl.innerHTML = fmtPrice(totalPeriod, curr) + ' за ' + period.value + ' мес. <span class="calc-savings-badge">−' + discount + '% • экономия ' + fmtPrice(savings, curr) + '</span>';
+          }
+        }
+      }
+
+      // Event listeners
+      if (rangeInput) {
+        rangeInput.addEventListener('input', function() {
+          state.stepIdx = parseInt(rangeInput.value, 10);
+          update();
+        });
+        rangeInput.addEventListener('change', function() {
+          state.stepIdx = parseInt(rangeInput.value, 10);
+          update();
+        });
+      }
+
+      ticks.forEach(function(tick, idx) {
+        tick.addEventListener('click', function() {
+          state.stepIdx = idx;
+          update();
+        });
+      });
+
+      periodPills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          state.periodVal = parseInt(pill.getAttribute('data-period'), 10);
+          update();
+        });
+      });
+
+      currPills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          state.currency = pill.getAttribute('data-curr');
+          update();
+        });
+      });
+
+      // Init state
+      update();
+    });
+  }
+
+  /* ---------- How It Works Stepper (4 Steps + Interactive Media) ---------- */
+  function initHowItWorksStepper() {
+    var stepper = document.getElementById('howStepper');
+    if (!stepper) return;
+
+    var items = stepper.querySelectorAll('.stepper-item');
+    var slides = stepper.querySelectorAll('.stepper-slide');
+    var video = document.getElementById('stepperVideo');
+    var slidesWrap = document.getElementById('stepperSlides');
+    if (!items.length) return;
+
+    var currentIndex = 0;
+    var timerId = null;
+    var isPaused = false;
+    var STEP_DURATION = 5000;
+
+    // Check video availability
+    if (video) {
+      video.addEventListener('loadeddata', function() {
+        video.style.display = 'block';
+        if (slidesWrap) slidesWrap.style.display = 'none';
+      });
+      video.addEventListener('error', function() {
+        video.style.display = 'none';
+        if (slidesWrap) slidesWrap.style.display = 'block';
+      });
+    }
+
+    function switchStep(index) {
+      currentIndex = index;
+      [].forEach.call(items, function(item, i) {
+        item.classList.toggle('active', i === index);
+        var fill = item.querySelector('.stepper-progress-fill');
+        if (fill) {
+          fill.style.transition = 'none';
+          fill.style.width = '0%';
+          if (i === index && !isPaused) {
+            void fill.offsetWidth; // force reflow
+            fill.style.transition = 'width ' + STEP_DURATION + 'ms linear';
+            fill.style.width = '100%';
+          }
+        }
+      });
+
+      [].forEach.call(slides, function(slide, i) {
+        slide.classList.toggle('active', i === index);
+      });
+    }
+
+    function nextStep() {
+      if (!isPaused) {
+        var next = (currentIndex + 1) % items.length;
+        switchStep(next);
+      }
+      timerId = setTimeout(nextStep, STEP_DURATION);
+    }
+
+    // Step item click
+    [].forEach.call(items, function(item, i) {
+      item.addEventListener('click', function() {
+        if (timerId) clearTimeout(timerId);
+        switchStep(i);
+        timerId = setTimeout(nextStep, STEP_DURATION);
+      });
+    });
+
+    // Pause on hover
+    stepper.addEventListener('mouseenter', function() {
+      isPaused = true;
+      var activeFill = stepper.querySelector('.stepper-item.active .stepper-progress-fill');
+      if (activeFill) {
+        var computedWidth = window.getComputedStyle(activeFill).width;
+        activeFill.style.transition = 'none';
+        activeFill.style.width = computedWidth;
+      }
+    });
+    stepper.addEventListener('mouseleave', function() {
+      isPaused = false;
+      var activeFill = stepper.querySelector('.stepper-item.active .stepper-progress-fill');
+      if (activeFill) {
+        activeFill.style.transition = 'width ' + STEP_DURATION + 'ms linear';
+        activeFill.style.width = '100%';
+      }
+    });
+
+    // Start
+    switchStep(0);
+    timerId = setTimeout(nextStep, STEP_DURATION);
   }
 
   /* ---------- Demo Tour Tab Switcher ---------- */
@@ -445,6 +699,8 @@
 
     initReveal();
     initPricingToggle();
+    initPricingCalculators();
+    initHowItWorksStepper();
     initTourTabs();
     initForms();
     initSmartCta();

@@ -5,7 +5,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = process.env.TEST_URL || 'http://localhost:8080';
 
 const PAGES_TO_TEST = [
   '/',
@@ -18,6 +18,7 @@ const PAGES_TO_TEST = [
   '/product/web-widget/',
   '/product/customer-cabinet/',
   '/product/mini-app/',
+  '/product/ai/',
   '/solutions/',
   '/solutions/paid-community/',
   '/solutions/online-school/',

@@ -26,6 +26,7 @@ function renderProductOverview() {
         ${linkCard({ i: 'globe', t: 'Web-виджет', d: 'Чат на сайте с Shadow DOM и склейкой гостя с Telegram-контактом.', link: '/product/web-widget/' })}
         ${linkCard({ i: 'phone', t: 'Кабинет покупателя', d: 'Доступы, материалы, подписки и история платежей для клиента.', link: '/product/customer-cabinet/' })}
         ${linkCard({ i: 'phone', t: 'Telegram Mini App', d: 'Управление бизнесом прямо внутри Telegram со смартфона.', link: '/product/mini-app/' })}
+        ${linkCard({ i: 'spark', t: 'ИИ и База знаний', d: 'RAG pgvector, парсинг документов PDF/DOCX и нейро-ассистент в воронках.', link: '/product/ai/' })}
         ${linkCard({ i: 'layers', t: 'Мультипроекты и команда', d: 'Несколько бизнесов, изоляция данных, участники, роли и приглашения.', link: '/solutions/agency/' })}
         ${linkCard({ i: 'shield', t: 'Безопасность', d: 'Изоляция проектов, роли, подписи webhook, хранение токенов.', link: '/security/' })}
       </div>
