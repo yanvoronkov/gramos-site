@@ -2,6 +2,7 @@
  * Полное тестирование сайта GramOS на локальном Nginx (порт 8080)
  */
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
@@ -60,7 +61,9 @@ const PAGES_TO_TEST = [
 
 function fetchUrl(urlPath) {
   return new Promise((resolve, reject) => {
-    http.get(BASE_URL + urlPath, (res) => {
+    const fullUrl = BASE_URL + urlPath;
+    const client = fullUrl.startsWith('https:') ? https : http;
+    client.get(fullUrl, (res) => {
       let data = '';
       res.on('data', chunk => { data += chunk; });
       res.on('end', () => {
